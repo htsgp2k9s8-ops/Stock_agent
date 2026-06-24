@@ -1,0 +1,1838 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>OGM Backtest Poročilo - Signali 80+</title>
+    <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; background-color: #f8fafc; margin: 40px auto; max-width: 1250px; padding: 0 20px; }
+    .header { background: linear-gradient(135deg, #111827 0%, #dc2626 100%); color: #ffffff; padding: 30px; border-radius: 8px; border-bottom: 4px solid #991b1b; position: relative; }
+    .header h1 { margin: 0; font-size: 22pt; font-weight: 700; }
+    .header p { margin: 5px 0 0 0; color: #fecaca; font-size: 11pt; }
+    
+    .btn-pdf { position: absolute; right: 30px; top: 35px; background-color: #ffffff; color: #dc2626; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 700; font-size: 10pt; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; }
+    .btn-pdf:hover { background-color: #f3f4f6; transform: translateY(-1px); }
+    
+    .section-title { font-size: 14pt; color: #0f172a; border-left: 5px solid #dc2626; padding-left: 12px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    th { background-color: #1e293b; color: #ffffff; text-align: left; padding: 12px 10px; font-size: 9.5pt; font-weight: 600; }
+    td { padding: 11px 10px; border-bottom: 1px solid #e2e8f0; font-size: 9.5pt; }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    tr:hover { background-color: #f1f5f9; }
+    .badge { padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 8.5pt; display: inline-block; background-color: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }
+    .pos-return { color: #16a34a; font-weight: 700; }
+    .neg-return { color: #dc2626; font-weight: 700; }
+    .neutral-return { color: #64748b; font-style: italic; }
+    
+    @media print {
+        .btn-pdf { display: none !important; }
+        body { background-color: white; margin: 0; padding: 0; }
+        table { box-shadow: none; page-break-inside: auto; }
+        tr { page-break-inside: avoid; page-break-after: auto; }
+        thead { display: table-header-group; }
+    }
+    </style>
+    </head>
+    <body>
+
+    <div class="header">
+        <h1>OVNICEK GROWTH MATRIX &mdash; ZGODOVINSKI BACKTEST (OGM &ge; 80)</h1>
+        <p>Pregled vseh potrjenih prebojev v zadnjih 5 letih in njihov končni 12-mesečni donos | Osveženo: 31.05.2026</p>
+        <button class="btn-pdf" onclick="window.print()">Izvozi v PDF</button>
+    </div>
+
+    <div class="section-title">Kronološki izpis zgodovinskih nakupnih signalov in rezultatov</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Datum preboja</th>
+                <th>Ticker</th>
+                <th>Ime podjetja</th>
+                <th>Cena ob vstopu</th>
+                <th>Dosežen OGM Score</th>
+                <th>Uradni status</th>
+                <th>Dejanski donos po 12 mesecih</th>
+            </tr>
+        </thead>
+        <tbody>
+    
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-29</td>
+                    <td><strong>SNPS</strong></td>
+                    <td style="color: #0f172a;">Synopsys, Inc.</td>
+                    <td style="font-weight: 500;">$475.62</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-22</td>
+                    <td><strong>MDLZ</strong></td>
+                    <td style="color: #0f172a;">Mondelez International, Inc.</td>
+                    <td style="font-weight: 500;">$62.39</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-15</td>
+                    <td><strong>DIS</strong></td>
+                    <td style="color: #0f172a;">The Walt Disney Company</td>
+                    <td style="font-weight: 500;">$103.58</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-15</td>
+                    <td><strong>MELI</strong></td>
+                    <td style="color: #0f172a;">MercadoLibre, Inc.</td>
+                    <td style="font-weight: 500;">$1677.90</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-08</td>
+                    <td><strong>MA</strong></td>
+                    <td style="color: #0f172a;">Mastercard Incorporated</td>
+                    <td style="font-weight: 500;">$489.94</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-08</td>
+                    <td><strong>ISRG</strong></td>
+                    <td style="color: #0f172a;">Intuitive Surgical, Inc.</td>
+                    <td style="font-weight: 500;">$428.06</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-08</td>
+                    <td><strong>BKNG</strong></td>
+                    <td style="color: #0f172a;">Booking Holdings Inc.</td>
+                    <td style="font-weight: 500;">$154.48</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-05-08</td>
+                    <td><strong>TMUS</strong></td>
+                    <td style="color: #0f172a;">T-Mobile US, Inc.</td>
+                    <td style="font-weight: 500;">$187.17</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-04-24</td>
+                    <td><strong>VRTX</strong></td>
+                    <td style="color: #0f172a;">Vertex Pharmaceuticals Incorporated</td>
+                    <td style="font-weight: 500;">$427.38</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-04-24</td>
+                    <td><strong>SNPS</strong></td>
+                    <td style="color: #0f172a;">Synopsys, Inc.</td>
+                    <td style="font-weight: 500;">$482.60</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-04-10</td>
+                    <td><strong>HD</strong></td>
+                    <td style="color: #0f172a;">The Home Depot, Inc.</td>
+                    <td style="font-weight: 500;">$337.15</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-04-10</td>
+                    <td><strong>DIS</strong></td>
+                    <td style="color: #0f172a;">The Walt Disney Company</td>
+                    <td style="font-weight: 500;">$103.90</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-04-03</td>
+                    <td><strong>PEP</strong></td>
+                    <td style="color: #0f172a;">PepsiCo, Inc.</td>
+                    <td style="font-weight: 500;">$157.49</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-04-03</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$205.67</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-03-27</td>
+                    <td><strong>CDNS</strong></td>
+                    <td style="color: #0f172a;">Cadence Design Systems, Inc.</td>
+                    <td style="font-weight: 500;">$278.72</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-03-20</td>
+                    <td><strong>ORCL</strong></td>
+                    <td style="color: #0f172a;">Oracle Corporation</td>
+                    <td style="font-weight: 500;">$142.31</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-03-20</td>
+                    <td><strong>PANW</strong></td>
+                    <td style="color: #0f172a;">Palo Alto Networks, Inc.</td>
+                    <td style="font-weight: 500;">$156.36</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-03-06</td>
+                    <td><strong>HD</strong></td>
+                    <td style="color: #0f172a;">The Home Depot, Inc.</td>
+                    <td style="font-weight: 500;">$336.68</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-03-06</td>
+                    <td><strong>MSFT</strong></td>
+                    <td style="color: #0f172a;">Microsoft Corporation</td>
+                    <td style="font-weight: 500;">$400.99</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-03-06</td>
+                    <td><strong>MELI</strong></td>
+                    <td style="color: #0f172a;">MercadoLibre, Inc.</td>
+                    <td style="font-weight: 500;">$1680.00</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-02-27</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$209.49</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-02-27</td>
+                    <td><strong>PEP</strong></td>
+                    <td style="color: #0f172a;">PepsiCo, Inc.</td>
+                    <td style="font-weight: 500;">$159.28</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-02-27</td>
+                    <td><strong>PG</strong></td>
+                    <td style="color: #0f172a;">The Procter & Gamble Company</td>
+                    <td style="font-weight: 500;">$152.84</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-02-20</td>
+                    <td><strong>PDD</strong></td>
+                    <td style="color: #0f172a;">PDD Holdings Inc.</td>
+                    <td style="font-weight: 500;">$105.39</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-02-13</td>
+                    <td><strong>PANW</strong></td>
+                    <td style="color: #0f172a;">Palo Alto Networks, Inc.</td>
+                    <td style="font-weight: 500;">$150.99</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-02-13</td>
+                    <td><strong>QCOM</strong></td>
+                    <td style="color: #0f172a;">QUALCOMM Incorporated</td>
+                    <td style="font-weight: 500;">$140.37</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-02-06</td>
+                    <td><strong>ABT</strong></td>
+                    <td style="color: #0f172a;">Abbott Laboratories</td>
+                    <td style="font-weight: 500;">$110.78</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-30</td>
+                    <td><strong>CDNS</strong></td>
+                    <td style="color: #0f172a;">Cadence Design Systems, Inc.</td>
+                    <td style="font-weight: 500;">$270.14</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-30</td>
+                    <td><strong>DIS</strong></td>
+                    <td style="color: #0f172a;">The Walt Disney Company</td>
+                    <td style="font-weight: 500;">$104.97</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-30</td>
+                    <td><strong>TMO</strong></td>
+                    <td style="color: #0f172a;">Thermo Fisher Scientific Inc.</td>
+                    <td style="font-weight: 500;">$541.82</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-30</td>
+                    <td><strong>REGN</strong></td>
+                    <td style="color: #0f172a;">Regeneron Pharmaceuticals, Inc.</td>
+                    <td style="font-weight: 500;">$764.57</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-30</td>
+                    <td><strong>MSFT</strong></td>
+                    <td style="color: #0f172a;">Microsoft Corporation</td>
+                    <td style="font-weight: 500;">$391.92</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-30</td>
+                    <td><strong>ORCL</strong></td>
+                    <td style="color: #0f172a;">Oracle Corporation</td>
+                    <td style="font-weight: 500;">$136.00</td>
+                    <td style="font-weight: 700; color: #991b1b;">90.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-23</td>
+                    <td><strong>SNPS</strong></td>
+                    <td style="color: #0f172a;">Synopsys, Inc.</td>
+                    <td style="font-weight: 500;">$480.00</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-16</td>
+                    <td><strong>PG</strong></td>
+                    <td style="color: #0f172a;">The Procter & Gamble Company</td>
+                    <td style="font-weight: 500;">$147.76</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-16</td>
+                    <td><strong>TMUS</strong></td>
+                    <td style="color: #0f172a;">T-Mobile US, Inc.</td>
+                    <td style="font-weight: 500;">$183.51</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-16</td>
+                    <td><strong>PDD</strong></td>
+                    <td style="color: #0f172a;">PDD Holdings Inc.</td>
+                    <td style="font-weight: 500;">$106.02</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-09</td>
+                    <td><strong>CRM</strong></td>
+                    <td style="color: #0f172a;">Salesforce, Inc.</td>
+                    <td style="font-weight: 500;">$232.95</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-09</td>
+                    <td><strong>INTU</strong></td>
+                    <td style="color: #0f172a;">Intuit Inc.</td>
+                    <td style="font-weight: 500;">$551.86</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-09</td>
+                    <td><strong>ADP</strong></td>
+                    <td style="color: #0f172a;">Automatic Data Processing, Inc.</td>
+                    <td style="font-weight: 500;">$258.07</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2026-01-02</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$227.47</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-26</td>
+                    <td><strong>DHR</strong></td>
+                    <td style="color: #0f172a;">Danaher Corporation</td>
+                    <td style="font-weight: 500;">$228.12</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-19</td>
+                    <td><strong>CVX</strong></td>
+                    <td style="color: #0f172a;">Chevron Corporation</td>
+                    <td style="font-weight: 500;">$147.69</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-19</td>
+                    <td><strong>HD</strong></td>
+                    <td style="color: #0f172a;">The Home Depot, Inc.</td>
+                    <td style="font-weight: 500;">$345.03</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-19</td>
+                    <td><strong>REGN</strong></td>
+                    <td style="color: #0f172a;">Regeneron Pharmaceuticals, Inc.</td>
+                    <td style="font-weight: 500;">$781.60</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-12</td>
+                    <td><strong>TXN</strong></td>
+                    <td style="color: #0f172a;">Texas Instruments Incorporated</td>
+                    <td style="font-weight: 500;">$174.16</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-12</td>
+                    <td><strong>PDD</strong></td>
+                    <td style="color: #0f172a;">PDD Holdings Inc.</td>
+                    <td style="font-weight: 500;">$105.79</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-05</td>
+                    <td><strong>HON</strong></td>
+                    <td style="color: #0f172a;">Honeywell International Inc.</td>
+                    <td style="font-weight: 500;">$191.84</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-12-05</td>
+                    <td><strong>MRK</strong></td>
+                    <td style="color: #0f172a;">Merck & Co., Inc.</td>
+                    <td style="font-weight: 500;">$97.45</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-28</td>
+                    <td><strong>ADP</strong></td>
+                    <td style="color: #0f172a;">Automatic Data Processing, Inc.</td>
+                    <td style="font-weight: 500;">$255.62</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-28</td>
+                    <td><strong>SNPS</strong></td>
+                    <td style="color: #0f172a;">Synopsys, Inc.</td>
+                    <td style="font-weight: 500;">$463.74</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-21</td>
+                    <td><strong>DHR</strong></td>
+                    <td style="color: #0f172a;">Danaher Corporation</td>
+                    <td style="font-weight: 500;">$227.66</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-14</td>
+                    <td><strong>CSX</strong></td>
+                    <td style="color: #0f172a;">CSX Corporation</td>
+                    <td style="font-weight: 500;">$33.34</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-14</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$217.65</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-14</td>
+                    <td><strong>CVX</strong></td>
+                    <td style="color: #0f172a;">Chevron Corporation</td>
+                    <td style="font-weight: 500;">$145.87</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-14</td>
+                    <td><strong>LIN</strong></td>
+                    <td style="color: #0f172a;">Linde plc</td>
+                    <td style="font-weight: 500;">$405.65</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-14</td>
+                    <td><strong>HD</strong></td>
+                    <td style="color: #0f172a;">The Home Depot, Inc.</td>
+                    <td style="font-weight: 500;">$328.05</td>
+                    <td style="font-weight: 700; color: #991b1b;">89.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-11-07</td>
+                    <td><strong>PG</strong></td>
+                    <td style="color: #0f172a;">The Procter & Gamble Company</td>
+                    <td style="font-weight: 500;">$145.82</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-31</td>
+                    <td><strong>DIS</strong></td>
+                    <td style="color: #0f172a;">The Walt Disney Company</td>
+                    <td style="font-weight: 500;">$109.75</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-31</td>
+                    <td><strong>HON</strong></td>
+                    <td style="color: #0f172a;">Honeywell International Inc.</td>
+                    <td style="font-weight: 500;">$192.72</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-24</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$204.40</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-24</td>
+                    <td><strong>CTSH</strong></td>
+                    <td style="color: #0f172a;">Cognizant Technology Solutions Corporation</td>
+                    <td style="font-weight: 500;">$71.01</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-24</td>
+                    <td><strong>ADP</strong></td>
+                    <td style="color: #0f172a;">Automatic Data Processing, Inc.</td>
+                    <td style="font-weight: 500;">$257.72</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-17</td>
+                    <td><strong>VZ</strong></td>
+                    <td style="color: #0f172a;">Verizon Communications Inc.</td>
+                    <td style="font-weight: 500;">$37.19</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-10</td>
+                    <td><strong>CRM</strong></td>
+                    <td style="color: #0f172a;">Salesforce, Inc.</td>
+                    <td style="font-weight: 500;">$244.99</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-10</td>
+                    <td><strong>CVX</strong></td>
+                    <td style="color: #0f172a;">Chevron Corporation</td>
+                    <td style="font-weight: 500;">$147.23</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-10</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$220.43</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-10-03</td>
+                    <td><strong>TXN</strong></td>
+                    <td style="color: #0f172a;">Texas Instruments Incorporated</td>
+                    <td style="font-weight: 500;">$175.34</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-09-26</td>
+                    <td><strong>PG</strong></td>
+                    <td style="color: #0f172a;">The Procter & Gamble Company</td>
+                    <td style="font-weight: 500;">$148.81</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-09-26</td>
+                    <td><strong>DIS</strong></td>
+                    <td style="color: #0f172a;">The Walt Disney Company</td>
+                    <td style="font-weight: 500;">$111.39</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-09-26</td>
+                    <td><strong>SNPS</strong></td>
+                    <td style="color: #0f172a;">Synopsys, Inc.</td>
+                    <td style="font-weight: 500;">$471.15</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-09-19</td>
+                    <td><strong>AMGN</strong></td>
+                    <td style="color: #0f172a;">Amgen Inc.</td>
+                    <td style="font-weight: 500;">$265.40</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-09-19</td>
+                    <td><strong>HON</strong></td>
+                    <td style="color: #0f172a;">Honeywell International Inc.</td>
+                    <td style="font-weight: 500;">$192.57</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-09-12</td>
+                    <td><strong>VRTX</strong></td>
+                    <td style="color: #0f172a;">Vertex Pharmaceuticals Incorporated</td>
+                    <td style="font-weight: 500;">$387.11</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-09-05</td>
+                    <td><strong>CRM</strong></td>
+                    <td style="color: #0f172a;">Salesforce, Inc.</td>
+                    <td style="font-weight: 500;">$244.84</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-08-29</td>
+                    <td><strong>CTSH</strong></td>
+                    <td style="color: #0f172a;">Cognizant Technology Solutions Corporation</td>
+                    <td style="font-weight: 500;">$70.28</td>
+                    <td style="font-weight: 700; color: #991b1b;">89.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-08-22</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$217.41</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-08-22</td>
+                    <td><strong>PG</strong></td>
+                    <td style="color: #0f172a;">The Procter & Gamble Company</td>
+                    <td style="font-weight: 500;">$152.33</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-08-22</td>
+                    <td><strong>CSX</strong></td>
+                    <td style="color: #0f172a;">CSX Corporation</td>
+                    <td style="font-weight: 500;">$32.21</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-08-01</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$203.00</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-08-01</td>
+                    <td><strong>VRTX</strong></td>
+                    <td style="color: #0f172a;">Vertex Pharmaceuticals Incorporated</td>
+                    <td style="font-weight: 500;">$375.63</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-08-01</td>
+                    <td><strong>CRM</strong></td>
+                    <td style="color: #0f172a;">Salesforce, Inc.</td>
+                    <td style="font-weight: 500;">$239.47</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-07-25</td>
+                    <td><strong>CTSH</strong></td>
+                    <td style="color: #0f172a;">Cognizant Technology Solutions Corporation</td>
+                    <td style="font-weight: 500;">$70.28</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-07-25</td>
+                    <td><strong>QCOM</strong></td>
+                    <td style="color: #0f172a;">QUALCOMM Incorporated</td>
+                    <td style="font-weight: 500;">$144.26</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-07-18</td>
+                    <td><strong>ASML</strong></td>
+                    <td style="color: #0f172a;">ASML Holding N.V.</td>
+                    <td style="font-weight: 500;">$719.44</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-07-18</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$215.62</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-07-18</td>
+                    <td><strong>PG</strong></td>
+                    <td style="color: #0f172a;">The Procter & Gamble Company</td>
+                    <td style="font-weight: 500;">$154.37</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-07-04</td>
+                    <td><strong>JNJ</strong></td>
+                    <td style="color: #0f172a;">Johnson & Johnson</td>
+                    <td style="font-weight: 500;">$153.85</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-07-04</td>
+                    <td><strong>MDLZ</strong></td>
+                    <td style="color: #0f172a;">Mondelez International, Inc.</td>
+                    <td style="font-weight: 500;">$65.44</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-06-27</td>
+                    <td><strong>AZN</strong></td>
+                    <td style="color: #0f172a;">AstraZeneca PLC</td>
+                    <td style="font-weight: 500;">$136.52</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-06-13</td>
+                    <td><strong>PG</strong></td>
+                    <td style="color: #0f172a;">The Procter & Gamble Company</td>
+                    <td style="font-weight: 500;">$153.60</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-06-13</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$217.08</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-06-13</td>
+                    <td><strong>CVX</strong></td>
+                    <td style="color: #0f172a;">Chevron Corporation</td>
+                    <td style="font-weight: 500;">$142.23</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-06-06</td>
+                    <td><strong>AMD</strong></td>
+                    <td style="color: #0f172a;">Advanced Micro Devices, Inc.</td>
+                    <td style="font-weight: 500;">$118.50</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-06-06</td>
+                    <td><strong>CSX</strong></td>
+                    <td style="color: #0f172a;">CSX Corporation</td>
+                    <td style="font-weight: 500;">$31.94</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neutral-return">V teku (ni še 12m)</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-30</td>
+                    <td><strong>MDLZ</strong></td>
+                    <td style="color: #0f172a;">Mondelez International, Inc.</td>
+                    <td style="font-weight: 500;">$64.23</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-4.8 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-30</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$203.03</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+58.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-30</td>
+                    <td><strong>JNJ</strong></td>
+                    <td style="color: #0f172a;">Johnson & Johnson</td>
+                    <td style="font-weight: 500;">$149.91</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+50.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-23</td>
+                    <td><strong>QCOM</strong></td>
+                    <td style="color: #0f172a;">QUALCOMM Incorporated</td>
+                    <td style="font-weight: 500;">$144.94</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+67.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-23</td>
+                    <td><strong>PDD</strong></td>
+                    <td style="color: #0f172a;">PDD Holdings Inc.</td>
+                    <td style="font-weight: 500;">$98.29</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-15.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-09</td>
+                    <td><strong>CVX</strong></td>
+                    <td style="color: #0f172a;">Chevron Corporation</td>
+                    <td style="font-weight: 500;">$134.90</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+37.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-09</td>
+                    <td><strong>DIS</strong></td>
+                    <td style="color: #0f172a;">The Walt Disney Company</td>
+                    <td style="font-weight: 500;">$110.99</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-5.0 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-09</td>
+                    <td><strong>ACN</strong></td>
+                    <td style="color: #0f172a;">Accenture plc</td>
+                    <td style="font-weight: 500;">$318.90</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-48.6 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-09</td>
+                    <td><strong>AZN</strong></td>
+                    <td style="color: #0f172a;">AstraZeneca PLC</td>
+                    <td style="font-weight: 500;">$133.59</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+38.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-09</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$224.37</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+19.4 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-05-02</td>
+                    <td><strong>ASML</strong></td>
+                    <td style="color: #0f172a;">ASML Holding N.V.</td>
+                    <td style="font-weight: 500;">$702.52</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+115.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-18</td>
+                    <td><strong>MDLZ</strong></td>
+                    <td style="color: #0f172a;">Mondelez International, Inc.</td>
+                    <td style="font-weight: 500;">$63.41</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-9.0 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-18</td>
+                    <td><strong>SNPS</strong></td>
+                    <td style="color: #0f172a;">Synopsys, Inc.</td>
+                    <td style="font-weight: 500;">$438.90</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+4.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-18</td>
+                    <td><strong>AMAT</strong></td>
+                    <td style="color: #0f172a;">Applied Materials, Inc.</td>
+                    <td style="font-weight: 500;">$148.65</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+171.4 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-18</td>
+                    <td><strong>QCOM</strong></td>
+                    <td style="color: #0f172a;">QUALCOMM Incorporated</td>
+                    <td style="font-weight: 500;">$143.84</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-6.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-11</td>
+                    <td><strong>PDD</strong></td>
+                    <td style="color: #0f172a;">PDD Holdings Inc.</td>
+                    <td style="font-weight: 500;">$93.69</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+10.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-11</td>
+                    <td><strong>CRM</strong></td>
+                    <td style="color: #0f172a;">Salesforce, Inc.</td>
+                    <td style="font-weight: 500;">$245.43</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-26.2 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-11</td>
+                    <td><strong>JNJ</strong></td>
+                    <td style="color: #0f172a;">Johnson & Johnson</td>
+                    <td style="font-weight: 500;">$152.33</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+53.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-04</td>
+                    <td><strong>TSLA</strong></td>
+                    <td style="color: #0f172a;">Tesla, Inc.</td>
+                    <td style="font-weight: 500;">$252.40</td>
+                    <td style="font-weight: 700; color: #991b1b;">89.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+36.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-04</td>
+                    <td><strong>AAPL</strong></td>
+                    <td style="color: #0f172a;">Apple Inc.</td>
+                    <td style="font-weight: 500;">$189.42</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+37.4 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-04-04</td>
+                    <td><strong>AZN</strong></td>
+                    <td style="color: #0f172a;">AstraZeneca PLC</td>
+                    <td style="font-weight: 500;">$127.51</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+60.8 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-28</td>
+                    <td><strong>HON</strong></td>
+                    <td style="color: #0f172a;">Honeywell International Inc.</td>
+                    <td style="font-weight: 500;">$189.67</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+20.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-28</td>
+                    <td><strong>BAC</strong></td>
+                    <td style="color: #0f172a;">Bank of America Corporation</td>
+                    <td style="font-weight: 500;">$36.40</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+35.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-28</td>
+                    <td><strong>LRCX</strong></td>
+                    <td style="color: #0f172a;">Lam Research Corporation</td>
+                    <td style="font-weight: 500;">$64.75</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+237.4 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-28</td>
+                    <td><strong>ADI</strong></td>
+                    <td style="color: #0f172a;">Analog Devices, Inc.</td>
+                    <td style="font-weight: 500;">$178.16</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+78.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-28</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$217.68</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+11.8 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-28</td>
+                    <td><strong>CTSH</strong></td>
+                    <td style="color: #0f172a;">Cognizant Technology Solutions Corporation</td>
+                    <td style="font-weight: 500;">$71.48</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-13.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-07</td>
+                    <td><strong>HD</strong></td>
+                    <td style="color: #0f172a;">The Home Depot, Inc.</td>
+                    <td style="font-weight: 500;">$336.55</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+0.0 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-07</td>
+                    <td><strong>ACN</strong></td>
+                    <td style="color: #0f172a;">Accenture plc</td>
+                    <td style="font-weight: 500;">$311.30</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-37.6 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-07</td>
+                    <td><strong>ROST</strong></td>
+                    <td style="color: #0f172a;">Ross Stores, Inc.</td>
+                    <td style="font-weight: 500;">$121.69</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+72.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-03-07</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$196.29</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-3.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-28</td>
+                    <td><strong>SNPS</strong></td>
+                    <td style="color: #0f172a;">Synopsys, Inc.</td>
+                    <td style="font-weight: 500;">$445.73</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-0.8 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-28</td>
+                    <td><strong>TSLA</strong></td>
+                    <td style="color: #0f172a;">Tesla, Inc.</td>
+                    <td style="font-weight: 500;">$263.45</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+53.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-28</td>
+                    <td><strong>AMAT</strong></td>
+                    <td style="color: #0f172a;">Applied Materials, Inc.</td>
+                    <td style="font-weight: 500;">$150.01</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+130.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-28</td>
+                    <td><strong>ASML</strong></td>
+                    <td style="color: #0f172a;">ASML Holding N.V.</td>
+                    <td style="font-weight: 500;">$707.09</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+93.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-21</td>
+                    <td><strong>MDLZ</strong></td>
+                    <td style="color: #0f172a;">Mondelez International, Inc.</td>
+                    <td style="font-weight: 500;">$61.49</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-3.4 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-14</td>
+                    <td><strong>MNST</strong></td>
+                    <td style="color: #0f172a;">Monster Beverage Corporation</td>
+                    <td style="font-weight: 500;">$51.21</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+60.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-14</td>
+                    <td><strong>CSX</strong></td>
+                    <td style="color: #0f172a;">CSX Corporation</td>
+                    <td style="font-weight: 500;">$31.75</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+30.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-14</td>
+                    <td><strong>UNH</strong></td>
+                    <td style="color: #0f172a;">UnitedHealth Group Incorporated</td>
+                    <td style="font-weight: 500;">$486.56</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-40.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-07</td>
+                    <td><strong>JNJ</strong></td>
+                    <td style="color: #0f172a;">Johnson & Johnson</td>
+                    <td style="font-weight: 500;">$150.90</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+60.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-07</td>
+                    <td><strong>HON</strong></td>
+                    <td style="color: #0f172a;">Honeywell International Inc.</td>
+                    <td style="font-weight: 500;">$187.37</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+26.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-02-07</td>
+                    <td><strong>TXN</strong></td>
+                    <td style="color: #0f172a;">Texas Instruments Incorporated</td>
+                    <td style="font-weight: 500;">$174.38</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+27.2 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-24</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$206.42</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+12.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-17</td>
+                    <td><strong>AMD</strong></td>
+                    <td style="color: #0f172a;">Advanced Micro Devices, Inc.</td>
+                    <td style="font-weight: 500;">$123.04</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+106.2 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-17</td>
+                    <td><strong>KO</strong></td>
+                    <td style="color: #0f172a;">The Coca-Cola Company</td>
+                    <td style="font-weight: 500;">$59.36</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+20.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-17</td>
+                    <td><strong>VZ</strong></td>
+                    <td style="color: #0f172a;">Verizon Communications Inc.</td>
+                    <td style="font-weight: 500;">$36.13</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+7.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-10</td>
+                    <td><strong>TMO</strong></td>
+                    <td style="color: #0f172a;">Thermo Fisher Scientific Inc.</td>
+                    <td style="font-weight: 500;">$559.18</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+11.6 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-10</td>
+                    <td><strong>UNH</strong></td>
+                    <td style="color: #0f172a;">UnitedHealth Group Incorporated</td>
+                    <td style="font-weight: 500;">$494.47</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-32.0 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-10</td>
+                    <td><strong>ABT</strong></td>
+                    <td style="color: #0f172a;">Abbott Laboratories</td>
+                    <td style="font-weight: 500;">$110.53</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+10.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-10</td>
+                    <td><strong>CSX</strong></td>
+                    <td style="color: #0f172a;">CSX Corporation</td>
+                    <td style="font-weight: 500;">$32.24</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.0 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+11.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-10</td>
+                    <td><strong>AZN</strong></td>
+                    <td style="color: #0f172a;">AstraZeneca PLC</td>
+                    <td style="font-weight: 500;">$129.67</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+43.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-10</td>
+                    <td><strong>MRK</strong></td>
+                    <td style="color: #0f172a;">Merck & Co., Inc.</td>
+                    <td style="font-weight: 500;">$96.34</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+14.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2025-01-10</td>
+                    <td><strong>DHR</strong></td>
+                    <td style="color: #0f172a;">Danaher Corporation</td>
+                    <td style="font-weight: 500;">$239.88</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-0.2 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-20</td>
+                    <td><strong>PDD</strong></td>
+                    <td style="color: #0f172a;">PDD Holdings Inc.</td>
+                    <td style="font-weight: 500;">$98.87</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+14.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>VZ</strong></td>
+                    <td style="color: #0f172a;">Verizon Communications Inc.</td>
+                    <td style="font-weight: 500;">$36.21</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+8.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>NXPI</strong></td>
+                    <td style="color: #0f172a;">NXP Semiconductors N.V.</td>
+                    <td style="font-weight: 500;">$202.40</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+9.2 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>MNST</strong></td>
+                    <td style="color: #0f172a;">Monster Beverage Corporation</td>
+                    <td style="font-weight: 500;">$50.90</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+48.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>UNP</strong></td>
+                    <td style="color: #0f172a;">Union Pacific Corporation</td>
+                    <td style="font-weight: 500;">$215.70</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+7.6 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>CVX</strong></td>
+                    <td style="color: #0f172a;">Chevron Corporation</td>
+                    <td style="font-weight: 500;">$132.38</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+9.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>AMD</strong></td>
+                    <td style="color: #0f172a;">Advanced Micro Devices, Inc.</td>
+                    <td style="font-weight: 500;">$118.88</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+69.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>AMGN</strong></td>
+                    <td style="color: #0f172a;">Amgen Inc.</td>
+                    <td style="font-weight: 500;">$249.33</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+28.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-13</td>
+                    <td><strong>ASML</strong></td>
+                    <td style="color: #0f172a;">ASML Holding N.V.</td>
+                    <td style="font-weight: 500;">$701.08</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+47.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-06</td>
+                    <td><strong>ABT</strong></td>
+                    <td style="color: #0f172a;">Abbott Laboratories</td>
+                    <td style="font-weight: 500;">$110.49</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+10.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-06</td>
+                    <td><strong>MRK</strong></td>
+                    <td style="color: #0f172a;">Merck & Co., Inc.</td>
+                    <td style="font-weight: 500;">$96.09</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+1.4 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-06</td>
+                    <td><strong>CSX</strong></td>
+                    <td style="color: #0f172a;">CSX Corporation</td>
+                    <td style="font-weight: 500;">$32.94</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+12.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-06</td>
+                    <td><strong>UNH</strong></td>
+                    <td style="color: #0f172a;">UnitedHealth Group Incorporated</td>
+                    <td style="font-weight: 500;">$497.57</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.1 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-33.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-12-06</td>
+                    <td><strong>AZN</strong></td>
+                    <td style="color: #0f172a;">AstraZeneca PLC</td>
+                    <td style="font-weight: 500;">$129.73</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+37.8 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-29</td>
+                    <td><strong>PEP</strong></td>
+                    <td style="color: #0f172a;">PepsiCo, Inc.</td>
+                    <td style="font-weight: 500;">$151.67</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-4.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-22</td>
+                    <td><strong>CMCSA</strong></td>
+                    <td style="color: #0f172a;">Comcast Corporation</td>
+                    <td style="font-weight: 500;">$37.55</td>
+                    <td style="font-weight: 700; color: #991b1b;">82.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-35.2 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-15</td>
+                    <td><strong>PDD</strong></td>
+                    <td style="color: #0f172a;">PDD Holdings Inc.</td>
+                    <td style="font-weight: 500;">$104.09</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.8 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+8.5 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-08</td>
+                    <td><strong>ASML</strong></td>
+                    <td style="color: #0f172a;">ASML Holding N.V.</td>
+                    <td style="font-weight: 500;">$684.00</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+48.6 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-08</td>
+                    <td><strong>REGN</strong></td>
+                    <td style="color: #0f172a;">Regeneron Pharmaceuticals, Inc.</td>
+                    <td style="font-weight: 500;">$776.10</td>
+                    <td style="font-weight: 700; color: #991b1b;">85.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-10.8 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-01</td>
+                    <td><strong>AZN</strong></td>
+                    <td style="color: #0f172a;">AstraZeneca PLC</td>
+                    <td style="font-weight: 500;">$125.37</td>
+                    <td style="font-weight: 700; color: #991b1b;">88.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+32.3 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-01</td>
+                    <td><strong>ADBE</strong></td>
+                    <td style="color: #0f172a;">Adobe Inc.</td>
+                    <td style="font-weight: 500;">$500.92</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.2 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-34.7 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-01</td>
+                    <td><strong>MRK</strong></td>
+                    <td style="color: #0f172a;">Merck & Co., Inc.</td>
+                    <td style="font-weight: 500;">$96.02</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.3 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-12.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-01</td>
+                    <td><strong>MDLZ</strong></td>
+                    <td style="color: #0f172a;">Mondelez International, Inc.</td>
+                    <td style="font-weight: 500;">$62.66</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-11.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-11-01</td>
+                    <td><strong>VZ</strong></td>
+                    <td style="color: #0f172a;">Verizon Communications Inc.</td>
+                    <td style="font-weight: 500;">$36.76</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+4.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-10-25</td>
+                    <td><strong>HON</strong></td>
+                    <td style="color: #0f172a;">Honeywell International Inc.</td>
+                    <td style="font-weight: 500;">$186.82</td>
+                    <td style="font-weight: 700; color: #991b1b;">80.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+5.4 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-10-25</td>
+                    <td><strong>TMO</strong></td>
+                    <td style="color: #0f172a;">Thermo Fisher Scientific Inc.</td>
+                    <td style="font-weight: 500;">$543.45</td>
+                    <td style="font-weight: 700; color: #991b1b;">87.6 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+2.2 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-10-25</td>
+                    <td><strong>CSX</strong></td>
+                    <td style="color: #0f172a;">CSX Corporation</td>
+                    <td style="font-weight: 500;">$32.79</td>
+                    <td style="font-weight: 700; color: #991b1b;">81.4 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+7.6 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-10-25</td>
+                    <td><strong>JNJ</strong></td>
+                    <td style="color: #0f172a;">Johnson & Johnson</td>
+                    <td style="font-weight: 500;">$152.19</td>
+                    <td style="font-weight: 700; color: #991b1b;">84.9 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="pos-return">+22.1 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-10-25</td>
+                    <td><strong>DHR</strong></td>
+                    <td style="color: #0f172a;">Danaher Corporation</td>
+                    <td style="font-weight: 500;">$243.32</td>
+                    <td style="font-weight: 700; color: #991b1b;">86.5 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-11.9 %</td>
+                </tr>
+            
+                <tr>
+                    <td style="font-weight: 600; color: #475569;">2024-10-25</td>
+                    <td><strong>PEP</strong></td>
+                    <td style="color: #0f172a;">PepsiCo, Inc.</td>
+                    <td style="font-weight: 500;">$156.95</td>
+                    <td style="font-weight: 700; color: #991b1b;">83.7 / 100</td>
+                    <td><span class="badge">STRONG BUY</span></td>
+                    <td class="neg-return">-7.7 %</td>
+                </tr>
+            </tbody></table></body></html>

@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OGM AI Optimizator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0B0F19; color: #F8FAFC; font-family: 'Inter', sans-serif; }
+        .glass-panel { background: #1E293B; border: 1px solid #334155; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-8 border-b border-slate-700 pb-6">
+            <div>
+                <h1 class="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                    OGM AI QUANT OPTIMIZATOR
+                </h1>
+                <p class="text-slate-400 mt-2">Personalizirani "DNK" nakupni parametri za posamezno delnico (Optuna Machine Learning)</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-slate-500">Čas generiranja: 18.06.2026 06:08</p>
+                <p class="text-sm text-slate-500">Analiziranih: 5 delnic</p>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-xl overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-800 text-slate-300 text-xs uppercase tracking-wider">
+                        <th class="p-4 font-semibold">Ticker</th>
+                        <th class="p-4 font-semibold text-center">Optimalen vstop (RSI)</th>
+                        <th class="p-4 font-semibold text-center">Optimalen vstop (MA200)</th>
+                        <th class="p-4 font-semibold text-center">Ciljni Profit (TP)</th>
+                        <th class="p-4 font-semibold text-center">Stop-Loss (SL)</th>
+                        <th class="p-4 font-semibold text-right">Max Zgodovinski Donos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+    <tr class="hover:bg-slate-700/30 transition-colors border-b border-slate-700/50">
+        <td class="p-4 font-bold text-blue-400">NVDA</td>
+        <td class="p-4 text-center">RSI <strong class="text-white">21</strong></td>
+        <td class="p-4 text-center text-rose-400"><strong>-24.8%</strong> pod MA200</td>
+        <td class="p-4 text-center text-emerald-400">+95.3%</td>
+        <td class="p-4 text-center text-rose-500">-21.2%</td>
+        <td class="p-4 text-right">
+            <div class="inline-flex items-center justify-center bg-emerald-900/30 border border-emerald-700 px-3 py-1 rounded-md">
+                <span class="font-bold text-lg text-emerald-400">+289.0%</span>
+            </div>
+        </td>
+    </tr>
+    
+    <tr class="hover:bg-slate-700/30 transition-colors border-b border-slate-700/50">
+        <td class="p-4 font-bold text-blue-400">AMZN</td>
+        <td class="p-4 text-center">RSI <strong class="text-white">59</strong></td>
+        <td class="p-4 text-center text-rose-400"><strong>5.0%</strong> pod MA200</td>
+        <td class="p-4 text-center text-emerald-400">+42.2%</td>
+        <td class="p-4 text-center text-rose-500">-11.7%</td>
+        <td class="p-4 text-right">
+            <div class="inline-flex items-center justify-center bg-emerald-900/30 border border-emerald-700 px-3 py-1 rounded-md">
+                <span class="font-bold text-lg text-emerald-400">+149.9%</span>
+            </div>
+        </td>
+    </tr>
+    
+    <tr class="hover:bg-slate-700/30 transition-colors border-b border-slate-700/50">
+        <td class="p-4 font-bold text-blue-400">MA</td>
+        <td class="p-4 text-center">RSI <strong class="text-white">46</strong></td>
+        <td class="p-4 text-center text-rose-400"><strong>-17.3%</strong> pod MA200</td>
+        <td class="p-4 text-center text-emerald-400">+98.4%</td>
+        <td class="p-4 text-center text-rose-500">-5.8%</td>
+        <td class="p-4 text-right">
+            <div class="inline-flex items-center justify-center bg-emerald-900/30 border border-emerald-700 px-3 py-1 rounded-md">
+                <span class="font-bold text-lg text-emerald-400">+102.1%</span>
+            </div>
+        </td>
+    </tr>
+    
+    <tr class="hover:bg-slate-700/30 transition-colors border-b border-slate-700/50">
+        <td class="p-4 font-bold text-blue-400">MSFT</td>
+        <td class="p-4 text-center">RSI <strong class="text-white">51</strong></td>
+        <td class="p-4 text-center text-rose-400"><strong>-15.2%</strong> pod MA200</td>
+        <td class="p-4 text-center text-emerald-400">+86.0%</td>
+        <td class="p-4 text-center text-rose-500">-29.9%</td>
+        <td class="p-4 text-right">
+            <div class="inline-flex items-center justify-center bg-emerald-900/30 border border-emerald-700 px-3 py-1 rounded-md">
+                <span class="font-bold text-lg text-emerald-400">+101.5%</span>
+            </div>
+        </td>
+    </tr>
+    
+    <tr class="hover:bg-slate-700/30 transition-colors border-b border-slate-700/50">
+        <td class="p-4 font-bold text-blue-400">META</td>
+        <td class="p-4 text-center">RSI <strong class="text-white">25</strong></td>
+        <td class="p-4 text-center text-rose-400"><strong>-22.7%</strong> pod MA200</td>
+        <td class="p-4 text-center text-emerald-400">+91.3%</td>
+        <td class="p-4 text-center text-rose-500">-27.4%</td>
+        <td class="p-4 text-right">
+            <div class="inline-flex items-center justify-center bg-emerald-900/30 border border-emerald-700 px-3 py-1 rounded-md">
+                <span class="font-bold text-lg text-emerald-400">+63.3%</span>
+            </div>
+        </td>
+    </tr>
+    
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-8 text-sm text-slate-500 text-center">
+            *Rezultati so pridobljeni z Bayesovo optimizacijo hiperparametrov na podlagi zadnjih 5 let dnevnega trgovanja.
+        </div>
+    </div>
+</body>
+</html>

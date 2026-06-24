@@ -1,0 +1,606 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>OGM SELL Analiza Zgodovine</title>
+    <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8fafc; color: #1e293b; padding: 30px; max-width: 1200px; margin: 0 auto; }
+    .header { background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%); color: white; padding: 25px; border-radius: 8px; margin-bottom: 25px; }
+    .header h1 { margin: 0; font-size: 24pt; }
+    
+    .summary-box { display: flex; gap: 20px; margin-bottom: 30px; }
+    .stat-card { background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .stat-card h3 { margin: 0; color: #64748b; font-size: 11pt; text-transform: uppercase; }
+    .stat-card p { margin: 10px 0 0 0; font-size: 22pt; font-weight: bold; color: #dc2626; }
+    
+    table { width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+    th { background-color: #1e293b; color: white; padding: 12px; text-align: left; font-size: 10pt; }
+    td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 9.5pt; }
+    tr:hover { background-color: #f1f5f9; }
+    
+    .high-risk { font-weight: bold; color: #dc2626; }
+    .drop { color: #b91c1c; font-weight: 600; }
+    </style>
+    </head>
+    <body>
+
+    <div class="header">
+        <h1>Anatomija "Blow-Off" Vrhov (NASDAQ Top 50)</h1>
+        <p>Kakšni so bili indikatorji na dan vrhunca, preden je delnica padla za >20 %?</p>
+    </div>
+    
+    <div class="summary-box">
+        <div class="stat-card">
+            <h3>Povprečen RSI ob vrhu</h3>
+            <p>66.4</p>
+        </div>
+        <div class="stat-card">
+            <h3>Povprečen razmak (10w MA vs 200w MA)</h3>
+            <p>+55.5 %</p>
+        </div>
+        <div class="stat-card">
+            <h3>Povprečen Naklon rasti (Zadnjih 10 tednov)</h3>
+            <p>+5.2 %</p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>Obdobje Vrha</th>
+                <th>Sledil je padec</th>
+                <th>RSI na vrhu</th>
+                <th>Razmak (10w MA vs 200w)</th>
+                <th>Razmak (50w MA vs 200w)</th>
+                <th>Strmina rasti (Naklon 10w MA)</th>
+                <th>Valuation Stretch (Proxy P/E)</th>
+            </tr>
+        </thead>
+        <tbody>
+    
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">TSLA</td>
+                <td>Jan 2021</td>
+                <td class="drop">-36.1 %</td>
+                <td class="high-risk">91.6</td>
+                <td class="high-risk">+409.8 %</td>
+                <td>+159.9 %</td>
+                <td>+63.5 % rast/10tednov</td>
+                <td>+324.6 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">AMD</td>
+                <td>Feb 2017</td>
+                <td class="drop">-33.9 %</td>
+                <td class="high-risk">77.4</td>
+                <td class="high-risk">+193.3 %</td>
+                <td>+73.1 %</td>
+                <td>+46.2 % rast/10tednov</td>
+                <td>+225.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">NVDA</td>
+                <td>Oct 2018</td>
+                <td class="drop">-37.4 %</td>
+                <td class="">44.6</td>
+                <td class="high-risk">+137.4 %</td>
+                <td>+114.9 %</td>
+                <td>+5.3 % rast/10tednov</td>
+                <td>+23.2 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">FTNT</td>
+                <td>Mar 2022</td>
+                <td class="drop">-29.3 %</td>
+                <td class="">46.3</td>
+                <td class="high-risk">+106.6 %</td>
+                <td>+92.8 %</td>
+                <td>+-3.9 % rast/10tednov</td>
+                <td>+59.3 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">SNPS</td>
+                <td>Feb 2021</td>
+                <td class="drop">-25.2 %</td>
+                <td class="high-risk">75.9</td>
+                <td class="high-risk">+105.6 %</td>
+                <td>+59.2 %</td>
+                <td>+16.9 % rast/10tednov</td>
+                <td>+73.3 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">CPRT</td>
+                <td>Feb 2020</td>
+                <td class="drop">-26.5 %</td>
+                <td class="high-risk">90.8</td>
+                <td class="">+96.5 %</td>
+                <td>+61.4 %</td>
+                <td>+13.9 % rast/10tednov</td>
+                <td>+55.3 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">LRCX</td>
+                <td>Mar 2018</td>
+                <td class="drop">-23.2 %</td>
+                <td class="">65.6</td>
+                <td class="">+88.6 %</td>
+                <td>+67.4 %</td>
+                <td>+-1.1 % rast/10tednov</td>
+                <td>+69.8 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">AAPL</td>
+                <td>Feb 2020</td>
+                <td class="drop">-25.5 %</td>
+                <td class="high-risk">85.6</td>
+                <td class="">+80.5 %</td>
+                <td>+36.3 %</td>
+                <td>+20.7 % rast/10tednov</td>
+                <td>+57.2 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">AVGO</td>
+                <td>Nov 2017</td>
+                <td class="drop">-26.1 %</td>
+                <td class="">65.7</td>
+                <td class="">+78.7 %</td>
+                <td>+59.5 %</td>
+                <td>+3.7 % rast/10tednov</td>
+                <td>+48.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">MSFT</td>
+                <td>Feb 2020</td>
+                <td class="drop">-28.0 %</td>
+                <td class="high-risk">89.4</td>
+                <td class="">+76.8 %</td>
+                <td>+49.7 %</td>
+                <td>+14.0 % rast/10tednov</td>
+                <td>+57.2 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">ASML</td>
+                <td>Feb 2020</td>
+                <td class="drop">-27.5 %</td>
+                <td class="">74.3</td>
+                <td class="">+73.8 %</td>
+                <td>+38.4 %</td>
+                <td>+12.1 % rast/10tednov</td>
+                <td>+50.2 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">KLAC</td>
+                <td>Jan 2020</td>
+                <td class="drop">-27.2 %</td>
+                <td class="">67.3</td>
+                <td class="">+70.4 %</td>
+                <td>+37.2 %</td>
+                <td>+6.2 % rast/10tednov</td>
+                <td>+49.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">CRM</td>
+                <td>Sep 2018</td>
+                <td class="drop">-24.3 %</td>
+                <td class="high-risk">77.5</td>
+                <td class="">+70.0 %</td>
+                <td>+41.4 %</td>
+                <td>+9.4 % rast/10tednov</td>
+                <td>+52.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">TXN</td>
+                <td>Jan 2018</td>
+                <td class="drop">-23.2 %</td>
+                <td class="high-risk">87.5</td>
+                <td class="">+69.5 %</td>
+                <td>+40.4 %</td>
+                <td>+14.3 % rast/10tednov</td>
+                <td>+58.6 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">VRTX</td>
+                <td>Jul 2020</td>
+                <td class="drop">-27.2 %</td>
+                <td class="">67.8</td>
+                <td class="">+69.5 %</td>
+                <td>+36.8 %</td>
+                <td>+16.0 % rast/10tednov</td>
+                <td>+48.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">META</td>
+                <td>Aug 2021</td>
+                <td class="drop">-40.9 %</td>
+                <td class="">68.7</td>
+                <td class="">+67.3 %</td>
+                <td>+39.3 %</td>
+                <td>+12.1 % rast/10tednov</td>
+                <td>+48.6 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">CTAS</td>
+                <td>Feb 2020</td>
+                <td class="drop">-32.7 %</td>
+                <td class="high-risk">77.6</td>
+                <td class="">+65.1 %</td>
+                <td>+46.2 %</td>
+                <td>+7.3 % rast/10tednov</td>
+                <td>+39.4 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">CDNS</td>
+                <td>Feb 2020</td>
+                <td class="drop">-24.1 %</td>
+                <td class="high-risk">80.5</td>
+                <td class="">+63.7 %</td>
+                <td>+54.1 %</td>
+                <td>+8.7 % rast/10tednov</td>
+                <td>+40.0 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">MELI</td>
+                <td>Nov 2018</td>
+                <td class="drop">-30.3 %</td>
+                <td class="">49.2</td>
+                <td class="">+54.7 %</td>
+                <td>+58.8 %</td>
+                <td>+-4.4 % rast/10tednov</td>
+                <td>+26.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">SBUX</td>
+                <td>Jul 2019</td>
+                <td class="drop">-26.8 %</td>
+                <td class="high-risk">93.0</td>
+                <td class="">+46.6 %</td>
+                <td>+19.0 %</td>
+                <td>+13.8 % rast/10tednov</td>
+                <td>+58.7 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">ISRG</td>
+                <td>Feb 2020</td>
+                <td class="drop">-33.0 %</td>
+                <td class="">66.8</td>
+                <td class="">+45.9 %</td>
+                <td>+33.9 %</td>
+                <td>+5.6 % rast/10tednov</td>
+                <td>+16.0 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">INTU</td>
+                <td>Mar 2022</td>
+                <td class="drop">-27.3 %</td>
+                <td class="">29.1</td>
+                <td class="">+45.1 %</td>
+                <td>+57.2 %</td>
+                <td>+-21.1 % rast/10tednov</td>
+                <td>+15.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">CMCSA</td>
+                <td>Aug 2021</td>
+                <td class="drop">-22.4 %</td>
+                <td class="">69.4</td>
+                <td class="">+41.7 %</td>
+                <td>+27.7 %</td>
+                <td>+4.8 % rast/10tednov</td>
+                <td>+31.6 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">ORLY</td>
+                <td>Nov 2019</td>
+                <td class="drop">-33.4 %</td>
+                <td class="">73.5</td>
+                <td class="">+41.0 %</td>
+                <td>+29.6 %</td>
+                <td>+7.2 % rast/10tednov</td>
+                <td>+34.4 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">ADI</td>
+                <td>Jul 2019</td>
+                <td class="drop">-30.3 %</td>
+                <td class="">57.2</td>
+                <td class="">+41.0 %</td>
+                <td>+26.0 %</td>
+                <td>+1.4 % rast/10tednov</td>
+                <td>+29.5 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">REGN</td>
+                <td>Apr 2022</td>
+                <td class="drop">-24.0 %</td>
+                <td class="high-risk">82.6</td>
+                <td class="">+39.8 %</td>
+                <td>+28.2 %</td>
+                <td>+6.8 % rast/10tednov</td>
+                <td>+24.8 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">GOOGL</td>
+                <td>Feb 2020</td>
+                <td class="drop">-29.3 %</td>
+                <td class="high-risk">76.2</td>
+                <td class="">+37.6 %</td>
+                <td>+19.9 %</td>
+                <td>+11.8 % rast/10tednov</td>
+                <td>+28.5 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">MU</td>
+                <td>Nov 2018</td>
+                <td class="drop">-27.5 %</td>
+                <td class="">32.1</td>
+                <td class="">+37.1 %</td>
+                <td>+67.3 %</td>
+                <td>+-20.5 % rast/10tednov</td>
+                <td>+-0.1 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">PAYX</td>
+                <td>Feb 2020</td>
+                <td class="drop">-35.4 %</td>
+                <td class="high-risk">81.0</td>
+                <td class="">+33.7 %</td>
+                <td>+28.2 %</td>
+                <td>+3.3 % rast/10tednov</td>
+                <td>+20.6 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">PYPL</td>
+                <td>Dec 2021</td>
+                <td class="drop">-34.3 %</td>
+                <td class="">16.3</td>
+                <td class="">+32.7 %</td>
+                <td>+66.3 %</td>
+                <td>+-25.8 % rast/10tednov</td>
+                <td>+-9.2 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">PANW</td>
+                <td>Feb 2020</td>
+                <td class="drop">-27.5 %</td>
+                <td class="">24.3</td>
+                <td class="">+32.3 %</td>
+                <td>+26.4 %</td>
+                <td>+1.3 % rast/10tednov</td>
+                <td>+-11.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">HON</td>
+                <td>Jan 2020</td>
+                <td class="drop">-25.8 %</td>
+                <td class="high-risk">82.6</td>
+                <td class="">+31.7 %</td>
+                <td>+24.0 %</td>
+                <td>+4.9 % rast/10tednov</td>
+                <td>+19.1 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">AMGN</td>
+                <td>Dec 2019</td>
+                <td class="drop">-21.9 %</td>
+                <td class="high-risk">79.9</td>
+                <td class="">+30.5 %</td>
+                <td>+13.6 %</td>
+                <td>+11.5 % rast/10tednov</td>
+                <td>+30.7 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">NXPI</td>
+                <td>Feb 2020</td>
+                <td class="drop">-25.6 %</td>
+                <td class="">70.0</td>
+                <td class="">+28.9 %</td>
+                <td>+6.4 %</td>
+                <td>+14.3 % rast/10tednov</td>
+                <td>+37.3 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">PCAR</td>
+                <td>Dec 2019</td>
+                <td class="drop">-24.0 %</td>
+                <td class="high-risk">80.5</td>
+                <td class="">+28.4 %</td>
+                <td>+13.6 %</td>
+                <td>+17.2 % rast/10tednov</td>
+                <td>+27.0 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">PEP</td>
+                <td>Feb 2020</td>
+                <td class="drop">-22.5 %</td>
+                <td class="high-risk">93.6</td>
+                <td class="">+27.5 %</td>
+                <td>+19.3 %</td>
+                <td>+4.1 % rast/10tednov</td>
+                <td>+24.0 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">MDLZ</td>
+                <td>Feb 2020</td>
+                <td class="drop">-24.4 %</td>
+                <td class="high-risk">80.8</td>
+                <td class="">+26.7 %</td>
+                <td>+20.3 %</td>
+                <td>+5.5 % rast/10tednov</td>
+                <td>+26.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">BKNG</td>
+                <td>Nov 2021</td>
+                <td class="drop">-31.2 %</td>
+                <td class="high-risk">80.8</td>
+                <td class="">+24.8 %</td>
+                <td>+16.2 %</td>
+                <td>+11.9 % rast/10tednov</td>
+                <td>+32.0 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">MAR</td>
+                <td>Mar 2020</td>
+                <td class="drop">-32.7 %</td>
+                <td class="">27.9</td>
+                <td class="">+24.1 %</td>
+                <td>+20.2 %</td>
+                <td>+-1.1 % rast/10tednov</td>
+                <td>+-17.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">AMZN</td>
+                <td>Mar 2022</td>
+                <td class="drop">-26.3 %</td>
+                <td class="">51.0</td>
+                <td class="">+21.9 %</td>
+                <td>+32.8 %</td>
+                <td>+-10.7 % rast/10tednov</td>
+                <td>+6.0 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">CSCO</td>
+                <td>Jan 2020</td>
+                <td class="drop">-22.6 %</td>
+                <td class="">62.1</td>
+                <td class="">+21.6 %</td>
+                <td>+31.8 %</td>
+                <td>+-2.7 % rast/10tednov</td>
+                <td>+5.5 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">QCOM</td>
+                <td>Sep 2018</td>
+                <td class="drop">-25.9 %</td>
+                <td class="high-risk">82.9</td>
+                <td class="">+20.0 %</td>
+                <td>+8.6 %</td>
+                <td>+16.4 % rast/10tednov</td>
+                <td>+27.9 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">MNST</td>
+                <td>Feb 2020</td>
+                <td class="drop">-27.0 %</td>
+                <td class="high-risk">92.3</td>
+                <td class="">+19.1 %</td>
+                <td>+9.9 %</td>
+                <td>+14.2 % rast/10tednov</td>
+                <td>+19.4 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">WDAY</td>
+                <td>Mar 2022</td>
+                <td class="drop">-27.9 %</td>
+                <td class="">40.6</td>
+                <td class="">+17.4 %</td>
+                <td>+25.7 %</td>
+                <td>+-13.8 % rast/10tednov</td>
+                <td>+4.8 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">ADBE</td>
+                <td>Aug 2022</td>
+                <td class="drop">-34.4 %</td>
+                <td class="">64.6</td>
+                <td class="">+-4.5 %</td>
+                <td>+22.2 %</td>
+                <td>+-6.3 % rast/10tednov</td>
+                <td>+-11.2 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">ROST</td>
+                <td>Apr 2022</td>
+                <td class="drop">-25.4 %</td>
+                <td class="">54.7</td>
+                <td class="">+-7.6 %</td>
+                <td>+7.6 %</td>
+                <td>+-8.4 % rast/10tednov</td>
+                <td>+-1.6 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">GILD</td>
+                <td>Jan 2018</td>
+                <td class="drop">-26.4 %</td>
+                <td class="">63.3</td>
+                <td class="">+-9.7 %</td>
+                <td>+-14.6 %</td>
+                <td>+-2.3 % rast/10tednov</td>
+                <td>+18.5 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">NFLX</td>
+                <td>Mar 2022</td>
+                <td class="drop">-46.4 %</td>
+                <td class="">24.2</td>
+                <td class="">+-9.9 %</td>
+                <td>+23.7 %</td>
+                <td>+-33.8 % rast/10tednov</td>
+                <td>+-23.8 % od povprečja</td>
+            </tr>
+            
+            <tr>
+                <td style="font-weight: bold; color: #0f172a;">INTC</td>
+                <td>Aug 2022</td>
+                <td class="drop">-25.8 %</td>
+                <td class="">37.1</td>
+                <td class="">+-24.7 %</td>
+                <td>+-6.4 %</td>
+                <td>+-16.6 % rast/10tednov</td>
+                <td>+-26.3 % od povprečja</td>
+            </tr>
+            
+        </tbody>
+    </table>
+    </body>
+    </html>
+    

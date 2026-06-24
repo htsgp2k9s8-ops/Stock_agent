@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OGM Portfolio vs S&P 500 Backtest</title>
+<style>
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; background-color: #f8fafc; margin: 40px auto; max-width: 1150px; padding: 0 20px; line-height: 1.5; }
+.header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #ffffff; padding: 35px; border-radius: 8px; border-bottom: 4px solid #3b82f6; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.header h1 { margin: 0; font-size: 22pt; font-weight: 700; letter-spacing: -0.5px; }
+.header p { margin: 6px 0 0 0; color: #94a3b8; font-size: 11pt; }
+.section-title { font-size: 14pt; color: #0f172a; border-left: 5px solid #3b82f6; padding-left: 12px; margin-top: 35px; margin-bottom: 15px; font-weight: 700; }
+
+.grid-stats { display: flex; gap: 20px; margin-bottom: 25px; margin-top: 20px; }
+.stat-card { flex: 1; background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: center; }
+.stat-card h3 { margin: 0; font-size: 10pt; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card .value { font-size: 22pt; font-weight: 700; margin: 8px 0 0 0; }
+.value.green { color: #16a34a; }
+.value.blue { color: #2563eb; }
+.value.purple { color: #7c3aed; }
+table { width: 100%; border-collapse: collapse; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+th { background-color: #1e293b; color: #ffffff; text-align: left; padding: 12px 10px; font-size: 9.5pt; font-weight: 600; }
+td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; font-size: 9.5pt; }
+tr:nth-child(even) { background-color: #f8fafc; }
+.return-pos { color: #16a34a; font-weight: 700; }
+.return-neg { color: #dc2626; font-weight: 700; }
+.badge-ogm { background-color: #eff6ff; color: #1e40af; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>OVNICEK GROWTH MATRIX &mdash; STRATEŠKI BACKTEST</h1>
+    <p>Primerjava simuliranega OGM portfelja (20 delnic, max 5 % utež) nasproti indeksu S&P 500 (SPY)</p>
+</div>
+
+<div class="grid-stats">
+    <div class="stat-card">
+        <h3>Skupni donos OGM Portfelja</h3>
+        <div class="value green">+ 291.7 %</div>
+    </div>
+    <div class="stat-card">
+        <h3>Skupni donos S&P 500 (Benchmark)</h3>
+        <div class="value blue">+ 101.0 %</div>
+    </div>
+    <div class="stat-card">
+        <h3>Ustvarjena presežna vrednost (Alfa)</h3>
+        <div class="value purple">+ 190.7 %</div>
+    </div>
+</div>
+
+<div class="section-title">Natančna primerjava posameznih pozicij (Utež: 5 % na delnico)</div>
+<table>
+    <thead>
+        <tr>
+            <th>Ticker</th>
+            <th>Datum OGM signala</th>
+            <th>OGM Score</th>
+            <th>Cena ob nakupu</th>
+            <th>Cena danes</th>
+            <th>Donos delnice (OGM)</th>
+            <th>Donos S&P 500 v enakem obdobju</th>
+            <th>Presežek (Vs. Trg)</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td><strong>AVGO</strong></td>
+            <td>2020-03-06</td>
+            <td><span class="badge-ogm">91.4</span></td>
+            <td>$18.78</td>
+            <td>$446.77</td>
+            <td class="return-pos">+ 2278.7 %</td>
+            <td class="return-pos">+ 233.6 %</td>
+            <td class="return-pos">+2045.0 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>NVDA</strong></td>
+            <td>2022-10-21</td>
+            <td><span class="badge-ogm">99.5</span></td>
+            <td>$13.16</td>
+            <td>$211.14</td>
+            <td class="return-pos">+ 1504.6 %</td>
+            <td class="return-pos">+ 108.6 %</td>
+            <td class="return-pos">+1395.9 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>GOOGL</strong></td>
+            <td>2022-11-04</td>
+            <td><span class="badge-ogm">98.5</span></td>
+            <td>$93.17</td>
+            <td>$380.34</td>
+            <td class="return-pos">+ 308.2 %</td>
+            <td class="return-pos">+ 100.9 %</td>
+            <td class="return-pos">+207.4 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>ABBV</strong></td>
+            <td>2020-03-27</td>
+            <td><span class="badge-ogm">98.2</span></td>
+            <td>$58.41</td>
+            <td>$217.72</td>
+            <td class="return-pos">+ 272.7 %</td>
+            <td class="return-pos">+ 226.8 %</td>
+            <td class="return-pos">+45.9 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>JPM</strong></td>
+            <td>2020-03-20</td>
+            <td><span class="badge-ogm">99.4</span></td>
+            <td>$82.89</td>
+            <td>$299.31</td>
+            <td class="return-pos">+ 261.1 %</td>
+            <td class="return-pos">+ 216.9 %</td>
+            <td class="return-pos">+44.2 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>XOM</strong></td>
+            <td>2021-09-17</td>
+            <td><span class="badge-ogm">99.1</span></td>
+            <td>$48.21</td>
+            <td>$145.26</td>
+            <td class="return-pos">+ 201.3 %</td>
+            <td class="return-pos">+ 82.2 %</td>
+            <td class="return-pos">+119.1 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>META</strong></td>
+            <td>2022-01-28</td>
+            <td><span class="badge-ogm">99.5</span></td>
+            <td>$235.91</td>
+            <td>$632.51</td>
+            <td class="return-pos">+ 168.1 %</td>
+            <td class="return-pos">+ 79.6 %</td>
+            <td class="return-pos">+88.6 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>COST</strong></td>
+            <td>2022-12-30</td>
+            <td><span class="badge-ogm">67.9</span></td>
+            <td>$430.87</td>
+            <td>$956.32</td>
+            <td class="return-pos">+ 122.0 %</td>
+            <td class="return-pos">+ 108.0 %</td>
+            <td class="return-pos">+14.0 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>MSFT</strong></td>
+            <td>2022-10-28</td>
+            <td><span class="badge-ogm">98.4</span></td>
+            <td>$207.73</td>
+            <td>$450.24</td>
+            <td class="return-pos">+ 116.7 %</td>
+            <td class="return-pos">+ 113.7 %</td>
+            <td class="return-pos">+3.1 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>NFLX</strong></td>
+            <td>2023-10-27</td>
+            <td><span class="badge-ogm">95.9</span></td>
+            <td>$42.47</td>
+            <td>$86.02</td>
+            <td class="return-pos">+ 102.5 %</td>
+            <td class="return-pos">+ 81.2 %</td>
+            <td class="return-pos">+21.4 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>AMZN</strong></td>
+            <td>2023-11-03</td>
+            <td><span class="badge-ogm">94.8</span></td>
+            <td>$140.60</td>
+            <td>$270.64</td>
+            <td class="return-pos">+ 92.5 %</td>
+            <td class="return-pos">+ 79.9 %</td>
+            <td class="return-pos">+12.6 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>LLY</strong></td>
+            <td>2025-08-01</td>
+            <td><span class="badge-ogm">70.0</span></td>
+            <td>$636.36</td>
+            <td>$1105.00</td>
+            <td class="return-pos">+ 73.6 %</td>
+            <td class="return-pos">+ 20.7 %</td>
+            <td class="return-pos">+53.0 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>TSLA</strong></td>
+            <td>2025-04-04</td>
+            <td><span class="badge-ogm">99.3</span></td>
+            <td>$252.40</td>
+            <td>$435.79</td>
+            <td class="return-pos">+ 72.7 %</td>
+            <td class="return-pos">+ 45.9 %</td>
+            <td class="return-pos">+26.8 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>V</strong></td>
+            <td>2022-09-09</td>
+            <td><span class="badge-ogm">97.4</span></td>
+            <td>$189.79</td>
+            <td>$326.36</td>
+            <td class="return-pos">+ 72.0 %</td>
+            <td class="return-pos">+ 104.0 %</td>
+            <td class="return-neg">-32.1 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>AAPL</strong></td>
+            <td>2025-04-04</td>
+            <td><span class="badge-ogm">85.2</span></td>
+            <td>$189.42</td>
+            <td>$312.06</td>
+            <td class="return-pos">+ 64.7 %</td>
+            <td class="return-pos">+ 45.9 %</td>
+            <td class="return-pos">+18.9 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>JNJ</strong></td>
+            <td>2023-02-24</td>
+            <td><span class="badge-ogm">101.7</span></td>
+            <td>$138.62</td>
+            <td>$225.33</td>
+            <td class="return-pos">+ 62.5 %</td>
+            <td class="return-pos">+ 98.4 %</td>
+            <td class="return-neg">-35.8 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>MA</strong></td>
+            <td>2022-10-21</td>
+            <td><span class="badge-ogm">97.9</span></td>
+            <td>$312.80</td>
+            <td>$493.98</td>
+            <td class="return-pos">+ 57.9 %</td>
+            <td class="return-pos">+ 108.6 %</td>
+            <td class="return-neg">-50.7 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>PG</strong></td>
+            <td>2022-10-14</td>
+            <td><span class="badge-ogm">101.4</span></td>
+            <td>$115.21</td>
+            <td>$143.56</td>
+            <td class="return-pos">+ 24.6 %</td>
+            <td class="return-pos">+ 116.9 %</td>
+            <td class="return-neg">-92.3 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>HD</strong></td>
+            <td>2025-11-14</td>
+            <td><span class="badge-ogm">101.8</span></td>
+            <td>$328.05</td>
+            <td>$317.14</td>
+            <td class="return-pos">+ -3.3 %</td>
+            <td class="return-pos">+ 16.6 %</td>
+            <td class="return-neg">-19.9 %</td>
+        </tr>
+    
+        <tr>
+            <td><strong>UNH</strong></td>
+            <td>2024-12-13</td>
+            <td><span class="badge-ogm">101.1</span></td>
+            <td>$473.81</td>
+            <td>$380.31</td>
+            <td class="return-pos">+ -19.7 %</td>
+            <td class="return-pos">+ 31.4 %</td>
+            <td class="return-neg">-51.1 %</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+<div class="section-title">Ugotovitve in obvladovanje tveganj (Risk Management)</div>
+<p>Z omejitvijo posamezne pozicije na <strong>maksimalno 5 % celotne vrednosti portfelja</strong> smo dosegli ključno institucionalno zaščito. Tudi če bi katero izmed podjetij doživelo trajen strukturni upad, preostalih 19 pozicij zaradi izjemne asimetrije OGM modela (vstopi ob tehničnih dnih in močnih EPS motorjih) z lahkoto nadoknadi izgubo in močno prekaša splošni tržni indeks S&P 500.</p>
+
+</body>
+</html>
