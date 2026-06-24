@@ -11,7 +11,7 @@ print("=========================================================")
 print("AI OGM LIVE DASHBOARD - MASTER VALUE-GROWTH SKENER (MOAT V3)")
 print("=========================================================")
 
-CSV_DATOTEKA = "moje_globalne_delnice.csv"
+CSV_DATOTEKA = "moje_globalne_delnice_50.csv"
 
 # ==============================================================================
 # STRATEŠKI INSTITUCIONALNI FILTRI
@@ -302,15 +302,16 @@ def generiraj_html_porocilo(podatki):
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.2.1/dist/chartjs-plugin-zoom.min.js"></script>
 <style>
 /* ── MAIN PAGE ── */
-body {{ font-family: 'Segoe UI', Arial, sans-serif; color: #cbd5e1; background-color: #060d1a; margin: 0; padding: 28px 24px 60px; min-height: 100vh; }}
+html {{ overflow-x: hidden; }}
+body {{ font-family: 'Segoe UI', Arial, sans-serif; color: #cbd5e1; background-color: #060d1a; margin: 0; padding: 22px 12px 50px; min-height: 100vh; }}
 .page-wrap {{ max-width: 1480px; margin: 0 auto; }}
 .header {{ background: linear-gradient(135deg, #0c1628 0%, #112244 55%, #1d4ed8 100%); color: #fff; padding: 26px 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,.07); box-shadow: 0 8px 40px rgba(0,0,0,.55); }}
 .header h1 {{ margin: 0; font-size: 22pt; font-weight: 800; letter-spacing: .3px; }}
 .header p {{ margin: 5px 0 0 0; color: #bfdbfe; font-size: 10.5pt; }}
 .table-wrap {{ margin-top: 18px; border-radius: 12px; overflow-x: auto; border: 1px solid rgba(255,255,255,.06); box-shadow: 0 4px 28px rgba(0,0,0,.45); }}
 table {{ width: 100%; border-collapse: collapse; background: transparent; table-layout: auto; }}
-th {{ background: #09152a; color: #475569; text-align: left; padding: 13px 12px; font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; border-bottom: 1px solid rgba(255,255,255,.06); white-space: nowrap; }}
-td {{ padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,.035); font-size: 9.5pt; background: #0b1526; color: #94a3b8; vertical-align: middle; }}
+th {{ background: #09152a; color: #475569; text-align: left; padding: 10px 8px; font-size: 7.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; border-bottom: 1px solid rgba(255,255,255,.06); white-space: nowrap; }}
+td {{ padding: 11px 8px; border-bottom: 1px solid rgba(255,255,255,.035); font-size: 9.5pt; background: #0b1526; color: #94a3b8; vertical-align: middle; }}
 tr:nth-child(even) td {{ background: #0e1d32; }}
 tr:hover td {{ background: #152338 !important; transition: background .08s; }}
 .badge {{ padding: 4px 11px; border-radius: 20px; font-weight: 700; font-size: 8pt; display: inline-block; white-space: nowrap; }}
@@ -330,7 +331,7 @@ tr:hover td {{ background: #152338 !important; transition: background .08s; }}
 .ticker-btn:hover {{ background: #1e3a8a; color: #f1f5f9; border-color: #3b82f6; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(59,130,246,.3); }}
 .ogm-cell {{ display: flex; align-items: center; gap: 8px; white-space: nowrap; }}
 .ogm-num {{ color: #f1f5f9; font-weight: 800; font-size: 11pt; min-width: 36px; }}
-.ogm-bar-bg {{ width: 54px; height: 5px; background: #1e293b; border-radius: 3px; overflow: hidden; }}
+.ogm-bar-bg {{ width: 44px; height: 5px; background: #1e293b; border-radius: 3px; overflow: hidden; }}
 .ogm-bar-fill {{ height: 100%; border-radius: 3px; background: linear-gradient(90deg, #2563eb, #38bdf8); }}
 .ogm-max {{ color: #334155; font-size: 8pt; }}
 .rank-num {{ color: #334155; font-weight: 700; font-size: 10.5pt; }}
@@ -480,13 +481,13 @@ tr:hover td {{ background: #152338 !important; transition: background .08s; }}
             <th>Sektor</th>
             <th>Market Cap</th>
             <th>Rast Prihodkov</th>
-            <th>Razdalja do tarčnega MA</th>
+            <th>&#x394; MA</th>
             <th>Cena</th>
-            <th>Ciljna Cena (12m)</th>
-            <th>Trenutni OGM</th>
-            <th>Uradni status</th>
-            <th>1M Donos</th>
-            <th>YTD Donos</th>
+            <th>Ciljna Cena</th>
+            <th>OGM</th>
+            <th>Status</th>
+            <th>1M</th>
+            <th>YTD</th>
         </tr>
     </thead>
     <tbody>
