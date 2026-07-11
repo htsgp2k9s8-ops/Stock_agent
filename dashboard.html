@@ -2265,7 +2265,20 @@ function renderTrainStatus(d){
       <div class="tw"><table style="width:100%">
         <thead><tr><th>Metrika</th><th>Utež</th><th>Scale</th><th>Avg pri dnu</th></tr></thead>
         <tbody>${wRows}</tbody>
-      </table>
+      </table></div>
+    `;
+  }
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── init ─────────────────────────────────────────────────────────────────── */
+checkApi();setInterval(checkApi,30000);
+loadScanner();
+wlRender();
+_mlCheckAuth();
+</script>
+
   <!-- FEED -->
   <div class="sec active" id="sec-feed">
     <div class="feed-wrap">
@@ -2306,18 +2319,6 @@ function renderTrainStatus(d){
   <div class="sec" id="sec-myportfolio"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128100;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">My Portfolio</h2><p>Prihaja kmalu.</p></div></div>
   <!-- COMMUNITY -->
   <div class="sec" id="sec-community"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128172;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">Community</h2><p>Forum prihaja kmalu.</p></div></div>
-</div>
-    `;
-  }
-}
 
-function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-/* ── init ─────────────────────────────────────────────────────────────────── */
-checkApi();setInterval(checkApi,30000);
-loadScanner();
-wlRender();
-_mlCheckAuth();
-</script>
 </body>
 </html>
