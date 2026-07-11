@@ -281,7 +281,14 @@ tbody td{padding:7px 11px;vertical-align:middle}
     <div class="sb-logo-text"><h1>OGM Platform</h1><div class="tag">Stock Analysis Dashboard</div></div>
   </div>
   <div class="tn-links">
-    <div class="tn-item" onclick="navTo('feed')"><span class="tn-link" id="tnl-feed">Feed</span></div>
+    <div class="tn-item tn-has-dd">
+      <span class="tn-link" id="tnl-feed">Feed &#9662;</span>
+      <div class="tn-dd">
+        <div class="tn-dd-item" id="tndd-weekly" onclick="navToFeed('weekly')">Weekly Overview</div>
+        <div class="tn-dd-item" id="tndd-economic" onclick="navToFeed('economic')">Economic Highlights</div>
+        <div class="tn-dd-item" id="tndd-technical" onclick="navToFeed('technical')">Technical Outlooks</div>
+      </div>
+    </div>
     <div class="tn-item tn-has-dd">
       <span class="tn-link" id="tnl-analysis">OGM Analysis &#9662;</span>
       <div class="tn-dd">
@@ -703,11 +710,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
         <h2 class="feed-title">Market Feed</h2>
         <button class="btn-sm" onclick="navTo('admin')" style="font-size:11px;padding:5px 12px;opacity:.5" title="Admin">&#9881;</button>
       </div>
-      <div class="feed-tabs">
-        <button class="feed-tab active" data-sec="weekly" onclick="switchFeedTab(this)">Weekly Overview</button>
-        <button class="feed-tab" data-sec="economic" onclick="switchFeedTab(this)">Economic Highlights</button>
-        <button class="feed-tab" data-sec="technical" onclick="switchFeedTab(this)">Technical Outlooks</button>
-      </div>
+      <div id="feed-section-label" style="font-size:11px;font-weight:700;color:var(--a2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px">Weekly Overview</div>
       <div id="feed-posts"><div class="feed-empty">&#128240; Ni objav.</div></div>
     </div>
   </div>
@@ -917,13 +920,18 @@ async function loadFeed(){
     renderFeedPosts(_allFeedPosts.filter(p=>(p.section||'weekly')===_feedSection));
   }catch(e){el.innerHTML='<div class="feed-empty">Napaka pri nalaganju.</div>';}
 }
-function switchFeedTab(btn){
-  document.querySelectorAll('.feed-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  _feedSection=btn.dataset.sec;
-  const el=document.getElementById('feed-posts');
-  if(!el)return;
-  renderFeedPosts(_allFeedPosts.filter(p=>(p.section||'weekly')===_feedSection));
+const FEED_LABELS={weekly:'Weekly Overview',economic:'Economic Highlights',technical:'Technical Outlooks'};
+function navToFeed(section){
+  _feedSection=section||'weekly';
+  // Update dropdown active state
+  document.querySelectorAll('[id^="tndd-"]').forEach(el=>el.classList.remove('active'));
+  const dd=document.getElementById('tndd-'+_feedSection);
+  if(dd)dd.classList.add('active');
+  // Update label inside feed
+  const lbl=document.getElementById('feed-section-label');
+  if(lbl)lbl.textContent=FEED_LABELS[_feedSection]||'';
+  history.replaceState(null,'','#feed-'+_feedSection);
+  navTo('feed');
 }
 function renderFeedPosts(posts){
   const el=document.getElementById('feed-posts');
@@ -1009,7 +1017,12 @@ async function adminDelete(id){
 // Restore section from URL hash on load
 (function(){
   const h=(location.hash||'').replace('#','');
+  const feedSubs=['feed-weekly','feed-economic','feed-technical'];
+  if(feedSubs.includes(h)){
+    navToFeed(h.replace('feed-',''));return;
+  }
   const valid=Object.keys(NAV_GROUP).concat(['feed','community']);
+  if(h==='feed'){navToFeed('weekly');return;}
   navTo(valid.includes(h)?h:'feed');
 })();
 function openStock(ticker){
