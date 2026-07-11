@@ -414,31 +414,37 @@ tbody td{padding:7px 11px;vertical-align:middle}
   <!-- ═══ PORTFOLIO ══════════════════════════════════════════════════════════ -->
   <div class="sec" id="sec-portfolio">
     <div class="stat-grid" id="port-stats"></div>
-    <!-- buy / sell forms -->
-    <div class="col2" style="margin-bottom:16px">
-      <div class="card">
-        <div style="font-weight:700;font-size:12.5px;margin-bottom:10px">&#x2795; Buy</div>
-        <div class="form-row">
-          <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="buy-tkr" placeholder="AAPL" style="width:85px;text-transform:uppercase"></div>
-          <div class="fcol"><span class="flbl">Amount ($)</span><input class="inp" id="buy-amt" type="number" placeholder="5000" style="width:110px"></div>
-          <div class="fcol"><span class="flbl">Date (opt.)</span><input class="inp" id="buy-dt" type="date" style="width:140px"></div>
-          <div class="fcol" style="justify-content:flex-end"><button class="btn btn-g" onclick="doBuy()">Buy</button></div>
+    <!-- buy / sell + performance table -->
+    <div class="col2" style="margin-bottom:16px;align-items:start">
+      <div>
+        <div class="card" style="margin-bottom:12px">
+          <div style="font-weight:700;font-size:12.5px;margin-bottom:10px">&#x2795; Buy</div>
+          <div class="form-row">
+            <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="buy-tkr" placeholder="AAPL" style="width:85px;text-transform:uppercase"></div>
+            <div class="fcol"><span class="flbl">Amount ($)</span><input class="inp" id="buy-amt" type="number" placeholder="5000" style="width:110px"></div>
+            <div class="fcol"><span class="flbl">Date (opt.)</span><input class="inp" id="buy-dt" type="date" style="width:140px"></div>
+            <div class="fcol" style="justify-content:flex-end"><button class="btn btn-g" onclick="doBuy()">Buy</button></div>
+          </div>
+          <div id="buy-msg" style="font-size:11px;margin-top:6px;min-height:14px"></div>
         </div>
-        <div id="buy-msg" style="font-size:11px;margin-top:6px;min-height:14px"></div>
+        <div class="card">
+          <div style="font-weight:700;font-size:12.5px;margin-bottom:10px">&#x2796; Sell</div>
+          <div class="form-row">
+            <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="sell-tkr" placeholder="AAPL" style="width:85px;text-transform:uppercase"></div>
+            <div class="fcol"><span class="flbl">Shares (empty=all)</span><input class="inp" id="sell-sh" type="number" placeholder="all" style="width:110px"></div>
+            <div class="fcol" style="justify-content:flex-end"><button class="btn btn-r" onclick="doSell()">Sell</button></div>
+          </div>
+          <div id="sell-form-msg" style="font-size:11px;margin-top:6px;min-height:14px"></div>
+        </div>
       </div>
-      <div class="card">
-        <div style="font-weight:700;font-size:12.5px;margin-bottom:10px">&#x2796; Sell</div>
-        <div class="form-row">
-          <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="sell-tkr" placeholder="AAPL" style="width:85px;text-transform:uppercase"></div>
-          <div class="fcol"><span class="flbl">Shares (empty=all)</span><input class="inp" id="sell-sh" type="number" placeholder="all" style="width:110px"></div>
-          <div class="fcol" style="justify-content:flex-end"><button class="btn btn-r" onclick="doSell()">Sell</button></div>
-        </div>
-        <div id="sell-form-msg" style="font-size:11px;margin-top:6px;min-height:14px"></div>
+      <div class="card" style="overflow-x:auto;min-width:0">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">&#x1F4C8; Performance</div>
+        <div id="port-perf-table"><div style="color:var(--muted);font-size:12px">Nalagam graf...</div></div>
       </div>
     </div>
     <!-- charts row -->
     <div class="col2">
-      <div class="chart-wrap"><div class="chart-title"><span>KRIVULJA RASTI &mdash; OGM VS S&amp;P 500 VS NASDAQ 100</span><button class="btn-reset-zoom" id="rzoom-port" onclick="resetZoom(_portGrowthChart,'rzoom-port')">&#x21BA; Reset</button></div><div class="ch280"><canvas id="port-growth-chart" ondblclick="resetZoom(_portGrowthChart,'rzoom-port')"></canvas></div><div id="port-perf-table"></div></div>
+      <div class="chart-wrap"><div class="chart-title"><span>KRIVULJA RASTI &mdash; OGM VS S&amp;P 500 VS NASDAQ 100</span><button class="btn-reset-zoom" id="rzoom-port" onclick="resetZoom(_portGrowthChart,'rzoom-port')">&#x21BA; Reset</button></div><div class="ch280"><canvas id="port-growth-chart" ondblclick="resetZoom(_portGrowthChart,'rzoom-port')"></canvas></div></div>
       <div class="chart-wrap"><div class="chart-title">ALOKACIJA PORTFELJA</div><div class="ch280"><canvas id="port-donut-chart"></canvas></div></div>
     </div>
     <!-- positions table -->
@@ -1408,20 +1414,20 @@ function renderPerfTable(d){
     {label:'YTD',idx:ytdIdx()},
     {label:'Vse skupaj',idx:0},
   ];
-  el.innerHTML=`<div class="tw" style="margin-top:14px">
-    <table style="width:100%">
-      <thead><tr>
-        <th style="text-align:left">Obdobje</th>
-        <th style="color:#60a5fa;text-align:right">OGM Portfolio</th>
-        <th style="color:#f87171;text-align:right">S&amp;P 500</th>
-        <th style="color:#a78bfa;text-align:right">NASDAQ 100</th>
-      </tr></thead>
-      <tbody>${periods.map(p=>`<tr>
-        <td style="color:var(--muted)">${p.label}</td>
-        <td style="text-align:right">${fmt(pct(port,p.idx))}</td>
-        <td style="text-align:right">${fmt(pct(spy,p.idx))}</td>
-        <td style="text-align:right">${fmt(pct(qqq,p.idx))}</td>
-      </tr>`).join('')}</tbody>
+  const shortLabels=['1T','1M','3M','6M','1L','YTD','All'];
+  const hdr=shortLabels.map(l=>`<th style="text-align:right;font-size:11px">${l}</th>`).join('');
+  function row(label,color,arr){
+    return`<tr><td style="color:${color};white-space:nowrap;padding-right:10px;font-size:12px">${label}</td>`
+      +periods.map(p=>`<td style="text-align:right">${fmt(pct(arr,p.idx))}</td>`).join('')+'</tr>';
+  }
+  el.innerHTML=`<div class="tw">
+    <table style="width:100%;font-size:12px">
+      <thead><tr><th></th>${hdr}</tr></thead>
+      <tbody>
+        ${row('OGM Portfolio','#60a5fa',port)}
+        ${row('S&amp;P 500','#f87171',spy)}
+        ${row('NASDAQ 100','#a78bfa',qqq)}
+      </tbody>
     </table>
   </div>`;
 }
