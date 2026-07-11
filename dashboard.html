@@ -809,14 +809,18 @@ function nav(el){navTo(el.dataset.sec);}
 
 // ── Feed & Admin ──────────────────────────────────────────────────────────────
 async function loadFeed(){
+  const el=document.getElementById('feed-posts');
+  if(!el)return;
+  el.innerHTML='<div class="feed-empty">Nalagam...</div>';
   try{
     const r=await fetch(API+'/api/posts');
     const data=await r.json();
     renderFeedPosts(data.posts||[]);
-  }catch(e){document.getElementById('feed-posts').innerHTML='<div class="feed-empty">Napaka pri nalaganju.</div>';}
+  }catch(e){el.innerHTML='<div class="feed-empty">Napaka pri nalaganju.</div>';}
 }
 function renderFeedPosts(posts){
   const el=document.getElementById('feed-posts');
+  if(!el)return;
   if(!posts.length){el.innerHTML='<div class="feed-empty">&#128240; Ni objav še.</div>';return;}
   el.innerHTML=posts.map(p=>`
     <div class="post-card">
