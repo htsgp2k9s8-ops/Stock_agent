@@ -414,8 +414,12 @@ tbody td{padding:7px 11px;vertical-align:middle}
   <!-- ═══ PORTFOLIO ══════════════════════════════════════════════════════════ -->
   <div class="sec" id="sec-portfolio">
     <div class="stat-grid" id="port-stats"></div>
-    <!-- buy / sell + performance table -->
+    <!-- performance table + buy / sell -->
     <div class="col2" style="margin-bottom:16px;align-items:start">
+      <div class="card" style="overflow-x:auto;min-width:0">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">&#x1F4C8; Performance</div>
+        <div id="port-perf-table"><div style="color:var(--muted);font-size:12px">Nalagam graf...</div></div>
+      </div>
       <div>
         <div class="card" style="margin-bottom:12px">
           <div style="font-weight:700;font-size:12.5px;margin-bottom:10px">&#x2795; Buy</div>
@@ -436,10 +440,6 @@ tbody td{padding:7px 11px;vertical-align:middle}
           </div>
           <div id="sell-form-msg" style="font-size:11px;margin-top:6px;min-height:14px"></div>
         </div>
-      </div>
-      <div class="card" style="overflow-x:auto;min-width:0">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">&#x1F4C8; Performance</div>
-        <div id="port-perf-table"><div style="color:var(--muted);font-size:12px">Nalagam graf...</div></div>
       </div>
     </div>
     <!-- charts row -->
