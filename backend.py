@@ -266,7 +266,7 @@ _cache: dict = {
 }
 
 # ─── Daily auto-scan scheduler ────────────────────────────────────────────────
-SCAN_HOUR   = 22
+SCAN_HOUR   = 20   # 20:30 UTC = 22:30 CEST (Slovenia summer time)
 SCAN_MINUTE = 30
 
 _scheduler: dict = {
