@@ -35,6 +35,25 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .cal-tab-btn.active{color:var(--a2);border-bottom-color:var(--a2)}
 .cal-tab-pane{display:none}
 .cal-tab-pane.active{display:block}
+.feed-wrap{max-width:820px;margin:0 auto;padding:32px 24px}
+.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.feed-title{font-size:20px;font-weight:800;color:var(--text)}
+.feed-empty{text-align:center;padding:60px;color:var(--muted);font-size:14px}
+.post-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:18px}
+.post-card-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.post-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 9px;border-radius:20px;background:rgba(96,165,250,.12);color:var(--a2);border:1px solid rgba(96,165,250,.2)}
+.post-meta{font-size:11px;color:var(--muted)}
+.post-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.4}
+.post-body{font-size:13px;color:var(--muted);line-height:1.7}
+.post-del{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;opacity:.5}
+.post-del:hover{opacity:1;color:#f87171}
+.admin-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.admin-field{margin-bottom:14px}
+.admin-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.admin-field input,.admin-field select,.admin-field textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:13px;font-family:inherit;box-sizing:border-box}
+.admin-field textarea{resize:vertical}
+.btn-sm{padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:7px;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600;transition:background .15s,color .15s}
+.btn-sm:hover{background:rgba(255,255,255,.06);color:var(--text)}
 
 /* sidebar */
 .sb{width:210px;min-height:100vh;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
@@ -767,8 +786,8 @@ function setMsg(id,html,col){const el=document.getElementById(id);if(!el)return;
 
 /* ── navigation ──────────────────────────────────────────────────────────── */
 const NAV_T={scanner:'OGM Scanner',stock:'Single Stock',portfolio:'Portfolio',watchlist:'Watchlist',sell:'Sell Radar',sectors:'Sectors',calendar:'Calendar'};
-const NAV_L={scanner:loadScanner,stock:()=>{},feed:()=>{},myportfolio:()=>{},community:()=>{},portfolio:loadPortfolio,watchlist:loadWatchlist,sell:loadSell,sectors:loadSectors,calendar:loadCalendar};
-const NAV_GROUP={feed:"feed",scanner:"analysis",bottom:"analysis",sell:"analysis",stock:"analysis",portfolio:"portfolio",myportfolio:"portfolio",watchlist:"portfolio",sectors:"overview","cal-earnings":"overview","cal-economic":"overview","cal-dividends":"overview",community:"community"};
+const NAV_L={scanner:loadScanner,stock:()=>{},feed:loadFeed,admin:()=>loadAdminPosts(''),myportfolio:()=>{},community:()=>{},portfolio:loadPortfolio,watchlist:loadWatchlist,sell:loadSell,sectors:loadSectors,calendar:loadCalendar};
+const NAV_GROUP={feed:"feed",admin:"feed",scanner:"analysis",bottom:"analysis",sell:"analysis",stock:"analysis",portfolio:"portfolio",myportfolio:"portfolio",watchlist:"portfolio",sectors:"overview","cal-earnings":"overview","cal-economic":"overview","cal-dividends":"overview",community:"community"};
 function navTo(id){
   const calSubs=["cal-earnings","cal-economic","cal-dividends"];
   const secId=calSubs.includes(id)?"calendar":id;
@@ -787,6 +806,69 @@ function navTo(id){
   if(NAV_L[id])NAV_L[id]();
 }
 function nav(el){navTo(el.dataset.sec);}
+
+// ── Feed & Admin ──────────────────────────────────────────────────────────────
+async function loadFeed(){
+  try{
+    const r=await fetch(API+'/api/posts');
+    const data=await r.json();
+    renderFeedPosts(data.posts||[]);
+  }catch(e){document.getElementById('feed-posts').innerHTML='<div class="feed-empty">Napaka pri nalaganju.</div>';}
+}
+function renderFeedPosts(posts){
+  const el=document.getElementById('feed-posts');
+  if(!posts.length){el.innerHTML='<div class="feed-empty">&#128240; Ni objav še.</div>';return;}
+  el.innerHTML=posts.map(p=>`
+    <div class="post-card">
+      <div class="post-card-top">
+        <span class="post-cat">${p.category}</span>
+        <span class="post-meta">${p.author} &middot; ${p.date}</span>
+      </div>
+      <div class="post-title">${p.title}</div>
+      <div class="post-body">${p.content}</div>
+    </div>`).join('');
+}
+async function adminPost(){
+  const pw=document.getElementById('adm-pw').value;
+  const title=document.getElementById('adm-title').value.trim();
+  const content=document.getElementById('adm-content').value.trim();
+  const category=document.getElementById('adm-cat').value;
+  const author=document.getElementById('adm-author').value.trim()||'OGM Team';
+  const msg=document.getElementById('adm-msg');
+  if(!title||!content){msg.style.color='#f87171';msg.textContent='Vnesi naslov in vsebino.';return;}
+  msg.style.color='var(--muted)';msg.textContent='Objavljam...';
+  try{
+    const r=await fetch(API+'/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:pw,title,content,category,author})});
+    if(r.status===401){msg.style.color='#f87171';msg.textContent='Napačno geslo.';return;}
+    if(!r.ok)throw new Error();
+    msg.style.color='#4ade80';msg.textContent='Objavljeno!';
+    document.getElementById('adm-title').value='';
+    document.getElementById('adm-content').value='';
+    loadAdminPosts(pw);
+  }catch(e){msg.style.color='#f87171';msg.textContent='Napaka pri objavi.';}
+}
+async function loadAdminPosts(pw){
+  const r=await fetch(API+'/api/posts');
+  const data=await r.json();
+  const posts=data.posts||[];
+  const el=document.getElementById('adm-posts-list');
+  if(!posts.length){el.innerHTML='<div style="color:var(--muted);font-size:13px">Ni objav.</div>';return;}
+  el.innerHTML=posts.map(p=>`
+    <div class="post-card" style="position:relative">
+      <button class="post-del" onclick="adminDelete('${p.id}')">&#10005;</button>
+      <div class="post-card-top"><span class="post-cat">${p.category}</span><span class="post-meta">${p.date}</span></div>
+      <div class="post-title">${p.title}</div>
+    </div>`).join('');
+}
+async function adminDelete(id){
+  const pw=document.getElementById('adm-pw').value;
+  if(!confirm('Izbriši objavo?'))return;
+  const r=await fetch(API+'/api/posts/'+id,{method:'DELETE',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({password:pw})});
+  if(r.status===401){alert('Napačno geslo.');return;}
+  loadAdminPosts(pw);
+}
 // Restore section from URL hash on load
 (function(){
   const h=(location.hash||'').replace('#','');
@@ -2181,7 +2263,41 @@ function renderTrainStatus(d){
         <tbody>${wRows}</tbody>
       </table>
   <!-- FEED -->
-  <div class="sec active" id="sec-feed"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128240;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">Market Feed</h2><p>Administrator bo tukaj objavljal novice in analize s trga.</p></div></div>
+  <div class="sec active" id="sec-feed">
+    <div class="feed-wrap">
+      <div class="feed-header">
+        <h2 class="feed-title">Market Feed</h2>
+        <button class="btn-sm" onclick="navTo('admin')" style="font-size:11px;padding:5px 12px;opacity:.5" title="Admin">&#9881;</button>
+      </div>
+      <div id="feed-posts"><div class="feed-empty">&#128240; Ni objav.</div></div>
+    </div>
+  </div>
+  <!-- ADMIN -->
+  <div class="sec" id="sec-admin">
+    <div class="feed-wrap">
+      <div class="feed-header">
+        <h2 class="feed-title">&#9881; Admin Panel</h2>
+        <button class="btn-sm" onclick="navTo('feed')" style="font-size:11px;padding:5px 12px">&#8592; Feed</button>
+      </div>
+      <div class="admin-box">
+        <div class="admin-field"><label>Geslo</label><input type="password" id="adm-pw" placeholder="Admin geslo"></div>
+        <div class="admin-field"><label>Naslov</label><input type="text" id="adm-title" placeholder="Naslov članka"></div>
+        <div class="admin-field"><label>Kategorija</label>
+          <select id="adm-cat">
+            <option>Analysis</option><option>News</option><option>Strategy</option><option>Education</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>Avtor</label><input type="text" id="adm-author" value="OGM Team"></div>
+        <div class="admin-field"><label>Vsebina</label><textarea id="adm-content" rows="10" placeholder="Vsebina članka (podpira HTML)..."></textarea></div>
+        <button class="btn" onclick="adminPost()" style="margin-top:8px">&#43; Objavi</button>
+        <div id="adm-msg" style="margin-top:10px;font-size:12px"></div>
+      </div>
+      <div style="margin-top:32px">
+        <h3 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px">OBJAVLJENI ČLANKI</h3>
+        <div id="adm-posts-list"></div>
+      </div>
+    </div>
+  </div>
   <!-- MY PORTFOLIO -->
   <div class="sec" id="sec-myportfolio"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128100;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">My Portfolio</h2><p>Prihaja kmalu.</p></div></div>
   <!-- COMMUNITY -->

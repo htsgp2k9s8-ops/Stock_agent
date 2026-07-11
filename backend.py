@@ -52,6 +52,31 @@ MIN_REV_GROWTH    = 0.10
 SUPER_GROWTH      = 0.50
 CACHE_FILE        = "ogm_cache.json"
 
+POSTS_FILE        = "ogm_posts.json"
+ADMIN_PASSWORD    = os.environ.get("OGM_ADMIN_PASSWORD", "ogm2026")
+
+# ─── Posts storage ────────────────────────────────────────────────────────────
+def _load_posts() -> list:
+    if Path(POSTS_FILE).exists():
+        try:
+            return json.loads(Path(POSTS_FILE).read_text(encoding="utf-8")).get("posts", [])
+        except Exception:
+            pass
+    return []
+
+def _save_posts(posts: list) -> None:
+    Path(POSTS_FILE).write_text(json.dumps({"posts": posts}, ensure_ascii=False, indent=2), encoding="utf-8")
+
+class PostIn(BaseModel):
+    password: str
+    title: str
+    content: str
+    category: str = "Analysis"
+    author: str = "OGM Team"
+
+class DeleteIn(BaseModel):
+    password: str
+
 SECTOR_ETF_MAP = {
     "Technology":             "XLK",
     "Financial Services":     "XLF",
@@ -2387,3 +2412,36 @@ async def api_bottom_scan_start(background_tasks: BackgroundTasks, min_score: fl
 @app.get("/api/bottom/scan")
 async def api_bottom_scan_status():
     return _bottom_cache
+
+
+# ─── Posts / Feed endpoints ───────────────────────────────────────────────────
+@app.get("/api/posts")
+async def api_get_posts():
+    return {"posts": _load_posts()}
+
+@app.post("/api/posts")
+async def api_create_post(body: PostIn):
+    if body.password != ADMIN_PASSWORD:
+        raise HTTPException(401, "Napačno geslo")
+    import uuid
+    posts = _load_posts()
+    post = {
+        "id":       str(uuid.uuid4()),
+        "title":    body.title,
+        "content":  body.content,
+        "category": body.category,
+        "author":   body.author,
+        "date":     datetime.now().strftime("%Y-%m-%d"),
+    }
+    posts.insert(0, post)
+    _save_posts(posts)
+    return post
+
+@app.delete("/api/posts/{post_id}")
+async def api_delete_post(post_id: str, body: DeleteIn):
+    if body.password != ADMIN_PASSWORD:
+        raise HTTPException(401, "Napačno geslo")
+    posts = _load_posts()
+    posts = [p for p in posts if p["id"] != post_id]
+    _save_posts(posts)
+    return {"ok": True}
