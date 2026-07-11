@@ -10,12 +10,7 @@ print("🛡️ OGM LIVE SELL RADAR (Osebni Portfelj)")
 print("=========================================================")
 
 # TUKAJ VPIŠI SVOJE DELNICE IZ PORTFELJA
-MOJ_PORTFELJ = ["AAPL", "MSFT", "AMZN", "META", "GOOGL", "NFLX", "ADBE", "CRM", "INTC", "CSCO", 
-    "CMCSA", "PEP", "AVGO", "TXN", "AMGN", "HON", "QCOM", "SBUX", "GILD", "INTU", 
-    "MDLZ", "ISRG", "BKNG", "ADI", "REGN", "VRTX", "LRCX", "MU", "ATVI", "MELI", 
-    "PYPL", "SNPS", "ASML", "KLAC", "CDNS", "MAR", "PANW", "CTAS", "WDAY", "ORLY", 
-    "NXPI", "MNST", "FTNT", "PCAR", "PAYX", "CPRT", "ROST", "MCHP", "KDP", "AEP",
-    "BIIB", "VRSK", "EA", "TTWO", "ILMN", "ALGN", "IDXX", "ODFL", "EXC", "XEL", "FAST", "SAP.DE", "ADSK", "LULU", "MRVL", "NVDA", "AMD", "NVO", "MA", "V", "ORCL", "IBM", "CSX", "UPS", "DHR", "TMO", "LIN", "UNH", "JNJ", "ABBV", "MRK", "PFE"]
+MOJ_PORTFELJ = ["NVMI"]
 
 # ====================================================================
 # NAUČENE UTEŽI IZ GENETSKEGA ALGORITMA

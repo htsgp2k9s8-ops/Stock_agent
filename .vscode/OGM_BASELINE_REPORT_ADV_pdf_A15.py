@@ -11,7 +11,7 @@ print("=========================================================")
 print("AI OGM LIVE DASHBOARD - MASTER VALUE-GROWTH SKENER (MOAT V3)")
 print("=========================================================")
 
-CSV_DATOTEKA = "moje_globalne_delnice_50.csv"
+CSV_DATOTEKA = "moje_globalne_delnice.csv"
 
 # ==============================================================================
 # STRATEŠKI INSTITUCIONALNI FILTRI
