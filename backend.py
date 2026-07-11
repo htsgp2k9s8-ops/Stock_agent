@@ -435,6 +435,7 @@ def analyze_stock(ticker: str):
                 signals.append({
                     "date":         dates_str[i],
                     "price":        round(p0, 2),
+                    "ogm":          round(float(ogm_arr[i]), 1),
                     "max_price_12m":round(max_12m, 2),
                     "min_price_12m":round(min_12m, 2),
                     "max_return":   round((max_12m - p0) / p0 * 100, 1),
