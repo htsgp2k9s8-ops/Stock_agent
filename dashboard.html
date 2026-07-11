@@ -36,7 +36,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .cal-tab-pane{display:none}
 .cal-tab-pane.active{display:block}
 .feed-wrap{max-width:820px;margin:0 auto;padding:12px 24px}
-.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.feed-tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.feed-tab{padding:7px 18px;border:none;background:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;white-space:nowrap}
+.feed-tab:hover{color:var(--text)}
+.feed-tab.active{color:var(--a2);border-bottom-color:var(--a2)}
 .feed-title{font-size:20px;font-weight:800;color:var(--text)}
 .feed-empty{text-align:center;padding:60px;color:var(--muted);font-size:14px}
 .post-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:18px}
@@ -415,37 +419,37 @@ tbody td{padding:7px 11px;vertical-align:middle}
   <div class="sec" id="sec-portfolio">
     <div class="stat-grid" id="port-stats"></div>
     <!-- performance table + buy / sell -->
-    <div class="col2" style="margin-bottom:16px;align-items:start">
+    <div class="col2" style="margin-bottom:8px">
       <div class="card" style="overflow-x:auto;min-width:0">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">&#x1F4C8; Performance</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">&#x1F4C8; Performance</div>
         <div id="port-perf-table"><div style="color:var(--muted);font-size:12px">Nalagam graf...</div></div>
       </div>
-      <div>
-        <div class="card" style="margin-bottom:12px">
-          <div style="font-weight:700;font-size:12.5px;margin-bottom:10px">&#x2795; Buy</div>
-          <div class="form-row">
-            <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="buy-tkr" placeholder="AAPL" style="width:85px;text-transform:uppercase"></div>
-            <div class="fcol"><span class="flbl">Amount ($)</span><input class="inp" id="buy-amt" type="number" placeholder="5000" style="width:110px"></div>
-            <div class="fcol"><span class="flbl">Date (opt.)</span><input class="inp" id="buy-dt" type="date" style="width:140px"></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="card" style="padding:10px 14px">
+          <div style="font-weight:700;font-size:12px;margin-bottom:7px">&#x2795; Buy</div>
+          <div class="form-row" style="gap:8px">
+            <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="buy-tkr" placeholder="AAPL" style="width:80px;text-transform:uppercase"></div>
+            <div class="fcol"><span class="flbl">Amount ($)</span><input class="inp" id="buy-amt" type="number" placeholder="5000" style="width:100px"></div>
+            <div class="fcol"><span class="flbl">Date (opt.)</span><input class="inp" id="buy-dt" type="date" style="width:130px"></div>
             <div class="fcol" style="justify-content:flex-end"><button class="btn btn-g" onclick="doBuy()">Buy</button></div>
           </div>
-          <div id="buy-msg" style="font-size:11px;margin-top:6px;min-height:14px"></div>
+          <div id="buy-msg" style="font-size:11px;margin-top:4px;min-height:12px"></div>
         </div>
-        <div class="card">
-          <div style="font-weight:700;font-size:12.5px;margin-bottom:10px">&#x2796; Sell</div>
-          <div class="form-row">
-            <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="sell-tkr" placeholder="AAPL" style="width:85px;text-transform:uppercase"></div>
-            <div class="fcol"><span class="flbl">Shares (empty=all)</span><input class="inp" id="sell-sh" type="number" placeholder="all" style="width:110px"></div>
+        <div class="card" style="padding:10px 14px">
+          <div style="font-weight:700;font-size:12px;margin-bottom:7px">&#x2796; Sell</div>
+          <div class="form-row" style="gap:8px">
+            <div class="fcol"><span class="flbl">Ticker</span><input class="inp" id="sell-tkr" placeholder="AAPL" style="width:80px;text-transform:uppercase"></div>
+            <div class="fcol"><span class="flbl">Shares (empty=all)</span><input class="inp" id="sell-sh" type="number" placeholder="all" style="width:100px"></div>
             <div class="fcol" style="justify-content:flex-end"><button class="btn btn-r" onclick="doSell()">Sell</button></div>
           </div>
-          <div id="sell-form-msg" style="font-size:11px;margin-top:6px;min-height:14px"></div>
+          <div id="sell-form-msg" style="font-size:11px;margin-top:4px;min-height:12px"></div>
         </div>
       </div>
     </div>
     <!-- charts row -->
-    <div class="col2">
-      <div class="chart-wrap"><div class="chart-title"><span>KRIVULJA RASTI &mdash; OGM VS S&amp;P 500 VS NASDAQ 100</span><button class="btn-reset-zoom" id="rzoom-port" onclick="resetZoom(_portGrowthChart,'rzoom-port')">&#x21BA; Reset</button></div><div class="ch280"><canvas id="port-growth-chart" ondblclick="resetZoom(_portGrowthChart,'rzoom-port')"></canvas></div></div>
-      <div class="chart-wrap"><div class="chart-title">ALOKACIJA PORTFELJA</div><div class="ch280"><canvas id="port-donut-chart"></canvas></div></div>
+    <div class="col2" style="margin-bottom:14px">
+      <div class="chart-wrap" style="margin-bottom:0"><div class="chart-title"><span>KRIVULJA RASTI &mdash; OGM VS S&amp;P 500 VS NASDAQ 100</span><button class="btn-reset-zoom" id="rzoom-port" onclick="resetZoom(_portGrowthChart,'rzoom-port')">&#x21BA; Reset</button></div><div class="ch280"><canvas id="port-growth-chart" ondblclick="resetZoom(_portGrowthChart,'rzoom-port')"></canvas></div></div>
+      <div class="chart-wrap" style="margin-bottom:0"><div class="chart-title">ALOKACIJA PORTFELJA</div><div class="ch280"><canvas id="port-donut-chart"></canvas></div></div>
     </div>
     <!-- positions table -->
     <div class="tw"><table>
@@ -699,6 +703,11 @@ tbody td{padding:7px 11px;vertical-align:middle}
         <h2 class="feed-title">Market Feed</h2>
         <button class="btn-sm" onclick="navTo('admin')" style="font-size:11px;padding:5px 12px;opacity:.5" title="Admin">&#9881;</button>
       </div>
+      <div class="feed-tabs">
+        <button class="feed-tab active" data-sec="weekly" onclick="switchFeedTab(this)">Weekly Overview</button>
+        <button class="feed-tab" data-sec="economic" onclick="switchFeedTab(this)">Economic Highlights</button>
+        <button class="feed-tab" data-sec="technical" onclick="switchFeedTab(this)">Technical Outlooks</button>
+      </div>
       <div id="feed-posts"><div class="feed-empty">&#128240; Ni objav.</div></div>
     </div>
   </div>
@@ -715,6 +724,13 @@ tbody td{padding:7px 11px;vertical-align:middle}
         <div class="admin-field"><label>Kategorija</label>
           <select id="adm-cat">
             <option>Analysis</option><option>News</option><option>Strategy</option><option>Education</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>Rubrika</label>
+          <select id="adm-sec">
+            <option value="weekly">Weekly Overview</option>
+            <option value="economic">Economic Highlights</option>
+            <option value="technical">Technical Outlooks</option>
           </select>
         </div>
         <div class="admin-field"><label>Avtor</label><input type="text" id="adm-author" value="OGM Team"></div>
@@ -822,7 +838,7 @@ const API = (location.hostname === 'localhost' || location.hostname === '127.0.0
 let _scanPoll=null,_wlPoll=null,_sellPoll=null,_bottomPoll=null;
 let _sChart=null,_sOgmChart=null,_sLetniChart=null,_sSezonChart=null,_sSectorChart=null;
 let _portGrowthChart=null,_portDonutChart=null;
-let _editId=null,_adminPosts=[];
+let _editId=null,_adminPosts=[],_allFeedPosts=[],_feedSection='weekly';
 let _secBarChart=null,_secSSBarChart=null;
 let _bottomPriceChart=null,_bottomRsiChart=null;
 let _allSectors={};
@@ -897,8 +913,17 @@ async function loadFeed(){
   try{
     const r=await fetch(API+'/api/posts');
     const data=await r.json();
-    renderFeedPosts(data.posts||[]);
+    _allFeedPosts=data.posts||[];
+    renderFeedPosts(_allFeedPosts.filter(p=>(p.section||'weekly')===_feedSection));
   }catch(e){el.innerHTML='<div class="feed-empty">Napaka pri nalaganju.</div>';}
+}
+function switchFeedTab(btn){
+  document.querySelectorAll('.feed-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  _feedSection=btn.dataset.sec;
+  const el=document.getElementById('feed-posts');
+  if(!el)return;
+  renderFeedPosts(_allFeedPosts.filter(p=>(p.section||'weekly')===_feedSection));
 }
 function renderFeedPosts(posts){
   const el=document.getElementById('feed-posts');
@@ -920,6 +945,7 @@ async function adminPost(){
   const content=document.getElementById('adm-content').value.trim();
   const category=document.getElementById('adm-cat').value;
   const author=document.getElementById('adm-author').value.trim()||'OGM Team';
+  const section=document.getElementById('adm-sec').value;
   const msg=document.getElementById('adm-msg');
   if(!title||!content){msg.style.color='#f87171';msg.textContent='Vnesi naslov in vsebino.';return;}
   msg.style.color='var(--muted)';msg.textContent=_editId?'Posodabljam...':'Objavljam...';
@@ -927,7 +953,7 @@ async function adminPost(){
     const url=_editId?API+'/api/posts/'+_editId:API+'/api/posts';
     const method=_editId?'PUT':'POST';
     const r=await fetch(url,{method,headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({password:pw,title,content,category,author})});
+      body:JSON.stringify({password:pw,title,content,category,author,section})});
     if(r.status===401){msg.style.color='#f87171';msg.textContent='Napačno geslo.';return;}
     if(!r.ok)throw new Error();
     msg.style.color='#4ade80';msg.textContent=_editId?'Posodobljeno!':'Objavljeno!';
@@ -956,6 +982,7 @@ function adminEditById(i){
   _editId=p.id;
   document.getElementById('adm-title').value=p.title;
   document.getElementById('adm-cat').value=p.category;
+  document.getElementById('adm-sec').value=p.section||'weekly';
   document.getElementById('adm-author').value=p.author||'OGM Team';
   document.getElementById('adm-content').value=p.content;
   document.getElementById('adm-submit-btn').innerHTML='&#9998; Posodobi';
@@ -966,6 +993,7 @@ function adminCancelEdit(){
   _editId=null;
   document.getElementById('adm-title').value='';
   document.getElementById('adm-content').value='';
+  document.getElementById('adm-sec').value='weekly';
   document.getElementById('adm-submit-btn').innerHTML='&#43; Objavi';
   document.getElementById('adm-cancel-edit').style.display='none';
   document.getElementById('adm-msg').textContent='';

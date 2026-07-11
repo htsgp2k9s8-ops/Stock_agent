@@ -73,6 +73,7 @@ class PostIn(BaseModel):
     content: str
     category: str = "Analysis"
     author: str = "OGM Team"
+    section: str = "weekly"
 
 class DeleteIn(BaseModel):
     password: str
@@ -2431,6 +2432,7 @@ async def api_create_post(body: PostIn):
         "content":  body.content,
         "category": body.category,
         "author":   body.author,
+        "section":  body.section,
         "date":     datetime.now().strftime("%Y-%m-%d"),
     }
     posts.insert(0, post)
@@ -2448,6 +2450,7 @@ async def api_update_post(post_id: str, body: PostIn):
             p["content"]  = body.content
             p["category"] = body.category
             p["author"]   = body.author
+            p["section"]  = body.section
             _save_posts(posts)
             return p
     raise HTTPException(404, "Post not found")
