@@ -674,6 +674,47 @@ tbody td{padding:7px 11px;vertical-align:middle}
   </div>
 
   </div><!-- /content -->
+
+<!-- FEED -->
+  <div class="sec active" id="sec-feed">
+    <div class="feed-wrap">
+      <div class="feed-header">
+        <h2 class="feed-title">Market Feed</h2>
+        <button class="btn-sm" onclick="navTo('admin')" style="font-size:11px;padding:5px 12px;opacity:.5" title="Admin">&#9881;</button>
+      </div>
+      <div id="feed-posts"><div class="feed-empty">&#128240; Ni objav.</div></div>
+    </div>
+  </div>
+  <!-- ADMIN -->
+  <div class="sec" id="sec-admin">
+    <div class="feed-wrap">
+      <div class="feed-header">
+        <h2 class="feed-title">&#9881; Admin Panel</h2>
+        <button class="btn-sm" onclick="navTo('feed')" style="font-size:11px;padding:5px 12px">&#8592; Feed</button>
+      </div>
+      <div class="admin-box">
+        <div class="admin-field"><label>Geslo</label><input type="password" id="adm-pw" placeholder="Admin geslo"></div>
+        <div class="admin-field"><label>Naslov</label><input type="text" id="adm-title" placeholder="Naslov članka"></div>
+        <div class="admin-field"><label>Kategorija</label>
+          <select id="adm-cat">
+            <option>Analysis</option><option>News</option><option>Strategy</option><option>Education</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>Avtor</label><input type="text" id="adm-author" value="OGM Team"></div>
+        <div class="admin-field"><label>Vsebina</label><textarea id="adm-content" rows="10" placeholder="Vsebina članka (podpira HTML)..."></textarea></div>
+        <button class="btn" onclick="adminPost()" style="margin-top:8px">&#43; Objavi</button>
+        <div id="adm-msg" style="margin-top:10px;font-size:12px"></div>
+      </div>
+      <div style="margin-top:32px">
+        <h3 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px">OBJAVLJENI ČLANKI</h3>
+        <div id="adm-posts-list"></div>
+      </div>
+    </div>
+  </div>
+  <!-- MY PORTFOLIO -->
+  <div class="sec" id="sec-myportfolio"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128100;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">My Portfolio</h2><p>Prihaja kmalu.</p></div></div>
+  <!-- COMMUNITY -->
+  <div class="sec" id="sec-community"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128172;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">Community</h2><p>Forum prihaja kmalu.</p></div></div>
 </div><!-- /main -->
 
 <script>
@@ -2278,47 +2319,6 @@ loadScanner();
 wlRender();
 _mlCheckAuth();
 </script>
-
-  <!-- FEED -->
-  <div class="sec active" id="sec-feed">
-    <div class="feed-wrap">
-      <div class="feed-header">
-        <h2 class="feed-title">Market Feed</h2>
-        <button class="btn-sm" onclick="navTo('admin')" style="font-size:11px;padding:5px 12px;opacity:.5" title="Admin">&#9881;</button>
-      </div>
-      <div id="feed-posts"><div class="feed-empty">&#128240; Ni objav.</div></div>
-    </div>
-  </div>
-  <!-- ADMIN -->
-  <div class="sec" id="sec-admin">
-    <div class="feed-wrap">
-      <div class="feed-header">
-        <h2 class="feed-title">&#9881; Admin Panel</h2>
-        <button class="btn-sm" onclick="navTo('feed')" style="font-size:11px;padding:5px 12px">&#8592; Feed</button>
-      </div>
-      <div class="admin-box">
-        <div class="admin-field"><label>Geslo</label><input type="password" id="adm-pw" placeholder="Admin geslo"></div>
-        <div class="admin-field"><label>Naslov</label><input type="text" id="adm-title" placeholder="Naslov članka"></div>
-        <div class="admin-field"><label>Kategorija</label>
-          <select id="adm-cat">
-            <option>Analysis</option><option>News</option><option>Strategy</option><option>Education</option>
-          </select>
-        </div>
-        <div class="admin-field"><label>Avtor</label><input type="text" id="adm-author" value="OGM Team"></div>
-        <div class="admin-field"><label>Vsebina</label><textarea id="adm-content" rows="10" placeholder="Vsebina članka (podpira HTML)..."></textarea></div>
-        <button class="btn" onclick="adminPost()" style="margin-top:8px">&#43; Objavi</button>
-        <div id="adm-msg" style="margin-top:10px;font-size:12px"></div>
-      </div>
-      <div style="margin-top:32px">
-        <h3 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px">OBJAVLJENI ČLANKI</h3>
-        <div id="adm-posts-list"></div>
-      </div>
-    </div>
-  </div>
-  <!-- MY PORTFOLIO -->
-  <div class="sec" id="sec-myportfolio"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128100;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">My Portfolio</h2><p>Prihaja kmalu.</p></div></div>
-  <!-- COMMUNITY -->
-  <div class="sec" id="sec-community"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128172;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">Community</h2><p>Forum prihaja kmalu.</p></div></div>
 
 </body>
 </html>
