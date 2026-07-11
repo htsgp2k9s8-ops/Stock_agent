@@ -2437,6 +2437,21 @@ async def api_create_post(body: PostIn):
     _save_posts(posts)
     return post
 
+@app.put("/api/posts/{post_id}")
+async def api_update_post(post_id: str, body: PostIn):
+    if body.password != ADMIN_PASSWORD:
+        raise HTTPException(401, "Napačno geslo")
+    posts = _load_posts()
+    for p in posts:
+        if p["id"] == post_id:
+            p["title"]    = body.title
+            p["content"]  = body.content
+            p["category"] = body.category
+            p["author"]   = body.author
+            _save_posts(posts)
+            return p
+    raise HTTPException(404, "Post not found")
+
 @app.delete("/api/posts/{post_id}")
 async def api_delete_post(post_id: str, body: DeleteIn):
     if body.password != ADMIN_PASSWORD:

@@ -438,7 +438,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
     </div>
     <!-- charts row -->
     <div class="col2">
-      <div class="chart-wrap"><div class="chart-title"><span>KRIVULJA RASTI &mdash; OGM VS S&amp;P 500 VS NASDAQ 100</span><button class="btn-reset-zoom" id="rzoom-port" onclick="resetZoom(_portGrowthChart,'rzoom-port')">&#x21BA; Reset</button></div><div class="ch280"><canvas id="port-growth-chart" ondblclick="resetZoom(_portGrowthChart,'rzoom-port')"></canvas></div></div>
+      <div class="chart-wrap"><div class="chart-title"><span>KRIVULJA RASTI &mdash; OGM VS S&amp;P 500 VS NASDAQ 100</span><button class="btn-reset-zoom" id="rzoom-port" onclick="resetZoom(_portGrowthChart,'rzoom-port')">&#x21BA; Reset</button></div><div class="ch280"><canvas id="port-growth-chart" ondblclick="resetZoom(_portGrowthChart,'rzoom-port')"></canvas></div><div id="port-perf-table"></div></div>
       <div class="chart-wrap"><div class="chart-title">ALOKACIJA PORTFELJA</div><div class="ch280"><canvas id="port-donut-chart"></canvas></div></div>
     </div>
     <!-- positions table -->
@@ -727,7 +727,10 @@ tbody td{padding:7px 11px;vertical-align:middle}
           </div>
           <textarea id="adm-content" rows="14" placeholder="Izberi besedilo in klikni gumb za formatiranje, ali piši HTML direktno..."></textarea>
         </div>
-        <button class="btn" onclick="adminPost()" style="margin-top:8px">&#43; Objavi</button>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
+          <button class="btn" id="adm-submit-btn" onclick="adminPost()">&#43; Objavi</button>
+          <button class="btn-sm" id="adm-cancel-edit" onclick="adminCancelEdit()" style="display:none">&#10005; Prekliči urejanje</button>
+        </div>
         <div id="adm-msg" style="margin-top:10px;font-size:12px"></div>
       </div>
       <div style="margin-top:32px">
@@ -813,6 +816,7 @@ const API = (location.hostname === 'localhost' || location.hostname === '127.0.0
 let _scanPoll=null,_wlPoll=null,_sellPoll=null,_bottomPoll=null;
 let _sChart=null,_sOgmChart=null,_sLetniChart=null,_sSezonChart=null,_sSectorChart=null;
 let _portGrowthChart=null,_portDonutChart=null;
+let _editId=null,_adminPosts=[];
 let _secBarChart=null,_secSSBarChart=null;
 let _bottomPriceChart=null,_bottomRsiChart=null;
 let _allSectors={};
@@ -912,30 +916,53 @@ async function adminPost(){
   const author=document.getElementById('adm-author').value.trim()||'OGM Team';
   const msg=document.getElementById('adm-msg');
   if(!title||!content){msg.style.color='#f87171';msg.textContent='Vnesi naslov in vsebino.';return;}
-  msg.style.color='var(--muted)';msg.textContent='Objavljam...';
+  msg.style.color='var(--muted)';msg.textContent=_editId?'Posodabljam...':'Objavljam...';
   try{
-    const r=await fetch(API+'/api/posts',{method:'POST',headers:{'Content-Type':'application/json'},
+    const url=_editId?API+'/api/posts/'+_editId:API+'/api/posts';
+    const method=_editId?'PUT':'POST';
+    const r=await fetch(url,{method,headers:{'Content-Type':'application/json'},
       body:JSON.stringify({password:pw,title,content,category,author})});
     if(r.status===401){msg.style.color='#f87171';msg.textContent='Napačno geslo.';return;}
     if(!r.ok)throw new Error();
-    msg.style.color='#4ade80';msg.textContent='Objavljeno!';
-    document.getElementById('adm-title').value='';
-    document.getElementById('adm-content').value='';
+    msg.style.color='#4ade80';msg.textContent=_editId?'Posodobljeno!':'Objavljeno!';
+    adminCancelEdit();
     loadAdminPosts(pw);
-  }catch(e){msg.style.color='#f87171';msg.textContent='Napaka pri objavi.';}
+  }catch(e){msg.style.color='#f87171';msg.textContent='Napaka.';}
 }
 async function loadAdminPosts(pw){
   const r=await fetch(API+'/api/posts');
   const data=await r.json();
-  const posts=data.posts||[];
+  _adminPosts=data.posts||[];
   const el=document.getElementById('adm-posts-list');
-  if(!posts.length){el.innerHTML='<div style="color:var(--muted);font-size:13px">Ni objav.</div>';return;}
-  el.innerHTML=posts.map(p=>`
+  if(!_adminPosts.length){el.innerHTML='<div style="color:var(--muted);font-size:13px">Ni objav.</div>';return;}
+  el.innerHTML=_adminPosts.map((p,i)=>`
     <div class="post-card" style="position:relative">
-      <button class="post-del" onclick="adminDelete('${p.id}')">&#10005;</button>
+      <div style="float:right;display:flex;gap:6px;margin-left:8px">
+        <button class="btn-sm" onclick="adminEditById(${i})" style="font-size:11px">&#9998; Uredi</button>
+        <button class="post-del" onclick="adminDelete('${p.id}')">&#10005;</button>
+      </div>
       <div class="post-card-top"><span class="post-cat">${p.category}</span><span class="post-meta">${p.date}</span></div>
       <div class="post-title">${p.title}</div>
     </div>`).join('');
+}
+function adminEditById(i){
+  const p=_adminPosts[i];if(!p)return;
+  _editId=p.id;
+  document.getElementById('adm-title').value=p.title;
+  document.getElementById('adm-cat').value=p.category;
+  document.getElementById('adm-author').value=p.author||'OGM Team';
+  document.getElementById('adm-content').value=p.content;
+  document.getElementById('adm-submit-btn').innerHTML='&#9998; Posodobi';
+  document.getElementById('adm-cancel-edit').style.display='';
+  document.getElementById('adm-pw').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function adminCancelEdit(){
+  _editId=null;
+  document.getElementById('adm-title').value='';
+  document.getElementById('adm-content').value='';
+  document.getElementById('adm-submit-btn').innerHTML='&#43; Objavi';
+  document.getElementById('adm-cancel-edit').style.display='none';
+  document.getElementById('adm-msg').textContent='';
 }
 async function adminDelete(id){
   const pw=document.getElementById('adm-pw').value;
@@ -1347,7 +1374,56 @@ async function loadPortfolioChart(){
     _portDonutChart=new Chart(ctx2,{type:'doughnut',data:{labels,datasets:[{data:values,backgroundColor:COLORS,borderColor:'#0b1526',borderWidth:2}]},
       options:{animation:false,responsive:true,maintainAspectRatio:false,cutout:'60%',
         plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:10},boxWidth:12,padding:8}},tooltip:{callbacks:{label:c=>`${c.label}: $${Number(c.raw).toLocaleString('en-US',{maximumFractionDigits:0})}`}}}}});
+    renderPerfTable(d);
   }catch(e){console.warn('Portfolio chart error',e);}
+}
+function renderPerfTable(d){
+  const el=document.getElementById('port-perf-table');
+  if(!el||!d.dates||!d.dates.length)return;
+  const dates=d.dates,port=d.portfolio,spy=d.spy,qqq=d.qqq;
+  const lastIdx=dates.length-1;
+  const nowD=new Date(dates[lastIdx]);
+  function findIdx(daysAgo){
+    const ts=new Date(nowD-daysAgo*86400000).toISOString().split('T')[0];
+    let b=0;for(let i=0;i<dates.length;i++){if(dates[i]<=ts)b=i;else break;}return b;
+  }
+  function ytdIdx(){
+    const y=new Date(dates[lastIdx]).getFullYear()+'-01-01';
+    for(let i=0;i<dates.length;i++){if(dates[i]>=y)return i;}return 0;
+  }
+  function pct(arr,fi){
+    const f=arr[fi],t=arr[lastIdx];if(!f||f===0)return null;return(t-f)/f*100;
+  }
+  function fmt(v){
+    if(v===null||v===undefined)return'<span style="color:var(--muted)">—</span>';
+    const c=v>=0?'#4ade80':'#f87171';
+    return`<span style="color:${c};font-weight:700">${v>=0?'+':''}${v.toFixed(1)}%</span>`;
+  }
+  const periods=[
+    {label:'1 teden',idx:findIdx(7)},
+    {label:'1 mesec',idx:findIdx(30)},
+    {label:'3 mesece',idx:findIdx(90)},
+    {label:'6 mesecev',idx:findIdx(180)},
+    {label:'1 leto',idx:findIdx(365)},
+    {label:'YTD',idx:ytdIdx()},
+    {label:'Vse skupaj',idx:0},
+  ];
+  el.innerHTML=`<div class="tw" style="margin-top:14px">
+    <table style="width:100%">
+      <thead><tr>
+        <th style="text-align:left">Obdobje</th>
+        <th style="color:#60a5fa;text-align:right">OGM Portfolio</th>
+        <th style="color:#f87171;text-align:right">S&amp;P 500</th>
+        <th style="color:#a78bfa;text-align:right">NASDAQ 100</th>
+      </tr></thead>
+      <tbody>${periods.map(p=>`<tr>
+        <td style="color:var(--muted)">${p.label}</td>
+        <td style="text-align:right">${fmt(pct(port,p.idx))}</td>
+        <td style="text-align:right">${fmt(pct(spy,p.idx))}</td>
+        <td style="text-align:right">${fmt(pct(qqq,p.idx))}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`;
 }
 function renderPortStats(d){
   const pnl=d.total_pnl||0;
