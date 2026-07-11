@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.env
+.venv
+venv/
+
+# VS Code
+.vscode/
+
+# Node / React
+node_modules/
+React/
+
+# Old reports & diagnostics
+OGM_DIAGNOSTIKA_*.html
+OGM_AI_*.html
+OGM_BACKTEST_*.html
+OGM_DAILY_REPORT.html
+OGM_LIVE_*.html
+OGM_NASDAQ_*.html
+OGM_PORTFOLIO_*.html
+OGM_SELL_*.html
+OGM_VIRTUAL_PORTFOLIO.html
+OGM_WATCHLIST_*.html
+ogm_2022-*.html
+ogm_2024-*.html
+OGM_BASELINE.py
+
+# Old index variants
+index_old.html
+index_oldd.html
+
+# EU stocks data
+EU_stocks/
+
+# Reports folder
+reports/
+
+# GitHub subfolder (old static pages)
+GitHub/
+
+# PDFs
+*.pdf
+
+# Old/dev Python scripts
+back_test.py
+test_*.py
+baza_delnic*.py
+current_OGM.py
+izvoz_ogm.py
+pregled_history.py
+primerjava_*.py
+Ovnicek_growth_matrix.py
+Single_stock_sreen.py
+1b_dodajanje_izpadlih_delnic.py
+
+# Extra CSV files
+xetra_delnice.csv
+moje_globalne_delnice_50.csv
