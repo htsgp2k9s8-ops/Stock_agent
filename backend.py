@@ -276,15 +276,7 @@ _scheduler: dict = {
     "next_run":    None,   # ISO string of next scheduled run
 }
 
-def _next_run_time() -> datetime:
-    now = datetime.utcnow()
-    t   = now.replace(hour=SCAN_HOUR, minute=SCAN_MINUTE, second=0, microsecond=0)
-    if now >= t:
-        t += timedelta(days=1)
-    return t
-
 def _today_scan_done() -> bool:
-    """Return True if last_auto is today (UTC date)."""
     last = _scheduler.get("last_auto")
     if not last:
         return False
@@ -293,33 +285,34 @@ def _today_scan_done() -> bool:
     except Exception:
         return False
 
-def _scheduler_loop():
-    """Background thread: fires _run_scan every day at SCAN_HOUR:SCAN_MINUTE UTC."""
-    # On startup: if we're past today's scheduled time and scan hasn't run yet → fire now
-    now_utc = datetime.utcnow()
-    today_target = now_utc.replace(hour=SCAN_HOUR, minute=SCAN_MINUTE, second=0, microsecond=0)
-    if now_utc >= today_target and not _today_scan_done():
-        print(f"[SCHEDULER] Missed today's scan (redeployed after {SCAN_HOUR:02d}:{SCAN_MINUTE:02d} UTC) — firing now")
-        _scheduler["last_auto"] = datetime.utcnow().isoformat(timespec="seconds")
-        threading.Thread(target=_run_scan, args=(None,), daemon=True, name="auto-scan-catchup").start()
+def _next_run_time() -> datetime:
+    now = datetime.utcnow()
+    t = now.replace(hour=SCAN_HOUR, minute=SCAN_MINUTE, second=0, microsecond=0)
+    if now >= t:
+        t += timedelta(days=1)
+    return t
 
+def _scheduler_loop():
+    """Background thread: checks every 60 s whether it is time to run the daily scan."""
+    print(f"[SCHEDULER] Started — target {SCAN_HOUR:02d}:{SCAN_MINUTE:02d} UTC daily")
     _scheduler["next_run"] = _next_run_time().isoformat(timespec="seconds")
-    print(f"[SCHEDULER] Daily auto-scan at {SCAN_HOUR:02d}:{SCAN_MINUTE:02d} UTC — next: {_scheduler['next_run']}")
 
     while True:
-        nxt = _next_run_time()
-        _scheduler["next_run"] = nxt.isoformat(timespec="seconds")
-        # Sleep in 30-second chunks until target time
-        while (nxt - datetime.utcnow()).total_seconds() > 0:
-            time.sleep(min(30, max(1, (nxt - datetime.utcnow()).total_seconds())))
-        # Fire scan only if enabled and not already running
-        if _scheduler["enabled"] and not _cache.get("scanning"):
-            ts = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-            print(f"[SCHEDULER] Auto-scan triggered at {ts}")
-            _scheduler["last_auto"] = datetime.utcnow().isoformat(timespec="seconds")
-            threading.Thread(target=_run_scan, args=(None,), daemon=True, name="auto-scan").start()
-        # Wait past the target so we don't double-fire
-        time.sleep(90)
+        try:
+            now = datetime.utcnow()
+            _scheduler["next_run"] = _next_run_time().isoformat(timespec="seconds")
+
+            is_scan_time = (now.hour == SCAN_HOUR and now.minute == SCAN_MINUTE)
+            if is_scan_time and not _today_scan_done() and _scheduler["enabled"] and not _cache.get("scanning"):
+                ts = now.strftime("%Y-%m-%d %H:%M UTC")
+                print(f"[SCHEDULER] Auto-scan firing at {ts}")
+                _scheduler["last_auto"] = now.isoformat(timespec="seconds")
+                threading.Thread(target=_run_scan, args=(None,), daemon=True, name="auto-scan").start()
+
+        except Exception as e:
+            print(f"[SCHEDULER] Exception (continuing): {e}")
+
+        time.sleep(60)
 
 
 @app.on_event("startup")
