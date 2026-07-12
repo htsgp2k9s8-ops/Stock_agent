@@ -35,8 +35,23 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .cal-tab-btn.active{color:var(--a2);border-bottom-color:var(--a2)}
 .cal-tab-pane{display:none}
 .cal-tab-pane.active{display:block}
-.feed-wrap{max-width:820px;margin:0 auto;padding:20px 24px}
+.feed-page-layout{display:flex;gap:0;min-height:calc(100vh - 58px)}
+.feed-left{flex:1;min-width:0;border-right:1px solid var(--border)}
+.feed-right{width:300px;flex-shrink:0;padding:20px 16px}
+.feed-wrap{padding:20px 24px}
 .feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.market-panel{position:sticky;top:70px}
+.market-panel-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px}
+.mkt-row{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);gap:8px}
+.mkt-row:last-child{border-bottom:none}
+.mkt-name{flex:1;min-width:0}
+.mkt-label{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap}
+.mkt-sym{font-size:10px;color:var(--muted)}
+.mkt-spark{width:64px;height:28px;flex-shrink:0}
+.mkt-price{text-align:right;flex-shrink:0;min-width:70px}
+.mkt-val{font-size:12px;font-weight:700;color:var(--text)}
+.mkt-chg{font-size:10px;font-weight:600}
+.mkt-up{color:#4ade80}.mkt-dn{color:#f87171}
 .feed-tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:20px}
 .feed-tab{padding:7px 18px;border:none;background:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;white-space:nowrap}
 .feed-tab:hover{color:var(--text)}
@@ -709,13 +724,28 @@ tbody td{padding:7px 11px;vertical-align:middle}
 
 <!-- FEED -->
   <div class="sec active" id="sec-feed">
-    <div class="feed-wrap">
-      <div class="feed-header">
-        <h2 class="feed-title">Market Feed</h2>
-        <button class="btn-sm" onclick="navTo('admin')" style="font-size:11px;padding:5px 12px;opacity:.5" title="Admin">&#9881;</button>
+    <div class="feed-page-layout">
+      <!-- LEFT: articles -->
+      <div class="feed-left">
+        <div class="feed-wrap">
+          <div class="feed-header">
+            <h2 class="feed-title">Market Feed</h2>
+            <button class="btn-sm" onclick="navTo('admin')" style="font-size:11px;padding:5px 12px;opacity:.5" title="Admin">&#9881;</button>
+          </div>
+          <div id="feed-section-label" style="font-size:11px;font-weight:700;color:var(--a2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px">Weekly Overview</div>
+          <div id="feed-posts"><div class="feed-empty">&#128240; Ni objav.</div></div>
+        </div>
       </div>
-      <div id="feed-section-label" style="font-size:11px;font-weight:700;color:var(--a2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px">Weekly Overview</div>
-      <div id="feed-posts"><div class="feed-empty">&#128240; Ni objav.</div></div>
+      <!-- RIGHT: market overview -->
+      <div class="feed-right">
+        <div class="market-panel">
+          <div class="market-panel-hdr">Market Overview</div>
+          <div id="market-instruments">
+            <div style="color:var(--muted);font-size:12px;padding:20px 0;text-align:center">Nalagam...</div>
+          </div>
+          <div id="market-updated" style="font-size:10px;color:var(--muted);margin-top:10px;text-align:right"></div>
+        </div>
+      </div>
     </div>
   </div>
   <!-- ADMIN -->
@@ -933,6 +963,68 @@ async function loadFeed(){
     _allFeedPosts=data.posts||[];
     renderFeedPosts(_allFeedPosts.filter(p=>(p.section||'weekly')===_feedSection));
   }catch(e){el.innerHTML='<div class="feed-empty">Napaka pri nalaganju.</div>';}
+  loadMarkets();
+}
+
+const _mktSparkCharts={};
+async function loadMarkets(){
+  try{
+    const r=await fetch(API+'/api/markets');
+    if(!r.ok)return;
+    const d=await r.json();
+    renderMarkets(d.instruments||[]);
+    const upd=document.getElementById('market-updated');
+    if(upd&&d.updated)upd.textContent='Updated: '+d.updated.substring(0,16).replace('T',' ')+' UTC';
+  }catch(e){}
+}
+
+function renderMarkets(instruments){
+  const el=document.getElementById('market-instruments');
+  if(!el)return;
+  // Destroy old sparkline charts
+  Object.values(_mktSparkCharts).forEach(c=>{try{c.destroy();}catch(e){}});
+  Object.keys(_mktSparkCharts).forEach(k=>delete _mktSparkCharts[k]);
+
+  el.innerHTML=instruments.map(m=>`
+    <div class="mkt-row">
+      <div class="mkt-name">
+        <div class="mkt-label">${m.name}</div>
+        <div class="mkt-sym">${m.symbol}</div>
+      </div>
+      <canvas class="mkt-spark" id="spark-${m.key}" width="64" height="28"></canvas>
+      <div class="mkt-price">
+        <div class="mkt-val">${fmtMktPrice(m.price,m.symbol)}</div>
+        <div class="mkt-chg ${m.chg_pct>=0?'mkt-up':'mkt-dn'}">${m.chg_pct>=0?'+':''}${m.chg_pct.toFixed(2)}%</div>
+      </div>
+    </div>`).join('');
+
+  // Draw sparklines
+  instruments.forEach(m=>{
+    const canvas=document.getElementById('spark-'+m.key);
+    if(!canvas||!m.spark||m.spark.length<2)return;
+    const up=m.chg_pct>=0;
+    const color=up?'#4ade80':'#f87171';
+    const ctx=canvas.getContext('2d');
+    const grad=ctx.createLinearGradient(0,0,0,28);
+    grad.addColorStop(0,up?'rgba(74,222,128,.3)':'rgba(248,113,113,.3)');
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    _mktSparkCharts[m.key]=new Chart(ctx,{
+      type:'line',
+      data:{labels:m.spark.map((_,i)=>i),datasets:[{data:m.spark,borderColor:color,borderWidth:1.5,
+        backgroundColor:grad,fill:true,pointRadius:0,tension:.3}]},
+      options:{animation:false,responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},
+        scales:{x:{display:false},y:{display:false}}}
+    });
+  });
+}
+
+function fmtMktPrice(price,symbol){
+  if(symbol==='BTC-USD'||symbol==='ETH-USD'){
+    return price>=1000?'$'+Math.round(price).toLocaleString():'$'+price.toFixed(2);
+  }
+  if(price>=1000)return '$'+price.toLocaleString('en',{maximumFractionDigits:0});
+  if(price>=10)return '$'+price.toFixed(2);
+  return '$'+price.toFixed(3);
 }
 const FEED_LABELS={weekly:'Weekly Overview',economic:'Economic Highlights',technical:'Technical Outlooks'};
 function navToFeed(section){

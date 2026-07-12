@@ -2491,3 +2491,57 @@ async def api_delete_post(post_id: str, body: DeleteIn):
     posts = [p for p in posts if p["id"] != post_id]
     _save_posts(posts)
     return {"ok": True}
+
+
+# ─── Market overview ──────────────────────────────────────────────────────────
+MARKET_INSTRUMENTS = [
+    {"key": "spx",    "symbol": "^GSPC",   "name": "S&P 500"},
+    {"key": "ndx",    "symbol": "^NDX",    "name": "Nasdaq 100"},
+    {"key": "dji",    "symbol": "^DJI",    "name": "Dow Jones"},
+    {"key": "oil",    "symbol": "CL=F",    "name": "WTI Oil"},
+    {"key": "gold",   "symbol": "GC=F",    "name": "Gold"},
+    {"key": "silver", "symbol": "SI=F",    "name": "Silver"},
+    {"key": "btc",    "symbol": "BTC-USD", "name": "Bitcoin"},
+    {"key": "eth",    "symbol": "ETH-USD", "name": "Ethereum"},
+]
+
+_markets_cache: dict = {}
+_markets_ts: float = 0.0
+
+@app.get("/api/markets")
+def api_markets():
+    global _markets_cache, _markets_ts
+    if time.time() - _markets_ts < 120 and _markets_cache:
+        return _markets_cache
+
+    result = []
+    for inst in MARKET_INSTRUMENTS:
+        try:
+            tk = yf.Ticker(inst["symbol"])
+            hist = tk.history(period="32d", interval="1d")
+            if hist.empty:
+                continue
+            closes = hist["Close"].dropna()
+            if len(closes) < 2:
+                continue
+            price  = float(closes.iloc[-1])
+            prev   = float(closes.iloc[-2])
+            chg    = price - prev
+            chg_pct = chg / prev * 100 if prev else 0
+            # last 30 points for sparkline
+            spark  = [round(float(v), 4) for v in closes.tail(30).tolist()]
+            result.append({
+                "key":     inst["key"],
+                "name":    inst["name"],
+                "symbol":  inst["symbol"],
+                "price":   round(price, 2),
+                "change":  round(chg, 2),
+                "chg_pct": round(chg_pct, 2),
+                "spark":   spark,
+            })
+        except Exception:
+            continue
+
+    _markets_cache = {"instruments": result, "updated": datetime.utcnow().isoformat()}
+    _markets_ts = time.time()
+    return _markets_cache
