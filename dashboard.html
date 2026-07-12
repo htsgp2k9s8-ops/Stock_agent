@@ -475,7 +475,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
     </div>
     <div id="txh-wrap" style="display:none">
       <div class="tw"><table>
-        <thead><tr><th>Type</th><th>Ticker</th><th>Date</th><th>Sold</th><th>Shares</th><th>Buy $</th><th>Sell $</th><th>Invested</th><th>Proceeds</th><th>P&amp;L</th><th>OGM</th></tr></thead>
+        <thead><tr><th>Type</th><th>OGM</th><th>Ticker</th><th>Date</th><th>Sold</th><th>Shares</th><th>Buy $</th><th>Sell $</th><th>Invested</th><th>Proceeds</th><th>P&amp;L</th></tr></thead>
         <tbody id="closed-tbody"><tr><td colspan="11" style="text-align:center;padding:18px;color:var(--muted)">No transactions</td></tr></tbody>
       </table></div>
     </div>
@@ -1563,6 +1563,7 @@ function renderTxHistory(d){
       :`<span class="badge br">CLOSED</span>`;
     return`<tr>
       <td>${typeBadge}</td>
+      <td class="mt" style="font-weight:700;color:${r.ogm!=null?(r.ogm>=70?'#4ade80':r.ogm>=50?'#fbbf24':'#f87171'):'var(--muted)'}">${r.ogm!=null?r.ogm:'—'}</td>
       <td><span class="tt">${r.ticker}</span></td>
       <td class="mt">${r.date}</td>
       <td class="mt">${r.sell_date||'—'}</td>
@@ -1572,7 +1573,6 @@ function renderTxHistory(d){
       <td class="mt">${usd(r.invested)}</td>
       <td>${r.proceeds!=null?usd(r.proceeds):'—'}</td>
       <td class="${r.pnl!=null?pCls(r.pnl):''}">${r.pnl!=null?(r.pnl>=0?'+':'')+usd(Math.abs(r.pnl)):'—'}</td>
-      <td class="mt" style="font-weight:700;color:${r.ogm!=null?(r.ogm>=70?'#4ade80':r.ogm>=50?'#fbbf24':'#f87171'):'var(--muted)'}">${r.ogm!=null?r.ogm:'—'}</td>
     </tr>`;
   }).join('');
 }
