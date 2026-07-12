@@ -1062,9 +1062,11 @@ async function adminDelete(id){
   navTo(valid.includes(h)?h:'feed');
 })();
 function openStock(ticker){
-  document.querySelector('.ni[data-sec="stock"]').click();
-  document.getElementById('s-search').value=ticker.toUpperCase();
-  doAnalyze();
+  navTo('stock');
+  setTimeout(()=>{
+    document.getElementById('s-search').value=ticker.toUpperCase();
+    doAnalyze();
+  },50);
 }
 
 /* ── API health ──────────────────────────────────────────────────────────── */
