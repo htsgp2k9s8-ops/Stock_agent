@@ -1099,16 +1099,27 @@ def _run_scan(scan_date_str: str | None = None):
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
+    _RATE_DELAY = 0.12  # seconds between requests to avoid Yahoo Finance rate-limiting
+
     for i, ticker in enumerate(tickers, 1):
         _cache["scan_done"] = i
-        if i % 20 == 0:
-            print(f"  [{i}/{len(tickers)}]")
+        if i % 50 == 0:
+            print(f"  [{i}/{len(tickers)}] found={len(stocks)}")
         try:
             t    = yf.Ticker(ticker)
             info = t.info
 
+            # Retry once if info came back empty (rate-limit hit)
+            if not info or len(info) < 5:
+                time.sleep(1.0)
+                info = t.info
+            if not info or len(info) < 5:
+                time.sleep(_RATE_DELAY)
+                continue
+
             mcap = info.get("marketCap")
             if not mcap or pd.isna(mcap) or mcap < MIN_MARKET_CAP:
+                time.sleep(_RATE_DELAY)
                 continue
 
             rev_growth   = _safe(info.get("revenueGrowth"))
@@ -1118,11 +1129,13 @@ def _run_scan(scan_date_str: str | None = None):
 
             # skip weak revenue growth for live scans only
             if not scan_date and rev_growth < MIN_REV_GROWTH:
+                time.sleep(_RATE_DELAY)
                 continue
 
             # ── Price history ─────────────────────────────────────────────────
             dl_end = (scan_date + timedelta(days=8)).strftime("%Y-%m-%d") if scan_date else None
             data   = t.history(start="2010-01-01", end=dl_end, interval="1wk", actions=False)
+            time.sleep(_RATE_DELAY)
             if data is None or data.empty or len(data) < 52:
                 continue
             if scan_date:
