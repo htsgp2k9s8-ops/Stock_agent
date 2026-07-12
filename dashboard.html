@@ -44,6 +44,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .market-panel-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px}
 .mkt-row{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);gap:8px}
 .mkt-row:last-child{border-bottom:none}
+.mkt-icon{font-size:18px;width:26px;text-align:center;flex-shrink:0;line-height:1}
 .mkt-name{flex:1;min-width:0}
 .mkt-label{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap}
 .mkt-sym{font-size:10px;color:var(--muted)}
@@ -981,6 +982,13 @@ async function loadMarkets(){
   }
 }
 
+const MKT_ICON={
+  spx:'🇺🇸',ndx:'🇺🇸',dji:'🇺🇸',
+  dax:'🇩🇪',ftse:'🇬🇧',cac:'🇫🇷',nikkei:'🇯🇵',
+  oil:'🛢️',gold:'🟡',silver:'⚪',
+  btc:'🟠',eth:'🔷'
+};
+
 function renderMarkets(instruments){
   const el=document.getElementById('market-instruments');
   if(!el)return;
@@ -990,6 +998,7 @@ function renderMarkets(instruments){
 
   el.innerHTML=instruments.map(m=>`
     <div class="mkt-row">
+      <div class="mkt-icon">${MKT_ICON[m.key]||'🌐'}</div>
       <div class="mkt-name">
         <div class="mkt-label">${m.name}</div>
         <div class="mkt-sym">${m.symbol}</div>
