@@ -2507,7 +2507,7 @@ MARKET_INSTRUMENTS = [
     {"key": "spx",    "symbol": "^GSPC",   "name": "S&P 500"},
     {"key": "ndx",    "symbol": "^NDX",    "name": "Nasdaq 100"},
     {"key": "dji",    "symbol": "^DJI",    "name": "Dow Jones"},
-    {"key": "dax",    "symbol": "^GDAXI",  "name": "DAX"},
+    {"key": "dax",    "symbol": "^GDAXI",  "name": "DAX",     "alt": ["DAX"]},
     {"key": "ftse",   "symbol": "^FTSE",   "name": "FTSE 100"},
     {"key": "cac",    "symbol": "^FCHI",   "name": "CAC 40"},
     {"key": "nikkei", "symbol": "^N225",   "name": "Nikkei 225"},
@@ -2522,10 +2522,19 @@ _markets_cache: dict = {}
 _markets_ts: float = 0.0
 
 def _fetch_one_market(inst: dict) -> dict | None:
+    symbols = [inst["symbol"]] + inst.get("alt", [])
+    hist = None
+    for sym in symbols:
+        try:
+            tk = yf.Ticker(sym)
+            h = tk.history(period="32d", interval="1d")
+            if not h.empty and len(h["Close"].dropna()) >= 2:
+                hist = h
+                break
+        except Exception:
+            continue
     try:
-        tk = yf.Ticker(inst["symbol"])
-        hist = tk.history(period="32d", interval="1d")
-        if hist.empty:
+        if hist is None:
             return None
         closes = hist["Close"].dropna()
         if len(closes) < 2:
