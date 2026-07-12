@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "installCommand": "",
+  "framework": null,
+  "routes": [
+    { "src": "/", "dest": "/dashboard.html" },
+    { "src": "/dashboard", "dest": "/dashboard.html" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/dashboard.html" }
+  ]
+}

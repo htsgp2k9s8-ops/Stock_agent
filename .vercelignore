@@ -1,0 +1,15 @@
+backend.py
+requirements.txt
+Procfile
+*.py
+*.pyc
+*.csv
+*.pdf
+__pycache__
+reports
+.vscode
+ogm_cache.json
+ogm_virtual_portfolio.json
+ogm_posts.json
+ogm_bottom_model.json
+nul
