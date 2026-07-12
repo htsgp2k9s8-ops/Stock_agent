@@ -968,14 +968,17 @@ async function loadFeed(){
 
 const _mktSparkCharts={};
 async function loadMarkets(){
+  const el=document.getElementById('market-instruments');
   try{
-    const r=await fetch(API+'/api/markets');
-    if(!r.ok)return;
+    const r=await fetch(API+'/api/markets',{signal:AbortSignal.timeout(30000)});
+    if(!r.ok){if(el)el.innerHTML='<div style="color:var(--muted);font-size:11px;padding:12px 0">Napaka pri nalaganju ('+r.status+')</div>';return;}
     const d=await r.json();
     renderMarkets(d.instruments||[]);
     const upd=document.getElementById('market-updated');
     if(upd&&d.updated)upd.textContent='Updated: '+d.updated.substring(0,16).replace('T',' ')+' UTC';
-  }catch(e){}
+  }catch(e){
+    if(el)el.innerHTML='<div style="color:var(--muted);font-size:11px;padding:12px 0">Ni podatkov — '+e.message+'</div>';
+  }
 }
 
 function renderMarkets(instruments){

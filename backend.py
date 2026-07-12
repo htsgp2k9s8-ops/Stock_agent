@@ -2512,39 +2512,50 @@ MARKET_INSTRUMENTS = [
 _markets_cache: dict = {}
 _markets_ts: float = 0.0
 
+def _fetch_one_market(inst: dict) -> dict | None:
+    try:
+        tk = yf.Ticker(inst["symbol"])
+        hist = tk.history(period="32d", interval="1d")
+        if hist.empty:
+            return None
+        closes = hist["Close"].dropna()
+        if len(closes) < 2:
+            return None
+        price   = float(closes.iloc[-1])
+        prev    = float(closes.iloc[-2])
+        chg     = price - prev
+        chg_pct = chg / prev * 100 if prev else 0
+        spark   = [round(float(v), 4) for v in closes.tail(30).tolist()]
+        return {
+            "key":     inst["key"],
+            "name":    inst["name"],
+            "symbol":  inst["symbol"],
+            "price":   round(price, 2),
+            "change":  round(chg, 2),
+            "chg_pct": round(chg_pct, 2),
+            "spark":   spark,
+        }
+    except Exception:
+        return None
+
 @app.get("/api/markets")
 def api_markets():
     global _markets_cache, _markets_ts
     if time.time() - _markets_ts < 120 and _markets_cache:
         return _markets_cache
 
-    result = []
-    for inst in MARKET_INSTRUMENTS:
-        try:
-            tk = yf.Ticker(inst["symbol"])
-            hist = tk.history(period="32d", interval="1d")
-            if hist.empty:
-                continue
-            closes = hist["Close"].dropna()
-            if len(closes) < 2:
-                continue
-            price  = float(closes.iloc[-1])
-            prev   = float(closes.iloc[-2])
-            chg    = price - prev
-            chg_pct = chg / prev * 100 if prev else 0
-            # last 30 points for sparkline
-            spark  = [round(float(v), 4) for v in closes.tail(30).tolist()]
-            result.append({
-                "key":     inst["key"],
-                "name":    inst["name"],
-                "symbol":  inst["symbol"],
-                "price":   round(price, 2),
-                "change":  round(chg, 2),
-                "chg_pct": round(chg_pct, 2),
-                "spark":   spark,
-            })
-        except Exception:
-            continue
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    results_map = {}
+    with ThreadPoolExecutor(max_workers=12) as ex:
+        futures = {ex.submit(_fetch_one_market, inst): inst["key"] for inst in MARKET_INSTRUMENTS}
+        for fut in as_completed(futures):
+            key = futures[fut]
+            data = fut.result()
+            if data:
+                results_map[key] = data
+
+    # preserve original order
+    result = [results_map[inst["key"]] for inst in MARKET_INSTRUMENTS if inst["key"] in results_map]
 
     _markets_cache = {"instruments": result, "updated": datetime.utcnow().isoformat()}
     _markets_ts = time.time()
