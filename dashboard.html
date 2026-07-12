@@ -49,6 +49,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .post-meta{font-size:11px;color:var(--muted)}
 .post-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.4}
 .post-body{font-size:13px;color:var(--muted);line-height:1.7}
+.post-preview{font-size:13px;color:var(--muted);line-height:1.7;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.post-readmore{display:flex;justify-content:flex-end;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.feed-modal-wrap{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);overflow-y:auto;padding:32px 20px}
+.feed-modal-inner{max-width:800px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:40px 48px;position:relative}
+.feed-modal-close{position:absolute;top:16px;right:16px;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;width:32px;height:32px;font-size:16px;line-height:32px;text-align:center;transition:color .15s}
+.feed-modal-close:hover{color:var(--text)}
 .post-body h2{font-size:16px;font-weight:700;color:var(--text);margin:14px 0 5px;line-height:1.3}
 .post-body h3{font-size:14px;font-weight:700;color:var(--a2);margin:10px 0 4px;line-height:1.3}
 .post-body p{margin:5px 0}
@@ -469,8 +475,8 @@ tbody td{padding:7px 11px;vertical-align:middle}
     </div>
     <div id="txh-wrap" style="display:none">
       <div class="tw"><table>
-        <thead><tr><th>Type</th><th>Ticker</th><th>Date</th><th>Sold</th><th>Shares</th><th>Buy $</th><th>Sell $</th><th>Invested</th><th>Proceeds</th><th>P&amp;L</th></tr></thead>
-        <tbody id="closed-tbody"><tr><td colspan="10" style="text-align:center;padding:18px;color:var(--muted)">No transactions</td></tr></tbody>
+        <thead><tr><th>Type</th><th>Ticker</th><th>Date</th><th>Sold</th><th>Shares</th><th>Buy $</th><th>Sell $</th><th>Invested</th><th>Proceeds</th><th>P&amp;L</th><th>OGM</th></tr></thead>
+        <tbody id="closed-tbody"><tr><td colspan="11" style="text-align:center;padding:18px;color:var(--muted)">No transactions</td></tr></tbody>
       </table></div>
     </div>
   </div>
@@ -764,6 +770,15 @@ tbody td{padding:7px 11px;vertical-align:middle}
       </div>
     </div>
   </div>
+  <!-- FEED MODAL -->
+  <div class="feed-modal-wrap" id="feed-modal" onclick="if(event.target===this)closeFeedModal()">
+    <div class="feed-modal-inner">
+      <button class="feed-modal-close" onclick="closeFeedModal()">&#10005;</button>
+      <div id="feed-modal-meta" style="display:flex;align-items:center;gap:10px;margin-bottom:14px"></div>
+      <h2 id="feed-modal-title" style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:24px;line-height:1.3"></h2>
+      <div id="feed-modal-body" class="post-body" style="font-size:14px;line-height:1.9"></div>
+    </div>
+  </div>
   <!-- MY PORTFOLIO -->
   <div class="sec" id="sec-myportfolio"><div style="max-width:700px;margin:80px auto;text-align:center;color:var(--muted)"><div style="font-size:52px;margin-bottom:16px">&#128100;</div><h2 style="font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px">My Portfolio</h2><p>Prihaja kmalu.</p></div></div>
   <!-- COMMUNITY -->
@@ -933,20 +948,42 @@ function navToFeed(section){
   history.replaceState(null,'','#feed-'+_feedSection);
   navTo('feed');
 }
+let _feedPostsForModal=[];
+function extractPreview(html){
+  const tmp=document.createElement('div');tmp.innerHTML=html;
+  return(tmp.textContent||tmp.innerText||'').trim();
+}
 function renderFeedPosts(posts){
   const el=document.getElementById('feed-posts');
   if(!el)return;
   if(!posts.length){el.innerHTML='<div class="feed-empty">&#128240; Ni objav še.</div>';return;}
-  el.innerHTML=posts.map(p=>`
+  _feedPostsForModal=posts;
+  el.innerHTML=posts.map((p,i)=>`
     <div class="post-card">
       <div class="post-card-top">
         <span class="post-cat">${p.category}</span>
         <span class="post-meta">${p.author} &middot; ${p.date}</span>
       </div>
       <div class="post-title">${p.title}</div>
-      <div class="post-body">${p.content}</div>
+      <div class="post-preview">${extractPreview(p.content)}</div>
+      <div class="post-readmore">
+        <button class="btn-sm" onclick="openFeedModal(${i})" style="font-size:11px">Read more &rarr;</button>
+      </div>
     </div>`).join('');
 }
+function openFeedModal(i){
+  const p=_feedPostsForModal[i];if(!p)return;
+  document.getElementById('feed-modal-meta').innerHTML=`<span class="post-cat">${p.category}</span><span class="post-meta">${p.author} &middot; ${p.date}</span>`;
+  document.getElementById('feed-modal-title').textContent=p.title;
+  document.getElementById('feed-modal-body').innerHTML=p.content;
+  document.getElementById('feed-modal').style.display='';
+  document.body.style.overflow='hidden';
+}
+function closeFeedModal(){
+  document.getElementById('feed-modal').style.display='none';
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFeedModal();});
 async function adminPost(){
   const pw=document.getElementById('adm-pw').value;
   const title=document.getElementById('adm-title').value.trim();
@@ -1502,8 +1539,9 @@ function renderTxHistory(d){
     for(const lot of (pos.lots||[])){
       rows.push({
         type:'BUY',ticker,date:lot.open_date||'—',sell_date:null,
-        shares:lot.shares,buy_price:lot.buy_price||(lot.invested/lot.shares)||0,
-        sell_price:null,invested:lot.invested,proceeds:null,pnl:null,open:true
+        shares:lot.shares,buy_price:lot.cost_basis||(lot.invested/lot.shares)||0,
+        sell_price:null,invested:lot.invested,proceeds:null,pnl:null,open:true,
+        ogm:lot.ogm_score??null
       });
     }
   }
@@ -1512,12 +1550,13 @@ function renderTxHistory(d){
     rows.push({
       type:'SELL',ticker:c.ticker,date:c.buy_date||'—',sell_date:c.sell_date||'—',
       shares:c.shares,buy_price:c.buy_price,sell_price:c.sell_price,
-      invested:c.invested,proceeds:c.proceeds,pnl:(c.proceeds||0)-(c.invested||0),open:false
+      invested:c.invested,proceeds:c.proceeds,pnl:(c.proceeds||0)-(c.invested||0),open:false,
+      ogm:c.ogm_score??null
     });
   }
   // Sort newest first by buy date
   rows.sort((a,b)=>b.date.localeCompare(a.date));
-  if(!rows.length){document.getElementById('closed-tbody').innerHTML='<tr><td colspan="10" style="text-align:center;padding:18px;color:var(--muted)">No transactions yet</td></tr>';return;}
+  if(!rows.length){document.getElementById('closed-tbody').innerHTML='<tr><td colspan="11" style="text-align:center;padding:18px;color:var(--muted)">No transactions yet</td></tr>';return;}
   document.getElementById('closed-tbody').innerHTML=rows.map(r=>{
     const typeBadge=r.open
       ?`<span class="badge bb">BUY (open)</span>`
@@ -1533,6 +1572,7 @@ function renderTxHistory(d){
       <td class="mt">${usd(r.invested)}</td>
       <td>${r.proceeds!=null?usd(r.proceeds):'—'}</td>
       <td class="${r.pnl!=null?pCls(r.pnl):''}">${r.pnl!=null?(r.pnl>=0?'+':'')+usd(Math.abs(r.pnl)):'—'}</td>
+      <td class="mt" style="font-weight:700;color:${r.ogm!=null?(r.ogm>=70?'#4ade80':r.ogm>=50?'#fbbf24':'#f87171'):'var(--muted)'}">${r.ogm!=null?r.ogm:'—'}</td>
     </tr>`;
   }).join('');
 }

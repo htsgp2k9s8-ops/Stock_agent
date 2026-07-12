@@ -1377,9 +1377,17 @@ def portfolio_buy(req: BuyRequest):
     except Exception:
         company, sector = ticker, "N/A"
 
+    # Look up OGM score from last scan cache
+    ogm_score = None
+    for r in _cache.get("results", []):
+        if str(r.get("ticker", "")).upper() == ticker:
+            ogm_score = r.get("ogm")
+            break
+
     lot = {"shares": round(req.amount / price, 6), "cost_basis": round(price, 4),
            "invested": round(req.amount, 2), "open_date": buy_date,
-           "company": company, "sector": sector}
+           "company": company, "sector": sector,
+           "ogm_score": ogm_score}
     p["positions"].setdefault(ticker, []).append(lot)
     p["cash"] = round(p["cash"] - req.amount, 2)
 
@@ -1428,7 +1436,8 @@ def portfolio_sell(req: SellRequest):
                                 "sell_date": today, "shares": round(lot["shares"], 6),
                                 "buy_price": lot["cost_basis"], "sell_price": round(price, 4),
                                 "invested": lot["invested"],
-                                "proceeds": round(lot["shares"] * price, 2)})
+                                "proceeds": round(lot["shares"] * price, 2),
+                                "ogm_score": lot.get("ogm_score")})
             remaining -= lot["shares"]
         else:
             frac = remaining / lot["shares"]
@@ -1437,7 +1446,8 @@ def portfolio_sell(req: SellRequest):
                                 "sell_date": today, "shares": round(remaining, 6),
                                 "buy_price": lot["cost_basis"], "sell_price": round(price, 4),
                                 "invested": round(lot["invested"] * frac, 2),
-                                "proceeds": round(remaining * price, 2)})
+                                "proceeds": round(remaining * price, 2),
+                                "ogm_score": lot.get("ogm_score")})
             nl = dict(lot)
             nl["shares"]   = round(lot["shares"]   - remaining, 6)
             nl["invested"] = round(lot["invested"] * (1 - frac), 2)
