@@ -44,8 +44,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .market-panel-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px}
 .mkt-row{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);gap:8px}
 .mkt-row:last-child{border-bottom:none}
-.mkt-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
-.mkt-badge-flag{font-size:18px;background:transparent}
+.mkt-badge{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;overflow:hidden}
 .mkt-name{flex:1;min-width:0}
 .mkt-label{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap}
 .mkt-sym{font-size:10px;color:var(--muted)}
@@ -983,15 +982,16 @@ async function loadMarkets(){
   }
 }
 
+function _flag(cc){return`<div class="mkt-badge" style="overflow:hidden;padding:0"><img src="https://flagcdn.com/w40/${cc}.png" style="width:100%;height:100%;object-fit:cover" loading="lazy"></div>`;}
 const MKT_BADGE={
-  spx:   '<div class="mkt-badge mkt-badge-flag">🇺🇸</div>',
-  ndx:   '<div class="mkt-badge mkt-badge-flag">🇺🇸</div>',
-  dji:   '<div class="mkt-badge mkt-badge-flag">🇺🇸</div>',
-  dax:   '<div class="mkt-badge mkt-badge-flag">🇩🇪</div>',
-  ftse:  '<div class="mkt-badge mkt-badge-flag">🇬🇧</div>',
-  cac:   '<div class="mkt-badge mkt-badge-flag">🇫🇷</div>',
-  nikkei:'<div class="mkt-badge mkt-badge-flag">🇯🇵</div>',
-  oil:   '<div class="mkt-badge" style="background:#1c1c1e">🛢️</div>',
+  spx:   _flag('us'),
+  ndx:   _flag('us'),
+  dji:   _flag('us'),
+  dax:   _flag('de'),
+  ftse:  _flag('gb'),
+  cac:   _flag('fr'),
+  nikkei:_flag('jp'),
+  oil:   '<div class="mkt-badge" style="background:#1c1c1e;font-size:15px">🛢️</div>',
   gold:  '<div class="mkt-badge" style="background:#b45309;color:#fff;font-size:11px;font-weight:800;letter-spacing:-.5px">Au</div>',
   silver:'<div class="mkt-badge" style="background:#52525b;color:#fff;font-size:11px;font-weight:800;letter-spacing:-.5px">Ag</div>',
   btc:   '<div class="mkt-badge" style="background:#ea580c;color:#fff;font-size:13px;font-weight:800">₿</div>',
