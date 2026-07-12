@@ -21,6 +21,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .tn-item{position:relative}
 .tn-link{display:flex;align-items:center;gap:5px;padding:7px 14px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:600;border-radius:7px;transition:background .15s,color .15s;white-space:nowrap;user-select:none}
 .tn-link:hover,.tn-link.active{color:var(--text);background:rgba(255,255,255,.06)}
+.tn-home{font-size:16px;padding:7px 10px}
 .tn-link.active{color:var(--a2)}
 .tn-has-dd:hover .tn-dd{display:block}
 .tn-dd{display:none;position:absolute;top:100%;left:0;background:var(--card);border:1px solid var(--border);border-radius:8px;min-width:190px;padding:10px 6px 6px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:300}
@@ -303,6 +304,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
     <div class="sb-logo-text"><h1>The Boring Million</h1><div class="tag">Stock Analysis Dashboard</div></div>
   </div>
   <div class="tn-links">
+    <div class="tn-item" onclick="navToFeed('weekly')" title="Home"><span class="tn-link tn-home">&#127968;</span></div>
     <div class="tn-item tn-has-dd">
       <span class="tn-link" id="tnl-feed">Feed &#9662;</span>
       <div class="tn-dd">
