@@ -976,7 +976,7 @@ function openFeedModal(i){
   document.getElementById('feed-modal-meta').innerHTML=`<span class="post-cat">${p.category}</span><span class="post-meta">${p.author} &middot; ${p.date}</span>`;
   document.getElementById('feed-modal-title').textContent=p.title;
   document.getElementById('feed-modal-body').innerHTML=p.content;
-  document.getElementById('feed-modal').style.display='';
+  document.getElementById('feed-modal').style.display='block';
   document.body.style.overflow='hidden';
 }
 function closeFeedModal(){
