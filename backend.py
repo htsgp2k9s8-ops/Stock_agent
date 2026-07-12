@@ -1295,11 +1295,22 @@ def get_portfolio():
     with open(PORTFOLIO_FILE, encoding="utf-8") as f:
         p = json.load(f)
 
+    # Build OGM lookup from cache for retroactive enrichment
+    _ogm_from_cache = {
+        str(r.get("ticker", "")).upper(): r.get("ogm")
+        for r in _cache.get("results", [])
+        if r.get("ogm") is not None
+    }
+
     positions = {}
     total_invested = 0.0
     total_value    = float(p.get("cash", 0))
 
     for ticker, lots in p.get("positions", {}).items():
+        # Enrich lots that have no stored OGM score
+        for lot in lots:
+            if lot.get("ogm_score") is None and ticker.upper() in _ogm_from_cache:
+                lot["ogm_score"] = _ogm_from_cache[ticker.upper()]
         try:
             price, _ = _live_price(ticker)
             if not price:
@@ -1326,6 +1337,13 @@ def get_portfolio():
         except Exception:
             continue
 
+    # Enrich closed positions that have no stored OGM score
+    closed = p.get("closed_positions", [])
+    for cp in closed:
+        t = str(cp.get("ticker", "")).upper()
+        if cp.get("ogm_score") is None and t in _ogm_from_cache:
+            cp["ogm_score"] = _ogm_from_cache[t]
+
     starting = float(p.get("starting_cash", 50000))
     total_pnl = total_value - starting
     return {
@@ -1336,7 +1354,7 @@ def get_portfolio():
         "total_pnl":      round(total_pnl, 2),
         "total_pnl_pct":  round(total_pnl / starting * 100, 2) if starting else 0,
         "positions":      positions,
-        "closed_positions": p.get("closed_positions", []),
+        "closed_positions": closed,
         "created":        p.get("created"),
     }
 
