@@ -1100,55 +1100,106 @@ def _run_scan(scan_date_str: str | None = None):
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
-    # ── Session with browser User-Agent ──────────────────────────────────────
-    import requests as _requests
-    _session = _requests.Session()
-    _session.headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-    })
+    # ── Phase 1: batch fundamentals via yahooquery (50 tickers / request) ───────
+    from yahooquery import Ticker as YQTicker
 
-    for i, ticker in enumerate(tickers, 1):
-        _cache["scan_done"] = i
-        if i % 50 == 0:
-            print(f"  [{i}/{len(tickers)}] found={len(stocks)}")
+    def _yqv(d, *keys):
+        if not isinstance(d, dict):
+            return None
+        for k in keys:
+            v = d.get(k)
+            if v is not None:
+                try:
+                    if not pd.isna(v):
+                        return v
+                except Exception:
+                    return v
+        return None
+
+    YQ_BATCH   = 50
+    candidates = []   # [{ticker, mcap, rev_growth, gross_margin, eps_growth, peg, short_name, sector, target_price}]
+
+    print(f"[SCAN] Phase 1 — yahooquery batch fundamentals for {len(tickers)} tickers…")
+    for _pi in range(0, len(tickers), YQ_BATCH):
+        _pbatch = tickers[_pi:_pi + YQ_BATCH]
+        _cache["scan_done"] = _pi + len(_pbatch)
         try:
-            t    = yf.Ticker(ticker, session=_session)
-            info = t.info
+            _yq  = YQTicker(_pbatch, validate=False)
+            _fin = _yq.financial_data
+            _sum = _yq.summary_detail
+            _kst = _yq.key_stats
+            _qt  = _yq.quote_type
+            _ap  = _yq.asset_profile
+            for _tk in _pbatch:
+                _fd = _fin.get(_tk) if isinstance(_fin, dict) else {}
+                _sd = _sum.get(_tk) if isinstance(_sum, dict) else {}
+                _ks = _kst.get(_tk) if isinstance(_kst, dict) else {}
+                _q  = _qt.get(_tk)  if isinstance(_qt,  dict) else {}
+                _a  = _ap.get(_tk)  if isinstance(_ap,  dict) else {}
+                if not isinstance(_fd, dict): _fd = {}
+                if not isinstance(_sd, dict): _sd = {}
+                if not isinstance(_ks, dict): _ks = {}
+                if not isinstance(_q,  dict): _q  = {}
+                if not isinstance(_a,  dict): _a  = {}
 
-            if not info or len(info) < 5:
-                time.sleep(2.0)
-                info = t.info
-            if not info or len(info) < 5:
-                continue
+                _mc = _yqv(_sd, "marketCap") or _yqv(_ks, "marketCap")
+                if not _mc or _mc < MIN_MARKET_CAP:
+                    continue
+                _rg = _safe(_yqv(_fd, "revenueGrowth"))
+                if not scan_date and _rg < MIN_REV_GROWTH:
+                    continue
+                candidates.append({
+                    "ticker":       _tk,
+                    "mcap":         _mc,
+                    "rev_growth":   _rg,
+                    "gross_margin": _safe(_yqv(_fd, "grossMargins")),
+                    "eps_growth":   _safe(_yqv(_fd, "earningsGrowth") or _yqv(_ks, "earningsQuarterlyGrowth")),
+                    "peg":          _safe(_yqv(_ks, "pegRatio")),
+                    "short_name":   _yqv(_q, "shortName", "longName") or _tk,
+                    "sector":       _yqv(_a, "sector") or "N/A",
+                    "target_price": _safe(_yqv(_fd, "targetMeanPrice")),
+                })
+        except Exception as _pe:
+            print(f"[SCAN] Ph1 batch {_pi//YQ_BATCH}: {_pe}")
+        time.sleep(0.3)
 
-            mcap = info.get("marketCap")
-            if not mcap or pd.isna(mcap) or mcap < MIN_MARKET_CAP:
-                continue
+    print(f"[SCAN] Phase 1 → {len(candidates)} candidates; starting Phase 2…")
+    _cache["scan_total"] = len(candidates)
+    _cache["scan_done"]  = 0
 
-            rev_growth   = _safe(info.get("revenueGrowth"))
-            gross_margin = _safe(info.get("grossMargins"))
-            eps_growth   = _safe(info.get("earningsQuarterlyGrowth") or info.get("earningsGrowth"))
-            peg          = _safe(info.get("pegRatio"))
-
-            # skip weak revenue growth for live scans only
-            if not scan_date and rev_growth < MIN_REV_GROWTH:
-                continue
-
-            # ── Price history ─────────────────────────────────────────────────
+    # ── Phase 2: price history + OGM scoring for candidates ──────────────────
+    for i, cand in enumerate(candidates, 1):
+        ticker       = cand["ticker"]
+        mcap         = cand["mcap"]
+        rev_growth   = cand["rev_growth"]
+        gross_margin = cand["gross_margin"]
+        eps_growth   = cand["eps_growth"]
+        peg          = cand["peg"]
+        _cache["scan_done"] = i
+        if i % 20 == 0:
+            print(f"  [{i}/{len(candidates)}] found={len(stocks)}")
+        try:
+            _yqt = YQTicker(ticker, validate=False)
             dl_end = (scan_date + timedelta(days=8)).strftime("%Y-%m-%d") if scan_date else None
-            data   = t.history(start="2010-01-01", end=dl_end, interval="1wk", actions=False)
-            if data is None or data.empty or len(data) < 52:
+            data   = _yqt.history(start="2010-01-01", end=dl_end, interval="1wk")
+
+            # yahooquery returns MultiIndex (symbol, date) when batched; flatten it
+            if isinstance(data, pd.DataFrame) and isinstance(data.index, pd.MultiIndex):
+                try:
+                    data = data.xs(ticker, level=0)
+                except KeyError:
+                    continue
+
+            if data is None or not isinstance(data, pd.DataFrame) or data.empty or len(data) < 52:
                 continue
             if scan_date:
                 data = _slice_to_date(data, scan_date)
             if len(data) < 52:
                 continue
-            if isinstance(data.columns, pd.MultiIndex):
-                data.columns = data.columns.get_level_values(0)
 
-            close = data["Close"].dropna()
+            # yahooquery uses lowercase column names
+            _cc  = "close" if "close" in data.columns else "Close"
+            close = data[_cc].dropna()
             if len(close) < 205:
                 continue
 
@@ -1214,11 +1265,12 @@ def _run_scan(scan_date_str: str | None = None):
             price_1m     = float(close.iloc[-5]) if len(close) >= 5 else price_now
             donos_1m     = (price_now - price_1m) / price_1m * 100
 
-            ytd_idx    = close.index[close.index.year == leto]
-            ytd_start  = float(close.loc[ytd_idx[0]]) if len(ytd_idx) > 0 else float(close.iloc[-22])
+            _close_dates = close.index.normalize() if hasattr(close.index, "normalize") else close.index
+            ytd_idx    = [d for d in _close_dates if d.year == leto]
+            ytd_start  = float(close.iloc[list(_close_dates).index(ytd_idx[0])]) if ytd_idx else float(close.iloc[-22])
             donos_ytd  = (price_now - ytd_start) / ytd_start * 100
 
-            ma_short = close.rolling(4).mean()   # 4-week (~1 month), matches A18
+            ma_short = close.rolling(4).mean()
             falling  = float(ma_short.iloc[-1]) < float(ma.iloc[-1])
             if ogm_now >= 80:                     status = "STRONG BUY"
             elif falling:                         status = "WARNING (FALLING PHASE)"
@@ -1229,12 +1281,12 @@ def _run_scan(scan_date_str: str | None = None):
             # ── Assemble output ───────────────────────────────────────────────
             summary = {
                 "ticker":       ticker,
-                "ime":          info.get("shortName") or ticker,
-                "sektor":       info.get("sector", "N/A"),
+                "ime":          cand["short_name"],
+                "sektor":       cand["sector"],
                 "ogm":          round(ogm_now, 1),
                 "status":       status,
                 "cena":         round(price_now, 2),
-                "target_price": round(_safe(info.get("targetMeanPrice")), 2),
+                "target_price": round(cand["target_price"], 2),
                 "mcap":         _fmt_mcap(mcap),
                 "rev_growth":   round(rev_growth * 100, 1),
                 "dist_ma":      round(dist_now, 1),
@@ -1245,9 +1297,9 @@ def _run_scan(scan_date_str: str | None = None):
             }
             stocks.append(summary)
 
-            datumi = [d.strftime("%Y-%m-%d") for d in close.index]
-            ma50_l = [0 if pd.isna(v) else round(float(v),2) for v in close.rolling(50).mean()]
-            ma200_l= [0 if pd.isna(v) else round(float(v),2) for v in close.rolling(200).mean()]
+            datumi  = [d.strftime("%Y-%m-%d") for d in close.index]
+            ma50_l  = [0 if pd.isna(v) else round(float(v),2) for v in close.rolling(50).mean()]
+            ma200_l = [0 if pd.isna(v) else round(float(v),2) for v in close.rolling(200).mean()]
 
             chart_data[ticker] = {
                 **summary,
@@ -1267,7 +1319,7 @@ def _run_scan(scan_date_str: str | None = None):
                 },
             }
 
-            time.sleep(0.04)
+            time.sleep(0.05)
 
         except Exception:
             continue
