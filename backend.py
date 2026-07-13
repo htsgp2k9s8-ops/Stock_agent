@@ -1566,16 +1566,25 @@ def portfolio_sell(req: SellRequest):
 
 
 def _live_price(ticker: str):
+    from yahooquery import Ticker as YQTicker
+    # Try yahooquery price module first (lightweight, less rate-limited)
     try:
-        info  = yf.Ticker(ticker).info
-        price = (info.get("regularMarketPrice") or info.get("currentPrice")
-                 or info.get("previousClose"))
-        if not price:
-            h = yf.Ticker(ticker).history(period="5d", auto_adjust=True)
-            price = float(h["Close"].iloc[-1]) if not h.empty else None
-        return price, info
+        _yqp = YQTicker(ticker, validate=False).price.get(ticker)
+        if isinstance(_yqp, dict):
+            _p = _yqp.get("regularMarketPrice") or _yqp.get("regularMarketPreviousClose")
+            if _p:
+                return float(_p), _yqp
     except Exception:
-        return None, {}
+        pass
+    # Fallback: yfinance chart endpoint (v8, different from quoteSummary)
+    try:
+        _h = yf.download(ticker, period="5d", interval="1d",
+                         auto_adjust=True, progress=False, multi_level_index=False)
+        if not _h.empty:
+            return float(_h["Close"].iloc[-1]), {}
+    except Exception:
+        pass
+    return None, {}
 
 
 def _hist_price(ticker: str, date_str: str):
