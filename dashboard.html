@@ -1203,14 +1203,16 @@ async function pollScanStatus(){
     const btn=document.getElementById('btn-scan');
     if(d.scanning){
       const done=d.scan_done||0, total=d.scan_total||0;
-      const progTxt = total>0 ? ` <span style="color:var(--muted);font-size:11px">${done} / ${total} delnic</span>` : '';
-      document.getElementById('scan-txt').innerHTML=`<span class="spin"></span>Scanning…${progTxt}`;
+      const ph1=(d.scan_phase||2)===1;
+      const progTxt = total>0 ? ` <span style="color:var(--muted);font-size:11px">${done} / ${total}</span>` : '';
+      document.getElementById('scan-txt').innerHTML=`<span class="spin"></span>${ph1?'Predfiltriranje':'Skeniranje'}…${progTxt}`;
       btn.disabled=true;
       if(!_scanPoll)_scanPoll=setInterval(async()=>{
         try{const r2=await fetch(API+'/api/scan/status');const d2=await r2.json();
           const d2done=d2.scan_done||0, d2total=d2.scan_total||0;
-          const p2 = d2total>0 ? ` <span style="color:var(--muted);font-size:11px">${d2done} / ${d2total} delnic</span>` : '';
-          document.getElementById('scan-txt').innerHTML=`<span class="spin"></span>Scanning…${p2}`;
+          const ph2=(d2.scan_phase||2)===1;
+          const p2 = d2total>0 ? ` <span style="color:var(--muted);font-size:11px">${d2done} / ${d2total}</span>` : '';
+          document.getElementById('scan-txt').innerHTML=`<span class="spin"></span>${ph2?'Predfiltriranje':'Skeniranje'}…${p2}`;
           if(!d2.scanning){clearInterval(_scanPoll);_scanPoll=null;loadScanner();}
         }catch{clearInterval(_scanPoll);_scanPoll=null;}
       },2000);
