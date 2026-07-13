@@ -65,8 +65,5 @@ Single_stock_sreen.py
 xetra_delnice.csv
 moje_globalne_delnice_50.csv
 
-# Runtime cache files — managed by the server, not tracked in git
+# Scan cache — regenerated daily, must not overwrite fresh data on deploy
 ogm_cache.json
-ogm_posts.json
-ogm_virtual_portfolio.json
-ogm_bottom_model.json

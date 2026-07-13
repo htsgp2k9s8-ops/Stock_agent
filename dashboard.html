@@ -799,15 +799,6 @@ tbody td{padding:7px 11px;vertical-align:middle}
         <h3 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px">OBJAVLJENI ČLANKI</h3>
         <div id="adm-posts-list"></div>
       </div>
-      <div style="margin-top:40px;border-top:1px solid var(--border);padding-top:24px">
-        <h3 style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px">&#128230; UVOZ PORTFELJA</h3>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Po redeploy-u Railway izgubi portfolio. Prilepi vsebino <code>ogm_virtual_portfolio.json</code> in klikni Uvozi.</p>
-        <textarea id="portfolio-import-json" rows="6" placeholder='{"cash": 5000, "positions": {...}}' style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;color:var(--text);resize:vertical"></textarea>
-        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-          <button class="btn" onclick="importPortfolio()">&#128230; Uvozi portfolio</button>
-          <span id="import-portfolio-msg" style="font-size:12px"></span>
-        </div>
-      </div>
     </div>
   </div>
   <!-- FEED MODAL -->
@@ -1106,21 +1097,6 @@ function closeFeedModal(){
   document.body.style.overflow='';
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFeedModal();});
-async function importPortfolio(){
-  const pw=document.getElementById('adm-pw').value;
-  const raw=document.getElementById('portfolio-import-json').value.trim();
-  const msg=document.getElementById('import-portfolio-msg');
-  if(!pw){msg.style.color='var(--red)';msg.textContent='Vnesi geslo zgoraj.';return;}
-  let parsed;
-  try{parsed=JSON.parse(raw);}catch(e){msg.style.color='var(--red)';msg.textContent='Neveljaven JSON: '+e.message;return;}
-  try{
-    const r=await fetch(API+'/api/portfolio/import',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Key':pw},body:JSON.stringify(parsed)});
-    const d=await r.json();
-    if(!r.ok)throw new Error(d.detail||'Napaka');
-    msg.style.color='var(--green)';msg.textContent='✓ '+d.message;
-    document.getElementById('portfolio-import-json').value='';
-  }catch(e){msg.style.color='var(--red)';msg.textContent=''+e.message;}
-}
 async function adminPost(){
   const pw=document.getElementById('adm-pw').value;
   const title=document.getElementById('adm-title').value.trim();

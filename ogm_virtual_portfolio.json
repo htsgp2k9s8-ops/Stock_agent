@@ -1,0 +1,221 @@
+{
+  "cash": 6182.17,
+  "starting_cash": 50000.0,
+  "created": "2026-06-25",
+  "positions": {
+    "MSFT": [
+      {
+        "shares": 13.681388,
+        "cost_basis": 365.46,
+        "invested": 5000.0,
+        "open_date": "2026-06-25",
+        "company": "Microsoft Corporation",
+        "sector": "Technology"
+      },
+      {
+        "shares": 27.362776,
+        "cost_basis": 365.46,
+        "invested": 10000.0,
+        "open_date": "2026-06-25",
+        "company": "Microsoft Corporation",
+        "sector": "Technology"
+      }
+    ],
+    "MA": [
+      {
+        "shares": 11.122626,
+        "cost_basis": 449.5341,
+        "invested": 5000.0,
+        "open_date": "2024-06-21",
+        "company": "Mastercard Incorporated",
+        "sector": "Financial Services"
+      },
+      {
+        "shares": 31.809989,
+        "cost_basis": 471.55,
+        "invested": 15000.0,
+        "open_date": "2026-06-03",
+        "company": "Mastercard Incorporated",
+        "sector": "Financial Services"
+      }
+    ],
+    "META": [
+      {
+        "shares": 7.760296,
+        "cost_basis": 644.3053,
+        "invested": 5000.0,
+        "open_date": "2025-01-24",
+        "company": "Meta Platforms, Inc.",
+        "sector": "Communication Services"
+      },
+      {
+        "shares": 17.931752,
+        "cost_basis": 557.67,
+        "invested": 10000.0,
+        "open_date": "2026-06-25",
+        "company": "Meta Platforms, Inc.",
+        "sector": "Communication Services"
+      }
+    ],
+    "NVDA": [
+      {
+        "shares": 35.110555,
+        "cost_basis": 142.4073,
+        "invested": 5000.0,
+        "open_date": "2025-01-24",
+        "company": "NVIDIA Corporation",
+        "sector": "Technology"
+      },
+      {
+        "shares": 51.382181,
+        "cost_basis": 194.62,
+        "invested": 10000.0,
+        "open_date": "2026-06-25",
+        "company": "NVIDIA Corporation",
+        "sector": "Technology"
+      }
+    ],
+    "MU": [
+      {
+        "shares": 8.819964,
+        "cost_basis": 93.2551,
+        "invested": 822.51,
+        "open_date": "2025-02-05",
+        "company": "Micron Technology, Inc.",
+        "sector": "Technology"
+      }
+    ],
+    "B": [
+      {
+        "shares": 335.227951,
+        "cost_basis": 14.9152,
+        "invested": 5000.0,
+        "open_date": "2024-03-20",
+        "company": "Barrick Mining Corporation",
+        "sector": "Basic Materials"
+      }
+    ],
+    "AMZN": [
+      {
+        "shares": 26.740829,
+        "cost_basis": 186.98,
+        "invested": 5000.0,
+        "open_date": "2024-07-31",
+        "company": "Amazon.com, Inc.",
+        "sector": "Consumer Cyclical"
+      }
+    ],
+    "PLTR": [
+      {
+        "shares": 132.15859,
+        "cost_basis": 113.5,
+        "invested": 15000.0,
+        "open_date": "2026-06-25",
+        "company": "Palantir Technologies Inc.",
+        "sector": "Technology"
+      }
+    ],
+    "SPGI": [
+      {
+        "shares": 37.280974,
+        "cost_basis": 402.35,
+        "invested": 15000.0,
+        "open_date": "2026-06-25",
+        "company": "S&P Global Inc.",
+        "sector": "Financial Services"
+      }
+    ],
+    "ORCL": [
+      {
+        "shares": 63.479972,
+        "cost_basis": 157.53,
+        "invested": 10000.0,
+        "open_date": "2026-06-25",
+        "company": "Oracle Corporation",
+        "sector": "Technology"
+      }
+    ],
+    "ICE": [
+      {
+        "shares": 57.683433,
+        "cost_basis": 130.02,
+        "invested": 7500.0,
+        "open_date": "2026-06-25",
+        "company": "Intercontinental Exchange Inc.",
+        "sector": "Financial Services"
+      }
+    ],
+    "NFLX": [
+      {
+        "shares": 139.198218,
+        "cost_basis": 71.84,
+        "invested": 10000.0,
+        "open_date": "2026-06-25",
+        "company": "Netflix, Inc.",
+        "sector": "Communication Services"
+      }
+    ],
+    "MELI": [
+      {
+        "shares": 6.42137,
+        "cost_basis": 1557.3,
+        "invested": 10000.0,
+        "open_date": "2026-05-11",
+        "company": "MercadoLibre, Inc.",
+        "sector": "Consumer Cyclical"
+      }
+    ],
+    "SAP": [
+      {
+        "shares": 58.788946,
+        "cost_basis": 170.1,
+        "invested": 10000.0,
+        "open_date": "2026-05-11",
+        "company": "SAP  SE",
+        "sector": "Technology"
+      }
+    ]
+  },
+  "closed_positions": [
+    {
+      "ticker": "TSM",
+      "buy_date": "2025-02-26",
+      "sell_date": "2026-06-24",
+      "shares": 26.171771,
+      "buy_price": 191.0455,
+      "sell_price": 440.83,
+      "invested": 5000.0,
+      "proceeds": 11537.3
+    },
+    {
+      "ticker": "AMD",
+      "buy_date": "2025-01-29",
+      "sell_date": "2026-06-24",
+      "shares": 42.607585,
+      "buy_price": 117.35,
+      "sell_price": 519.74,
+      "invested": 5000.0,
+      "proceeds": 22144.87
+    },
+    {
+      "ticker": "MU",
+      "buy_date": "2024-07-31",
+      "sell_date": "2026-06-24",
+      "shares": 45.80834,
+      "buy_price": 109.1504,
+      "sell_price": 1048.51,
+      "invested": 5000.0,
+      "proceeds": 48030.5
+    },
+    {
+      "ticker": "MU",
+      "buy_date": "2025-02-05",
+      "sell_date": "2026-06-24",
+      "shares": 53.615606,
+      "buy_price": 93.2551,
+      "sell_price": 1048.51,
+      "invested": 4999.93,
+      "proceeds": 56216.5
+    }
+  ]
+}

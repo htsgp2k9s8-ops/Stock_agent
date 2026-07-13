@@ -1365,19 +1365,6 @@ def _run_scan(scan_date_str: str | None = None):
 PORTFOLIO_FILE = "ogm_virtual_portfolio.json"
 
 
-@app.post("/api/portfolio/import")
-def portfolio_import(payload: dict, x_admin_key: str = Header(None)):
-    """Restore portfolio from a JSON backup. Requires X-Admin-Key header."""
-    if x_admin_key != ADMIN_PASSWORD:
-        raise HTTPException(status_code=403, detail="Unauthorized")
-    required = {"cash", "positions"}
-    if not required.issubset(payload.keys()):
-        raise HTTPException(status_code=400, detail=f"Missing keys: {required - payload.keys()}")
-    with open(PORTFOLIO_FILE, "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2)
-    return {"message": f"Portfolio imported — {len(payload.get('positions', {}))} positions, cash ${payload.get('cash', 0):.2f}"}
-
-
 class BuyRequest(BaseModel):
     ticker: str
     amount: float

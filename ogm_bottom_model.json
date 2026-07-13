@@ -1,0 +1,152 @@
+{
+  "weights": {
+    "rsi": 66.7,
+    "drop_pct": 12.0,
+    "dist_50": 5.6,
+    "dist_200": 15.2,
+    "vol_ratio": 0.5
+  },
+  "scales": {
+    "rsi": 15.75,
+    "drop_pct": 17.57,
+    "dist_50": 13.6,
+    "dist_200": 27.64,
+    "vol_ratio": 1.5
+  },
+  "mus": {
+    "rsi": 30.7,
+    "drop_pct": -44.91,
+    "dist_50": -22.72,
+    "dist_200": -9.89,
+    "vol_ratio": 1.44
+  },
+  "trained_at": "2026-07-02T22:35:59.289172",
+  "n_pos": 104,
+  "n_neg": 2176,
+  "mean_bottom_score": 86.2,
+  "std_bottom_score": 10.0,
+  "mean_non_bottom_score": 27.4,
+  "separation": 58.8,
+  "ticker_stats": [
+    {
+      "ticker": "MSFT",
+      "n_bottoms": 2
+    },
+    {
+      "ticker": "AAPL",
+      "n_bottoms": 4
+    },
+    {
+      "ticker": "META",
+      "n_bottoms": 3
+    },
+    {
+      "ticker": "AMZN",
+      "n_bottoms": 4
+    },
+    {
+      "ticker": "NVDA",
+      "n_bottoms": 2
+    },
+    {
+      "ticker": "GOOGL",
+      "n_bottoms": 3
+    },
+    {
+      "ticker": "TSLA",
+      "n_bottoms": 10
+    },
+    {
+      "ticker": "MELI",
+      "n_bottoms": 6
+    },
+    {
+      "ticker": "COST",
+      "n_bottoms": 0
+    },
+    {
+      "ticker": "NFLX",
+      "n_bottoms": 4
+    },
+    {
+      "ticker": "PANW",
+      "n_bottoms": 4
+    },
+    {
+      "ticker": "CRWD",
+      "n_bottoms": 3
+    },
+    {
+      "ticker": "ADBE",
+      "n_bottoms": 3
+    },
+    {
+      "ticker": "CRM",
+      "n_bottoms": 7
+    },
+    {
+      "ticker": "INTU",
+      "n_bottoms": 2
+    },
+    {
+      "ticker": "V",
+      "n_bottoms": 1
+    },
+    {
+      "ticker": "MA",
+      "n_bottoms": 1
+    },
+    {
+      "ticker": "SHOP",
+      "n_bottoms": 5
+    },
+    {
+      "ticker": "DDOG",
+      "n_bottoms": 3
+    },
+    {
+      "ticker": "NET",
+      "n_bottoms": 4
+    },
+    {
+      "ticker": "PLTR",
+      "n_bottoms": 2
+    },
+    {
+      "ticker": "AVGO",
+      "n_bottoms": 1
+    },
+    {
+      "ticker": "AMD",
+      "n_bottoms": 6
+    },
+    {
+      "ticker": "MU",
+      "n_bottoms": 5
+    },
+    {
+      "ticker": "LRCX",
+      "n_bottoms": 3
+    },
+    {
+      "ticker": "KLAC",
+      "n_bottoms": 4
+    },
+    {
+      "ticker": "AMAT",
+      "n_bottoms": 5
+    },
+    {
+      "ticker": "TXN",
+      "n_bottoms": 4
+    },
+    {
+      "ticker": "SNPS",
+      "n_bottoms": 2
+    },
+    {
+      "ticker": "CDNS",
+      "n_bottoms": 1
+    }
+  ]
+}
