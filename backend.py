@@ -1100,70 +1100,31 @@ def _run_scan(scan_date_str: str | None = None):
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
-    # ── Session with Yahoo Finance cookies ───────────────────────────────────
+    # ── Session with browser User-Agent ──────────────────────────────────────
     import requests as _requests
     _session = _requests.Session()
     _session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-        "Accept": "*/*",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
     })
-    try:
-        _session.get("https://finance.yahoo.com/", timeout=15)
-        print("[SCAN] Yahoo Finance session initialised")
-    except Exception as _se:
-        print(f"[SCAN] Session init: {_se}")
 
-    # ── Phase 1: bulk market-cap pre-filter (1 request per 50 tickers) ───────
-    # Uses v7/finance/quote bulk endpoint → ~81 requests instead of 4012
-    print(f"[SCAN] Phase 1: bulk mcap filter for {len(tickers)} tickers…")
-    _cache["scan_phase"] = 1
-    _PH1_BATCH = 50
-    _large_caps: dict[str, float] = {}  # ticker → mcap from bulk quote
-    for _pi in range(0, len(tickers), _PH1_BATCH):
-        _pbatch = tickers[_pi:_pi + _PH1_BATCH]
-        _cache["scan_done"] = _pi + len(_pbatch)
-        try:
-            _pr = _session.get(
-                "https://query1.finance.yahoo.com/v7/finance/quote",
-                params={"symbols": ",".join(_pbatch)},
-                timeout=15,
-            )
-            for _pq in _pr.json().get("quoteResponse", {}).get("result", []):
-                _pmc = _pq.get("marketCap") or 0
-                if _pmc >= MIN_MARKET_CAP:
-                    _large_caps[_pq["symbol"]] = _pmc
-        except Exception as _pe:
-            # Fallback: include entire batch so we don't miss any stock
-            for _bt in _pbatch:
-                _large_caps.setdefault(_bt, 0)
-            print(f"[SCAN] Ph1 batch {_pi//50}: {_pe}")
-        time.sleep(0.15)
-
-    _scan_candidates = list(_large_caps.keys())
-    print(f"[SCAN] Phase 2: {len(_scan_candidates)} large-cap candidates from {len(tickers)}")
-    _cache["scan_phase"] = 2
-    _cache["scan_total"] = len(_scan_candidates)
-    _cache["scan_done"]  = 0
-
-    for i, ticker in enumerate(_scan_candidates, 1):
+    for i, ticker in enumerate(tickers, 1):
         _cache["scan_done"] = i
         if i % 50 == 0:
-            print(f"  [{i}/{len(_scan_candidates)}] found={len(stocks)}")
+            print(f"  [{i}/{len(tickers)}] found={len(stocks)}")
         try:
             t    = yf.Ticker(ticker, session=_session)
             info = t.info
 
-            # Retry once on empty response
             if not info or len(info) < 5:
-                time.sleep(1.0)
+                time.sleep(2.0)
                 info = t.info
             if not info or len(info) < 5:
                 continue
 
-            # Use bulk mcap as fallback if quoteSummary doesn't return it
-            mcap = info.get("marketCap") or _large_caps.get(ticker)
-            if not mcap or mcap < MIN_MARKET_CAP:
+            mcap = info.get("marketCap")
+            if not mcap or pd.isna(mcap) or mcap < MIN_MARKET_CAP:
                 continue
 
             rev_growth   = _safe(info.get("revenueGrowth"))
