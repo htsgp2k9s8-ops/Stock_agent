@@ -1099,33 +1099,21 @@ def _run_scan(scan_date_str: str | None = None):
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
-    # ── Stage 1: fast_info market-cap pre-filter (lighter endpoint) ──────────
-    print(f"[SCAN] Stage 1: market-cap pre-filter for {len(tickers)} tickers...")
-    large_cap_tickers = []
+    # ── Shared session with browser User-Agent (avoids Railway rate-limiting) ──
+    import requests as _requests
+    _session = _requests.Session()
+    _session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+    })
+
     for i, ticker in enumerate(tickers, 1):
         _cache["scan_done"] = i
-        if i % 100 == 0:
-            print(f"  [stage1 {i}/{len(tickers)}] large_cap={len(large_cap_tickers)}")
+        if i % 50 == 0:
+            print(f"  [{i}/{len(tickers)}] found={len(stocks)}")
         try:
-            fi   = yf.Ticker(ticker).fast_info
-            mcap = getattr(fi, 'market_cap', None) or getattr(fi, 'marketCap', None)
-            if mcap and not pd.isna(mcap) and mcap >= MIN_MARKET_CAP:
-                large_cap_tickers.append(ticker)
-        except Exception:
-            pass
-        time.sleep(0.05)
-
-    print(f"[SCAN] Stage 1 done: {len(large_cap_tickers)} large-cap tickers → Stage 2")
-    _cache["scan_total"] = len(large_cap_tickers)
-    _cache["scan_done"]  = 0
-
-    # ── Stage 2: full info + price history for large-cap only ────────────────
-    for i, ticker in enumerate(large_cap_tickers, 1):
-        _cache["scan_done"] = i
-        if i % 20 == 0:
-            print(f"  [stage2 {i}/{len(large_cap_tickers)}] found={len(stocks)}")
-        try:
-            t    = yf.Ticker(ticker)
+            t    = yf.Ticker(ticker, session=_session)
             info = t.info
 
             # Retry once if info came back empty (rate-limit hit)
@@ -1135,7 +1123,7 @@ def _run_scan(scan_date_str: str | None = None):
             if not info or len(info) < 5:
                 continue
 
-            mcap = info.get("marketCap") or getattr(yf.Ticker(ticker).fast_info, 'market_cap', None)
+            mcap = info.get("marketCap")
             if not mcap or pd.isna(mcap) or mcap < MIN_MARKET_CAP:
                 continue
 
@@ -1151,7 +1139,6 @@ def _run_scan(scan_date_str: str | None = None):
             # ── Price history ─────────────────────────────────────────────────
             dl_end = (scan_date + timedelta(days=8)).strftime("%Y-%m-%d") if scan_date else None
             data   = t.history(start="2010-01-01", end=dl_end, interval="1wk", actions=False)
-            time.sleep(0.1)
             if data is None or data.empty or len(data) < 52:
                 continue
             if scan_date:
