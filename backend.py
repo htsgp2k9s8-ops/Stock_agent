@@ -1383,13 +1383,32 @@ def get_portfolio():
     total_invested = 0.0
     total_value    = float(p.get("cash", 0))
 
+    # ── Batch price fetch for all portfolio tickers (1 request instead of N) ──
+    _port_tickers = list(p.get("positions", {}).keys())
+    _batch_prices: dict[str, float] = {}
+    if _port_tickers:
+        try:
+            from yahooquery import Ticker as YQTicker
+            _yqb  = YQTicker(_port_tickers, validate=False)
+            _pmap = _yqb.price
+            for _tkr in _port_tickers:
+                _pd = _pmap.get(_tkr)
+                if isinstance(_pd, dict):
+                    _pr = _pd.get("regularMarketPrice") or _pd.get("regularMarketPreviousClose")
+                    if _pr:
+                        _batch_prices[_tkr] = float(_pr)
+        except Exception as _be:
+            print(f"[PORTFOLIO] Batch price error: {_be}")
+
     for ticker, lots in p.get("positions", {}).items():
         # Enrich lots that have no stored OGM score
         for lot in lots:
             if lot.get("ogm_score") is None and ticker.upper() in _ogm_from_cache:
                 lot["ogm_score"] = _ogm_from_cache[ticker.upper()]
         try:
-            price, _ = _live_price(ticker)
+            price = _batch_prices.get(ticker)
+            if not price:
+                price, _ = _live_price(ticker)   # per-ticker fallback
             if not price:
                 continue
             shares    = sum(l["shares"]   for l in lots)
