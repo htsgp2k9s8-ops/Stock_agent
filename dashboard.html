@@ -1576,6 +1576,23 @@ async function loadPortfolioChart(){
       options:{animation:false,responsive:true,maintainAspectRatio:false,cutout:'60%',
         plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:10},boxWidth:12,padding:8}},tooltip:{callbacks:{label:c=>`${c.label}: $${Number(c.raw).toLocaleString('en-US',{maximumFractionDigits:0})}`}}}}});
     renderPerfTable(d);
+    // Overwrite header total with chart's last value (chart uses yf.history — reliable on Railway)
+    if(d.portfolio&&d.portfolio.length){
+      const chartTotal=d.portfolio[d.portfolio.length-1];
+      const startCash=d.starting_cash||50000;
+      const pnl=chartTotal-startCash;
+      const el=document.getElementById('port-stats');
+      if(el){
+        const cash=parseFloat(el.querySelector('.sc:nth-child(3) .sc-val')?.textContent?.replace(/[$,]/g,'')||0);
+        const invested=parseFloat(el.querySelector('.sc:nth-child(4) .sc-val')?.textContent?.replace(/[$,]/g,'')||0);
+        el.querySelector('.sc:nth-child(1) .sc-val').textContent=usd(chartTotal);
+        el.querySelector('.sc:nth-child(2) .sc-val').textContent=(pnl>=0?'+':'')+usd(Math.abs(pnl));
+        el.querySelector('.sc:nth-child(2) .sc-val').className='sc-val '+(pnl>=0?'pos':'neg');
+        const pct=startCash?pnl/startCash*100:0;
+        el.querySelector('.sc:nth-child(2) .sc-sub').textContent=(pct>=0?'+':'')+pct.toFixed(1)+' %';
+        el.querySelector('.sc:nth-child(2) .sc-sub').className='sc-sub '+(pct>=0?'pos':'neg');
+      }
+    }
   }catch(e){console.warn('Portfolio chart error',e);}
 }
 function renderPerfTable(d){
