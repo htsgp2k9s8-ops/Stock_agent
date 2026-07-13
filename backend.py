@@ -324,7 +324,6 @@ def _load_cache():
                 saved = json.load(f)
             _cache.update(saved)
             _cache["scanning"] = False
-            # Re-apply revenue growth filter in case cache was built with old code
             before = len(_cache["stocks"])
             _cache["stocks"] = [
                 s for s in _cache["stocks"]
@@ -334,9 +333,23 @@ def _load_cache():
             print(f"[API] Cache loaded — {len(_cache['stocks'])} stocks (removed {removed} low-revgrowth)")
         except Exception as e:
             print(f"[API] Cache load failed: {e}")
+
+    # Auto-scan at startup if cache is empty or older than 20 hours
+    _cache_age_h = 999
+    if _cache.get("updated_at"):
+        try:
+            _t = datetime.fromisoformat(_cache["updated_at"].replace("Z", ""))
+            _cache_age_h = (datetime.utcnow() - _t).total_seconds() / 3600
+        except Exception:
+            pass
+    if not _cache.get("stocks") or _cache_age_h > 20:
+        print(f"[STARTUP] Cache empty or {_cache_age_h:.1f}h old — triggering background scan")
+        threading.Thread(target=_run_scan, args=(None,), daemon=True, name="startup-scan").start()
+    else:
+        print(f"[STARTUP] Cache fresh ({_cache_age_h:.1f}h old) — skipping startup scan")
+
     # Start daily scheduler thread
-    t = threading.Thread(target=_scheduler_loop, daemon=True, name="scheduler")
-    t.start()
+    threading.Thread(target=_scheduler_loop, daemon=True, name="scheduler").start()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

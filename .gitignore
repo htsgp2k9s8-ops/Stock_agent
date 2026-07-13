@@ -64,3 +64,9 @@ Single_stock_sreen.py
 # Extra CSV files
 xetra_delnice.csv
 moje_globalne_delnice_50.csv
+
+# Runtime cache files — managed by the server, not tracked in git
+ogm_cache.json
+ogm_posts.json
+ogm_virtual_portfolio.json
+ogm_bottom_model.json
