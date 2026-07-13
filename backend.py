@@ -1396,10 +1396,11 @@ def get_portfolio():
     total_invested = 0.0
     total_value    = float(p.get("cash", 0))
 
-    # ── Batch price fetch for all portfolio tickers (1 request instead of N) ──
+    # ── Batch price fetch: yahooquery first, yf.history fallback ─────────────
     _port_tickers = list(p.get("positions", {}).keys())
     _batch_prices: dict[str, float] = {}
     if _port_tickers:
+        # Primary: yahooquery batch (1 request for all tickers)
         try:
             from yahooquery import Ticker as YQTicker
             _yqb  = YQTicker(_port_tickers, validate=False)
@@ -1411,7 +1412,23 @@ def get_portfolio():
                     if _pr:
                         _batch_prices[_tkr] = float(_pr)
         except Exception as _be:
-            print(f"[PORTFOLIO] Batch price error: {_be}")
+            print(f"[PORTFOLIO] YQ batch error: {_be}")
+        # Fallback: yf.history for tickers still missing (v8 endpoint, works on Railway)
+        for _tkr in [t for t in _port_tickers if t not in _batch_prices]:
+            try:
+                _h = yf.Ticker(_tkr).history(period="5d", interval="1d", auto_adjust=True)
+                if not _h.empty:
+                    if isinstance(_h.columns, pd.MultiIndex):
+                        _h.columns = _h.columns.get_level_values(0)
+                    _v = float(_h["Close"].dropna().iloc[-1])
+                    if _v:
+                        _batch_prices[_tkr] = _v
+                        print(f"[PORTFOLIO] Fallback price {_tkr}: {_v}")
+            except Exception:
+                pass
+        _missing = [t for t in _port_tickers if t not in _batch_prices]
+        if _missing:
+            print(f"[PORTFOLIO] No price for: {_missing}")
 
     for ticker, lots in p.get("positions", {}).items():
         # Enrich lots that have no stored OGM score
