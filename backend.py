@@ -1099,27 +1099,44 @@ def _run_scan(scan_date_str: str | None = None):
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
-    _RATE_DELAY = 0.12  # seconds between requests to avoid Yahoo Finance rate-limiting
-
+    # ── Stage 1: fast_info market-cap pre-filter (lighter endpoint) ──────────
+    print(f"[SCAN] Stage 1: market-cap pre-filter for {len(tickers)} tickers...")
+    large_cap_tickers = []
     for i, ticker in enumerate(tickers, 1):
         _cache["scan_done"] = i
-        if i % 50 == 0:
-            print(f"  [{i}/{len(tickers)}] found={len(stocks)}")
+        if i % 100 == 0:
+            print(f"  [stage1 {i}/{len(tickers)}] large_cap={len(large_cap_tickers)}")
+        try:
+            fi   = yf.Ticker(ticker).fast_info
+            mcap = getattr(fi, 'market_cap', None) or getattr(fi, 'marketCap', None)
+            if mcap and not pd.isna(mcap) and mcap >= MIN_MARKET_CAP:
+                large_cap_tickers.append(ticker)
+        except Exception:
+            pass
+        time.sleep(0.05)
+
+    print(f"[SCAN] Stage 1 done: {len(large_cap_tickers)} large-cap tickers → Stage 2")
+    _cache["scan_total"] = len(large_cap_tickers)
+    _cache["scan_done"]  = 0
+
+    # ── Stage 2: full info + price history for large-cap only ────────────────
+    for i, ticker in enumerate(large_cap_tickers, 1):
+        _cache["scan_done"] = i
+        if i % 20 == 0:
+            print(f"  [stage2 {i}/{len(large_cap_tickers)}] found={len(stocks)}")
         try:
             t    = yf.Ticker(ticker)
             info = t.info
 
             # Retry once if info came back empty (rate-limit hit)
             if not info or len(info) < 5:
-                time.sleep(1.0)
+                time.sleep(2.0)
                 info = t.info
             if not info or len(info) < 5:
-                time.sleep(_RATE_DELAY)
                 continue
 
-            mcap = info.get("marketCap")
+            mcap = info.get("marketCap") or getattr(yf.Ticker(ticker).fast_info, 'market_cap', None)
             if not mcap or pd.isna(mcap) or mcap < MIN_MARKET_CAP:
-                time.sleep(_RATE_DELAY)
                 continue
 
             rev_growth   = _safe(info.get("revenueGrowth"))
@@ -1129,13 +1146,12 @@ def _run_scan(scan_date_str: str | None = None):
 
             # skip weak revenue growth for live scans only
             if not scan_date and rev_growth < MIN_REV_GROWTH:
-                time.sleep(_RATE_DELAY)
                 continue
 
             # ── Price history ─────────────────────────────────────────────────
             dl_end = (scan_date + timedelta(days=8)).strftime("%Y-%m-%d") if scan_date else None
             data   = t.history(start="2010-01-01", end=dl_end, interval="1wk", actions=False)
-            time.sleep(_RATE_DELAY)
+            time.sleep(0.1)
             if data is None or data.empty or len(data) < 52:
                 continue
             if scan_date:
@@ -1276,7 +1292,7 @@ def _run_scan(scan_date_str: str | None = None):
         "stocks":     stocks,
         "chart_data": chart_data,
         "sectors":    sectors,
-        "updated_at": datetime.now().isoformat(),
+        "updated_at": datetime.utcnow().isoformat() + "Z",
         "scan_date":  str(scan_date) if scan_date else None,
         "scanning":   False,
     })
