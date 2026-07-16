@@ -458,7 +458,7 @@ def analyze_stock(ticker: str):
             tocke_ma[pos] = np.interp(dist_arr[pos], [0,2,10,25,50],  [W_MA*(33/35), W_MA, W_MA*(22/35), W_MA*(8/35), 0])
             tocke_ma[neg] = np.interp(dist_arr[neg], [-20,-10,-5,0],   [0, W_MA*(12/35), W_MA*(25/35), W_MA*(33/35)])
 
-        tocke_rsi    = np.interp(rsi_arr, [30,45,60,70,80], [W_RSI, W_RSI*0.8, W_RSI*0.5, W_RSI*0.2, 0])
+        tocke_rsi    = np.interp(rsi_arr, [10,25,45,55,70,80], [0, W_RSI*0.4, W_RSI, W_RSI, W_RSI*0.2, 0])
         eps_pct      = eps_growth * 100
         peg_val      = peg if peg > 0 else 2.0
         gm_pct       = gross_margin * 100
@@ -986,10 +986,13 @@ def _slice_to_date(df, scan_date):
 
 
 def _rsi_series(prices: pd.Series, periods: int = 14) -> pd.Series:
-    delta = prices.diff()
-    gain  = delta.where(delta > 0, 0).rolling(periods).mean()
-    loss  = (-delta.where(delta < 0, 0)).rolling(periods).mean()
-    rs    = gain / loss
+    """Wilder's RSI (standard — matches TradingView / Yahoo Finance)."""
+    delta    = prices.diff()
+    gain     = delta.where(delta > 0, 0.0)
+    loss     = (-delta.where(delta < 0, 0.0))
+    avg_gain = gain.ewm(alpha=1 / periods, min_periods=periods, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1 / periods, min_periods=periods, adjust=False).mean()
+    rs       = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
 
 
@@ -1254,7 +1257,7 @@ def _run_scan(scan_date_str: str | None = None):
                 tocke_ma[pos] = np.interp(dist_arr[pos], [0,2,10,25,50],  [W_MA*(33/35), W_MA, W_MA*(22/35), W_MA*(8/35), 0])
                 tocke_ma[neg] = np.interp(dist_arr[neg], [-20,-10,-5,0],   [0, W_MA*(12/35), W_MA*(25/35), W_MA*(33/35)])
 
-            tocke_rsi    = np.interp(rsi_arr, [30,45,60,70,80], [W_RSI, W_RSI*0.8, W_RSI*0.5, W_RSI*0.2, 0])
+            tocke_rsi    = np.interp(rsi_arr, [10,25,45,55,70,80], [0, W_RSI*0.4, W_RSI, W_RSI, W_RSI*0.2, 0])
 
             eps_pct      = eps_growth * 100
             peg_val      = peg if peg > 0 else 2.0
@@ -1734,7 +1737,7 @@ def _run_watchlist(tickers: list[str], scan_date_str: str | None = None):
                 tocke_ma[pos] = np.interp(dist_arr[pos], [0,2,10,25,50],  [W_MA*(33/35),W_MA,W_MA*(22/35),W_MA*(8/35),0])
                 tocke_ma[neg] = np.interp(dist_arr[neg], [-20,-10,-5,0],   [0,W_MA*(12/35),W_MA*(25/35),W_MA*(33/35)])
 
-            tocke_rsi    = np.interp(rsi_arr, [30,45,60,70,80], [W_RSI,W_RSI*.8,W_RSI*.5,W_RSI*.2,0])
+            tocke_rsi    = np.interp(rsi_arr, [10,25,45,55,70,80], [0, W_RSI*0.4, W_RSI, W_RSI, W_RSI*0.2, 0])
 
             eps_pct      = eps_growth * 100
             peg_val      = peg if peg > 0 else 2.0
