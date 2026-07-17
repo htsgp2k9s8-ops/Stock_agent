@@ -1169,7 +1169,7 @@ def _run_scan(scan_date_str: str | None = None):
                     "mcap":         _mc,
                     "rev_growth":   _rg,
                     "gross_margin": _safe(_yqv(_fd, "grossMargins")),
-                    "eps_growth":   _safe(_yqv(_fd, "earningsGrowth") or _yqv(_ks, "earningsQuarterlyGrowth")),
+                    "eps_growth":   _safe(_yqv(_ks, "earningsQuarterlyGrowth") or _yqv(_fd, "earningsGrowth")),
                     "peg":          _safe(_yqv(_ks, "pegRatio")),
                     "short_name":   _yqv(_q, "shortName", "longName") or _tk,
                     "sector":       _yqv(_a, "sector") or "N/A",
