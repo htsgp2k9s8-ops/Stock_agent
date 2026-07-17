@@ -1116,25 +1116,13 @@ def _run_scan(scan_date_str: str | None = None):
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
-    # ── Single-phase scan: 1 request per ticker (yfinance t.info = all modules) ──
-    import requests as _requests
-    _session = _requests.Session()
-    _session.headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-    })
-
     for i, ticker in enumerate(tickers, 1):
         _cache["scan_done"] = i
         if i % 50 == 0:
             print(f"  [{i}/{len(tickers)}] found={len(stocks)}")
         try:
-            t    = yf.Ticker(ticker, session=_session)
+            t    = yf.Ticker(ticker)
             info = t.info
-            if not info or len(info) < 5:
-                time.sleep(2.0)
-                info = t.info
             if not info or len(info) < 5:
                 continue
 
