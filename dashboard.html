@@ -1048,6 +1048,19 @@ function fmtMktPrice(price,symbol){
   return '$'+price.toFixed(3);
 }
 const FEED_LABELS={weekly:'Weekly Overview',economic:'Economic Highlights',technical:'The Boring Million Secret'};
+function _renderFeedLabel(section){
+  const lbl=document.getElementById('feed-section-label');
+  if(!lbl)return;
+  if(section==='technical'){
+    lbl.style.cssText='font-size:28px;font-weight:800;display:flex;align-items:center;gap:10px;letter-spacing:0;margin-bottom:2px';
+    lbl.innerHTML=
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#glock)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><defs><linearGradient id="glock" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f6c90e"/><stop offset="100%" stop-color="#e8840a"/></linearGradient></defs><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'+
+      '<span style="background:linear-gradient(135deg,#f6c90e 0%,#e8840a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">The Boring Million Secret</span>';
+  }else{
+    lbl.style.cssText='font-size:22px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.5px';
+    lbl.textContent=FEED_LABELS[section]||'';
+  }
+}
 function navToFeed(section){
   _feedSection=section||'weekly';
   // Update dropdown active state
@@ -1055,8 +1068,7 @@ function navToFeed(section){
   const dd=document.getElementById('tndd-'+_feedSection);
   if(dd)dd.classList.add('active');
   // Update label inside feed
-  const lbl=document.getElementById('feed-section-label');
-  if(lbl)lbl.textContent=FEED_LABELS[_feedSection]||'';
+  _renderFeedLabel(_feedSection);
   history.replaceState(null,'','#feed-'+_feedSection);
   navTo('feed');
 }
