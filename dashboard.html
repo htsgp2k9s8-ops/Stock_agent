@@ -310,7 +310,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
       <div class="tn-dd">
         <div class="tn-dd-item" id="tndd-weekly" onclick="navToFeed('weekly')">Weekly Overview</div>
         <div class="tn-dd-item" id="tndd-economic" onclick="navToFeed('economic')">Economic Highlights</div>
-        <div class="tn-dd-item" id="tndd-technical" onclick="navToFeed('technical')">Top Picks</div>
+        <div class="tn-dd-item" id="tndd-technical" onclick="navToFeed('technical')">The Boring Million Secret</div>
       </div>
     </div>
     <div class="tn-item tn-has-dd">
@@ -770,7 +770,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
           <select id="adm-sec">
             <option value="weekly">Weekly Overview</option>
             <option value="economic">Economic Highlights</option>
-            <option value="technical">Top Picks</option>
+            <option value="technical">The Boring Million Secret</option>
           </select>
         </div>
         <div class="admin-field"><label>Avtor</label><input type="text" id="adm-author" value="OGM Team"></div>
@@ -1048,7 +1048,7 @@ function fmtMktPrice(price,symbol){
   if(price>=10)return '$'+price.toFixed(2);
   return '$'+price.toFixed(3);
 }
-const FEED_LABELS={weekly:'Weekly Overview',economic:'Economic Highlights',technical:'Top Picks'};
+const FEED_LABELS={weekly:'Weekly Overview',economic:'Economic Highlights',technical:'The Boring Million Secret'};
 function navToFeed(section){
   _feedSection=section||'weekly';
   // Update dropdown active state
