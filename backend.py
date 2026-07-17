@@ -1116,28 +1116,86 @@ def _run_scan(scan_date_str: str | None = None):
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
-    for i, ticker in enumerate(tickers, 1):
-        _cache["scan_done"] = i
-        if i % 50 == 0:
-            print(f"  [{i}/{len(tickers)}] found={len(stocks)}")
+    # ── Phase 1: yahooquery batch fundamentals (50 tickers / request) ──────────
+    from yahooquery import Ticker as YQTicker
+
+    def _yqv(d, *keys):
+        if not isinstance(d, dict):
+            return None
+        for k in keys:
+            v = d.get(k)
+            if v is not None:
+                try:
+                    if not pd.isna(v):
+                        return v
+                except Exception:
+                    return v
+        return None
+
+    YQ_BATCH   = 50
+    candidates = []
+
+    print(f"[SCAN] Phase 1 — yahooquery batch fundamentals for {len(tickers)} tickers…")
+    for _pi in range(0, len(tickers), YQ_BATCH):
+        _pbatch = tickers[_pi:_pi + YQ_BATCH]
+        _cache["scan_done"] = _pi + len(_pbatch)
         try:
-            t    = yf.Ticker(ticker)
-            info = t.info
-            if not info or len(info) < 5:
-                continue
+            _yq  = YQTicker(_pbatch, validate=False)
+            _fin = _yq.financial_data
+            _sum = _yq.summary_detail
+            _kst = _yq.key_stats
+            _qt  = _yq.quote_type
+            _ap  = _yq.asset_profile
+            for _tk in _pbatch:
+                _fd = _fin.get(_tk) if isinstance(_fin, dict) else {}
+                _sd = _sum.get(_tk) if isinstance(_sum, dict) else {}
+                _ks = _kst.get(_tk) if isinstance(_kst, dict) else {}
+                _q  = _qt.get(_tk)  if isinstance(_qt,  dict) else {}
+                _a  = _ap.get(_tk)  if isinstance(_ap,  dict) else {}
+                if not isinstance(_fd, dict): _fd = {}
+                if not isinstance(_sd, dict): _sd = {}
+                if not isinstance(_ks, dict): _ks = {}
+                if not isinstance(_q,  dict): _q  = {}
+                if not isinstance(_a,  dict): _a  = {}
 
-            mcap = info.get("marketCap")
-            if not mcap or pd.isna(mcap) or mcap < MIN_MARKET_CAP:
-                continue
+                _mc = _yqv(_sd, "marketCap") or _yqv(_ks, "marketCap")
+                if not _mc or _mc < MIN_MARKET_CAP:
+                    continue
+                _rg = _safe(_yqv(_fd, "revenueGrowth"))
+                if not scan_date and _rg < MIN_REV_GROWTH:
+                    continue
+                candidates.append({
+                    "ticker":       _tk,
+                    "mcap":         _mc,
+                    "rev_growth":   _rg,
+                    "gross_margin": _safe(_yqv(_fd, "grossMargins")),
+                    "eps_growth":   _safe(_yqv(_fd, "earningsGrowth") or _yqv(_ks, "earningsQuarterlyGrowth")),
+                    "peg":          _safe(_yqv(_ks, "pegRatio")),
+                    "short_name":   _yqv(_q, "shortName", "longName") or _tk,
+                    "sector":       _yqv(_a, "sector") or "N/A",
+                    "target_price": _safe(_yqv(_fd, "targetMeanPrice")),
+                })
+        except Exception as _pe:
+            print(f"[SCAN] Ph1 batch {_pi//YQ_BATCH}: {_pe}")
+        time.sleep(0.3)
 
-            rev_growth   = _safe(info.get("revenueGrowth"))
-            gross_margin = _safe(info.get("grossMargins"))
-            eps_growth   = _safe(info.get("earningsQuarterlyGrowth") or info.get("earningsGrowth"))
-            peg          = _safe(info.get("pegRatio"))
+    print(f"[SCAN] Phase 1 → {len(candidates)} candidates; starting Phase 2…")
+    _cache["scan_total"] = len(candidates)
+    _cache["scan_done"]  = 0
 
-            if not scan_date and rev_growth < MIN_REV_GROWTH:
-                continue
-
+    # ── Phase 2: yfinance price history + OGM scoring ────────────────────────
+    for i, cand in enumerate(candidates, 1):
+        ticker       = cand["ticker"]
+        mcap         = cand["mcap"]
+        rev_growth   = cand["rev_growth"]
+        gross_margin = cand["gross_margin"]
+        eps_growth   = cand["eps_growth"]
+        peg          = cand["peg"]
+        _cache["scan_done"] = i
+        if i % 20 == 0:
+            print(f"  [{i}/{len(candidates)}] found={len(stocks)}")
+        try:
+            t      = yf.Ticker(ticker)
             dl_end = (scan_date + timedelta(days=8)).strftime("%Y-%m-%d") if scan_date else None
             data   = t.history(start="2010-01-01", end=dl_end, interval="1wk", actions=False)
             if data is None or data.empty or len(data) < 52:
@@ -1231,12 +1289,12 @@ def _run_scan(scan_date_str: str | None = None):
             # ── Assemble output ───────────────────────────────────────────────
             summary = {
                 "ticker":       ticker,
-                "ime":          info.get("shortName") or ticker,
-                "sektor":       info.get("sector", "N/A"),
+                "ime":          cand["short_name"],
+                "sektor":       cand["sector"],
                 "ogm":          round(ogm_now, 1),
                 "status":       status,
                 "cena":         round(price_now, 2),
-                "target_price": round(_safe(info.get("targetMeanPrice")), 2),
+                "target_price": round(cand["target_price"], 2),
                 "mcap":         _fmt_mcap(mcap),
                 "rev_growth":   round(rev_growth * 100, 1),
                 "dist_ma":      round(dist_now, 1),
