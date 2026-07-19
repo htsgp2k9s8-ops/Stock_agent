@@ -1383,7 +1383,7 @@ def get_portfolio():
     # Build OGM lookup from cache for retroactive enrichment
     _ogm_from_cache = {
         str(r.get("ticker", "")).upper(): r.get("ogm")
-        for r in _cache.get("results", [])
+        for r in _cache.get("stocks", [])
         if r.get("ogm") is not None
     }
 
@@ -1518,10 +1518,14 @@ def portfolio_buy(req: BuyRequest):
 
     # Look up OGM score from last scan cache
     ogm_score = None
-    for r in _cache.get("results", []):
-        if str(r.get("ticker", "")).upper() == ticker:
-            ogm_score = r.get("ogm")
-            break
+    cd = _cache.get("chart_data", {}).get(ticker)
+    if cd:
+        ogm_score = cd.get("ogm")
+    if ogm_score is None:
+        for r in _cache.get("stocks", []):
+            if str(r.get("ticker", "")).upper() == ticker:
+                ogm_score = r.get("ogm")
+                break
 
     lot = {"shares": round(req.amount / price, 6), "cost_basis": round(price, 4),
            "invested": round(req.amount, 2), "open_date": buy_date,
