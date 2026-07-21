@@ -1458,12 +1458,34 @@ def get_portfolio():
         except Exception:
             continue
 
-    # Enrich closed positions that have no stored OGM score
+    # Enrich closed positions and open lots with no stored OGM — compute retroactively
     closed = p.get("closed_positions", [])
+    _needs_save = False
     for cp in closed:
-        t = str(cp.get("ticker", "")).upper()
-        if cp.get("ogm_score") is None and t in _ogm_from_cache:
-            cp["ogm_score"] = _ogm_from_cache[t]
+        _t = str(cp.get("ticker", "")).upper()
+        if cp.get("ogm_score") is None:
+            if _t in _ogm_from_cache:
+                cp["ogm_score"] = _ogm_from_cache[_t]; _needs_save = True
+            else:
+                _v = _ogm_at_date(_t, cp.get("buy_date", datetime.now().date().isoformat()))
+                if _v is not None:
+                    cp["ogm_score"] = _v; _needs_save = True
+    for _tk, _lots in p.get("positions", {}).items():
+        for _lot in _lots:
+            if _lot.get("ogm_score") is None:
+                _TK = _tk.upper()
+                if _TK in _ogm_from_cache:
+                    _lot["ogm_score"] = _ogm_from_cache[_TK]; _needs_save = True
+                else:
+                    _v = _ogm_at_date(_TK, _lot.get("open_date", datetime.now().date().isoformat()))
+                    if _v is not None:
+                        _lot["ogm_score"] = _v; _needs_save = True
+    if _needs_save:
+        try:
+            with open(PORTFOLIO_FILE, "w", encoding="utf-8") as _f:
+                json.dump(p, _f, indent=2)
+        except Exception:
+            pass
 
     starting = float(p.get("starting_cash", 50000))
     total_pnl = total_value - starting
@@ -1478,6 +1500,75 @@ def get_portfolio():
         "closed_positions": closed,
         "created":        p.get("created"),
     }
+
+
+def _ogm_at_date(ticker: str, buy_date: str, info: dict | None = None) -> float | None:
+    """Compute OGM for ticker using weekly price history up to buy_date."""
+    try:
+        t = yf.Ticker(ticker)
+        if info is None:
+            info = t.info or {}
+        mcap         = _safe(info.get("marketCap", 0))
+        gross_margin = _safe(info.get("grossMargins"))
+        eps_growth   = _safe(info.get("earningsQuarterlyGrowth") or info.get("earningsGrowth"))
+        peg          = _safe(info.get("pegRatio"))
+
+        from datetime import date as _date, timedelta as _td
+        _end = (_date.fromisoformat(buy_date) + _td(days=8)).isoformat()
+        data = t.history(start="2010-01-01", end=_end, interval="1wk", actions=False)
+        if data is None or data.empty:
+            return None
+        data = _slice_to_date(data, _date.fromisoformat(buy_date))
+        if isinstance(data.columns, pd.MultiIndex):
+            data.columns = data.columns.get_level_values(0)
+        close = data["Close"].dropna()
+        if len(close) < 205:
+            return None
+
+        is_mega        = mcap >= MEGA_CAP
+        is_high_margin = (gross_margin * 100) >= 50.0 and not is_mega
+        if is_mega:
+            ma     = close.rolling(50).mean()
+            ma200_ = close.rolling(200).mean()
+        else:
+            ma = close.rolling(200).mean()
+
+        dist_arr = ((close - ma) / ma * 100).values
+        rsi_arr  = _rsi_series(close).values
+        W_MA, W_RSI = 40.0, 15.0
+        tocke_ma = np.zeros_like(dist_arr)
+        pos, neg = dist_arr >= 0, dist_arr < 0
+
+        if is_mega:
+            W_half = W_MA / 2.0
+            t50 = np.zeros_like(dist_arr)
+            t50[pos] = np.interp(dist_arr[pos], [0,2,8,15],    [W_half*(32/35), W_half, W_half*(15/35), 0])
+            t50[neg] = np.interp(dist_arr[neg], [-40,-15,-2,0], [W_half, W_half, W_half*(34/35), W_half*(32/35)])
+            d2 = ((close - ma200_) / ma200_ * 100).fillna(0).values
+            p2, n2 = d2 >= 0, d2 < 0
+            t200 = np.zeros_like(d2)
+            t200[p2] = np.interp(d2[p2], [0,5,20,40],    [W_half*(32/35), W_half, W_half*(15/35), 0])
+            t200[n2] = np.interp(d2[n2], [-50,-20,-5,0],  [W_half, W_half, W_half*(34/35), W_half*(32/35)])
+            tocke_ma = t50 + t200
+        elif is_high_margin:
+            tocke_ma[pos] = np.interp(dist_arr[pos], [0,2,10,25,50],    [W_MA*(33/35), W_MA, W_MA*(22/35), W_MA*(8/35), 0])
+            tocke_ma[neg] = np.interp(dist_arr[neg], [-35,-20,-15,-5,0], [0, 35, 40, 38, W_MA*(33/35)])
+        else:
+            tocke_ma[pos] = np.interp(dist_arr[pos], [0,2,10,25,50],  [W_MA*(33/35), W_MA, W_MA*(22/35), W_MA*(8/35), 0])
+            tocke_ma[neg] = np.interp(dist_arr[neg], [-20,-10,-5,0],   [0, W_MA*(12/35), W_MA*(25/35), W_MA*(33/35)])
+
+        tocke_rsi = np.interp(rsi_arr, [10,25,45,55,70,80], [0, W_RSI*0.4, W_RSI, W_RSI, W_RSI*0.2, 0])
+        eps_pct   = eps_growth * 100
+        peg_val   = peg if peg > 0 else 2.0
+        gm_pct    = gross_margin * 100
+        base = min(45.0,
+            float(np.interp(eps_pct,  [0,8,16.5,22,30],      [0,5,14,20,20])) +
+            float(np.interp(peg_val,  [0.4,0.8,1.2,1.6,2.0], [15,13,10,5,0])) +
+            float(np.interp(gm_pct,   [25,35,45,55,65],       [0,2,5,8,10]))
+        )
+        return round(float(np.clip(tocke_ma + tocke_rsi + base, 0, 100)[-1]), 1)
+    except Exception:
+        return None
 
 
 @app.post("/api/portfolio/buy")
@@ -1526,6 +1617,11 @@ def portfolio_buy(req: BuyRequest):
             if str(r.get("ticker", "")).upper() == ticker:
                 ogm_score = r.get("ogm")
                 break
+    if ogm_score is None:
+        try:
+            ogm_score = _ogm_at_date(ticker, buy_date, info)
+        except Exception:
+            pass
 
     lot = {"shares": round(req.amount / price, 6), "cost_basis": round(price, 4),
            "invested": round(req.amount, 2), "open_date": buy_date,
