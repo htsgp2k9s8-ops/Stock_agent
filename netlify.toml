@@ -2,12 +2,6 @@
   publish = "."
   command = ""
 
-# Root → landing page (200 = rewrite, not redirect — URL stays theboringmillion.com)
-[[redirects]]
-  from = "/"
-  to = "/landing.html"
-  status = 200
-
 # /dashboard → back to home (backend is not public)
 [[redirects]]
   from = "/dashboard"
