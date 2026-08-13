@@ -1345,7 +1345,7 @@ function renderBacklog(){
   tbody.innerHTML=(w.stocks||[]).map((s,i)=>`<tr onclick="openStock('${s.ticker}')">
     <td class="rn">#${i+1}</td><td><span class="tt">${s.ticker}</span></td><td>${s.ime||s.ticker}</td>
     <td class="mt">${s.sektor||'—'}</td><td class="mt">${s.mcap||'—'}</td>
-    <td class="${pCls(s.rev_growth)}">${fmtd(s.rev_growth,1)} %</td>
+    <td class="${pCls(s.rev_growth)}">${s.rev_growth!=null?fmtd(s.rev_growth,1)+' %':'—'}</td>
     <td>${distCell(s.dist_ma,s.ma_type,s.dist_ma200)}</td><td>$${fmtd(s.cena)}</td>
     <td class="mt">${s.target_price>0?'$'+fmtd(s.target_price):'—'}</td>
     <td>${ogmBar(s.ogm)}</td><td>${sBadge(s.status)}</td>
@@ -1386,7 +1386,7 @@ function renderScanTable(stocks){
   document.getElementById('scan-tbody').innerHTML=stocks.map((s,i)=>`<tr onclick="openStock('${s.ticker}')">
     <td class="rn">#${i+1}</td><td><span class="tt">${s.ticker}</span></td><td>${s.ime||s.ticker}</td>
     <td class="mt">${s.sektor||'—'}</td><td class="mt">${s.mcap||'—'}</td>
-    <td class="${pCls(s.rev_growth)}">${fmtd(s.rev_growth,1)} %</td>
+    <td class="${pCls(s.rev_growth)}">${s.rev_growth!=null?fmtd(s.rev_growth,1)+' %':'—'}</td>
     <td>${distCell(s.dist_ma,s.ma_type,s.dist_ma200)}</td><td>$${fmtd(s.cena)}</td>
     <td class="mt">${s.target_price>0?'$'+fmtd(s.target_price):'—'}</td>
     <td>${ogmBar(s.ogm)}</td><td>${sBadge(s.status)}</td>
@@ -1475,7 +1475,7 @@ function renderStockResult(d){
   document.getElementById('s-hdr').innerHTML=`
     <div class="s-hdr-row">
       <div style="flex:1"><h2>${d.ticker} &mdash; ${d.ime||d.ticker}</h2>
-        <div class="sub">${d.sektor||''} &middot; ${d.mcap||''} &middot; +${fmtd(d.rev_growth,1)}% Rev Growth</div>
+        <div class="sub">${d.sektor||''} &middot; ${d.mcap||''} &middot; ${d.rev_growth!=null?'+'+fmtd(d.rev_growth,1)+'% Rev Growth':'Rev Growth: —'}</div>
         <div class="s-hdr-badges">
           ${sBadge(pass?(d.ogm>=80?'STRONG BUY':'BUY'):'WARNING (POD MA)')}
           <span class="badge ${pass?'bg':'br'}">${pass?'&#x2713; Passes Filters':'&#x26A0; Filtered Out'}</span>
@@ -2162,7 +2162,7 @@ function wlRender(){
     return`<tr onclick="wlOpenStock('${tk}')">
       <td class="rn">#${i}</td><td><span class="tt">${s.ticker||tk}</span></td><td>${s.ime||tk}</td>
       <td class="mt">${s.sektor||'—'}</td><td class="mt">${s.mcap||'—'}</td>
-      <td class="${pCls(s.rev_growth)}">${fmtd(s.rev_growth,1)} %</td>
+      <td class="${pCls(s.rev_growth)}">${s.rev_growth!=null?fmtd(s.rev_growth,1)+' %':'—'}</td>
       <td>${distCell(s.dist_ma,s.ma_type,s.dist_ma200)}</td><td>$${fmtd(s.cena)}</td>
       <td>${ogmBar(s.ogm||0)}</td><td>${sBadge(s.status)}</td>
       <td class="mt">${fmtd(c.eps_score,1)}</td><td class="mt">${fmtd(c.peg_score,1)}</td><td class="mt">${fmtd(c.margin_score,1)}</td>
@@ -2853,7 +2853,7 @@ function renderBottomSingle(d){
         <div style="font-size:20px;font-weight:800;color:#fff;margin-bottom:2px">${d.ticker} — ${d.ime||d.ticker}</div>
         <div style="font-size:10.5px;color:${hdrSub};margin-bottom:10px">${d.sektor||''} · ${d.mcap||''} · $${fmtd(d.cena,2)} · 52w High: $${fmtd(d.high_52w,2)}</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <span style="font-size:11px;padding:2px 10px;border-radius:12px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green)">Rev Gr: ${d.rev_growth>=0?'+':''}${d.rev_growth}%</span>
+          <span style="font-size:11px;padding:2px 10px;border-radius:12px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green)">Rev Gr: ${d.rev_growth!=null?(d.rev_growth>=0?'+':'')+d.rev_growth+'%':'—'}</span>
           <span style="font-size:11px;padding:2px 10px;border-radius:12px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:var(--a2)">EPS Gr: ${d.eps_growth>=0?'+':''}${d.eps_growth}%</span>
         </div>
       </div>

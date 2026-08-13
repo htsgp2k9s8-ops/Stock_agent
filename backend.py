@@ -347,7 +347,7 @@ def _load_cache():
             before = len(_cache["stocks"])
             _cache["stocks"] = [
                 s for s in _cache["stocks"]
-                if (s.get("rev_growth") or 0) >= MIN_REV_GROWTH * 100
+                if s.get("rev_growth") is None or s.get("rev_growth") >= MIN_REV_GROWTH * 100
             ]
             removed = before - len(_cache["stocks"])
             print(f"[API] Cache loaded — {len(_cache['stocks'])} stocks (removed {removed} low-revgrowth)")
@@ -1600,8 +1600,8 @@ def _run_scan(scan_date_str: str | None = None):
             ogm_now = float(ogm_arr[-1])
             if ogm_now < 65.0:
                 continue
-            # only filter by rev_growth if data is present (0.0 = missing, not actual 0%)
-            if not scan_date and rev_growth > 0.0 and rev_growth < MIN_REV_GROWTH:
+            # only filter by rev_growth when data is present (None = missing from yahooquery)
+            if not scan_date and rev_growth is not None and rev_growth < MIN_REV_GROWTH:
                 continue
 
             # ── Current metrics ───────────────────────────────────────────────
@@ -1621,7 +1621,7 @@ def _run_scan(scan_date_str: str | None = None):
             if ogm_now >= 80:                     status = "STRONG BUY"
             elif falling:                         status = "WARNING (FALLING PHASE)"
             elif dist_now < 0:                    status = "WARNING (POD MA)"
-            elif rev_growth >= SUPER_GROWTH:      status = "SUPER-GROWTH TARGET"
+            elif rev_growth is not None and rev_growth >= SUPER_GROWTH: status = "SUPER-GROWTH TARGET"
             else:                                 status = "BUY"
 
             # ── Assemble output ───────────────────────────────────────────────
@@ -1634,7 +1634,7 @@ def _run_scan(scan_date_str: str | None = None):
                 "cena":         round(price_now, 2),
                 "target_price": round(cand["target_price"], 2),
                 "mcap":         _fmt_mcap(mcap),
-                "rev_growth":   round(rev_growth * 100, 1),
+                "rev_growth":   round(rev_growth * 100, 1) if rev_growth is not None else None,
                 "dist_ma":      round(dist_now, 1),
                 "dist_ma200":   round(dist200_now, 1) if dist200_now is not None else None,
                 "ma_type":      ma_lbl,

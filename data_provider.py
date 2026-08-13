@@ -115,7 +115,7 @@ def _yq_scanner_fundamentals(tickers, min_mcap, min_rev_growth, progress_cb):
                 candidates.append({
                     "ticker":       tk,
                     "mcap":         mc,
-                    "rev_growth":   rg,
+                    "rev_growth":   rg if rg_raw is not None else None,
                     "gross_margin": _s(_yqv(fd, "grossMargins")),
                     "eps_growth":   _s(_yqv(ks, "earningsQuarterlyGrowth") or _yqv(fd, "earningsGrowth")),
                     "peg":          _s(_yqv(ks, "pegRatio")),
