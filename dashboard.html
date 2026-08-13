@@ -472,7 +472,6 @@ tbody td{padding:7px 11px;vertical-align:middle}
           <div class="card" style="padding:14px 16px">
             <div style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px">OGM Score Breakdown</div>
             <div id="s-scores"></div>
-            <div id="s-filter-status" style="margin-top:12px"></div>
           </div>
           <div class="card" style="padding:14px 16px">
             <div style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px">About</div>
@@ -1520,17 +1519,10 @@ function renderStockResult(d){
     <div class="sr-bar"><div class="sr-bf" style="width:${r.max>0?(r.sc/r.max*100).toFixed(0):0}%"></div></div>
     <div class="sr-pts"></div><div class="sr-max"></div></div>`).join('')
   +`<div class="sr" style="background:rgba(59,130,246,.06);border-radius:6px;padding:8px 4px">
-    <div class="sr-lbl" style="font-weight:700;color:var(--text)">TOTAL OGM</div><div class="sr-raw"></div><div class="sr-bar"></div>
+    <div class="sr-lbl" style="font-weight:700;color:var(--text)">TOTAL OGM</div><div class="sr-raw"></div>
+    <div class="sr-bar"><div class="sr-bf" style="width:${d.ogm.toFixed(0)}%;background:${d.ogm>80?'var(--green)':d.ogm>=65?'var(--orange)':'var(--red)'}"></div></div>
     <div class="sr-pts" style="font-size:15px;color:${ogmCol}">${d.ogm.toFixed(1)}</div><div class="sr-max">/ 100</div></div>`;
 
-  // Filter status
-  if(d.filter_issues&&d.filter_issues.length){
-    document.getElementById('s-filter-status').innerHTML='<div style="border-left:3px solid var(--red);padding:7px 11px;background:rgba(248,113,113,.06);border-radius:0 6px 6px 0;font-size:11px">'
-      +'<div style="color:var(--red);font-weight:700;margin-bottom:4px">Why filtered:</div>'
-      +d.filter_issues.map(i=>`<div style="color:var(--muted)">• ${i}</div>`).join('')+'</div>';
-  }else{
-    document.getElementById('s-filter-status').innerHTML='<div style="border-left:3px solid var(--green);padding:7px 11px;background:rgba(74,222,128,.06);border-radius:0 6px 6px 0;font-size:11px;color:var(--green)">All filters passed ✓</div>';
-  }
 
   // About
   const f=d.fundamentals||{};
