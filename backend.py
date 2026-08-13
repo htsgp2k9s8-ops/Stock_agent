@@ -1600,7 +1600,8 @@ def _run_scan(scan_date_str: str | None = None):
             ogm_now = float(ogm_arr[-1])
             if ogm_now < 65.0:
                 continue
-            if not scan_date and rev_growth < MIN_REV_GROWTH:
+            # only filter by rev_growth if data is present (0.0 = missing, not actual 0%)
+            if not scan_date and rev_growth > 0.0 and rev_growth < MIN_REV_GROWTH:
                 continue
 
             # ── Current metrics ───────────────────────────────────────────────
