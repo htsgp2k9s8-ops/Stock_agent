@@ -11,14 +11,21 @@
 <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
 <script>
-// Fix Chart.js tooltip offset caused by body zoom
+// Fix Chart.js tooltip/hover offset caused by body { zoom: 0.9 }
+// getBoundingClientRect returns visual (zoomed) coords; clientX/Y are in CSS (unzoomed) coords.
+// Dividing rect by zoom converts both to the same coordinate space.
 (function(){
+  const Z = 0.9;
   const _orig = HTMLElement.prototype.getBoundingClientRect;
   HTMLElement.prototype.getBoundingClientRect = function(){
     const r = _orig.call(this);
-    const z = parseFloat(getComputedStyle(document.body).zoom) || 1;
-    if(z === 1) return r;
-    return new DOMRect(r.left/z, r.top/z, r.width/z, r.height/z);
+    return {
+      left: r.left/Z, top: r.top/Z,
+      right: r.right/Z, bottom: r.bottom/Z,
+      width: r.width/Z, height: r.height/Z,
+      x: r.x/Z, y: r.y/Z,
+      toJSON: r.toJSON.bind(r)
+    };
   };
 })();
 </script>
