@@ -347,7 +347,7 @@ def _load_cache():
             before = len(_cache["stocks"])
             _cache["stocks"] = [
                 s for s in _cache["stocks"]
-                if s.get("rev_growth") is None or s.get("rev_growth") >= MIN_REV_GROWTH * 100
+                if s.get("rev_growth") is None or s.get("rev_growth") > 0
             ]
             removed = before - len(_cache["stocks"])
             print(f"[API] Cache loaded — {len(_cache['stocks'])} stocks (removed {removed} low-revgrowth)")
@@ -1600,8 +1600,8 @@ def _run_scan(scan_date_str: str | None = None):
             ogm_now = float(ogm_arr[-1])
             if ogm_now < 65.0:
                 continue
-            # only filter by rev_growth when data is present (None = missing from yahooquery)
-            if not scan_date and rev_growth is not None and rev_growth < MIN_REV_GROWTH:
+            # filter only confirmed negative revenue growth; missing data passes through
+            if not scan_date and rev_growth is not None and rev_growth <= 0:
                 continue
 
             # ── Current metrics ───────────────────────────────────────────────

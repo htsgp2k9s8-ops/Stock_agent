@@ -109,8 +109,8 @@ def _yq_scanner_fundamentals(tickers, min_mcap, min_rev_growth, progress_cb):
                     continue
                 rg_raw = _yqv(fd, "revenueGrowth")
                 rg = _s(rg_raw)
-                # only filter if data is actually present — missing data (None) passes through
-                if rg_raw is not None and rg < min_rev_growth:
+                # only filter confirmed negative growth; missing data (None) passes through
+                if rg_raw is not None and rg <= 0:
                     continue
                 candidates.append({
                     "ticker":       tk,
