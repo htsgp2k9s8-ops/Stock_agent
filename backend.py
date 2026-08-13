@@ -29,6 +29,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 import yfinance as yf
+import data_provider as dp
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -51,9 +52,25 @@ MEGA_CAP          = 200_000_000_000
 MIN_REV_GROWTH    = 0.10
 SUPER_GROWTH      = 0.50
 CACHE_FILE        = "ogm_cache.json"
+MCAP_CACHE_FILE   = "mcap_cache.json"
+MCAP_CACHE_MAX_AGE = 7 * 24 * 3600   # 7 days
+CALENDAR_MIN_MCAP  = 50_000_000_000  # $50B
 
 POSTS_FILE        = "ogm_posts.json"
 ADMIN_PASSWORD    = os.environ.get("OGM_ADMIN_PASSWORD", "ogm2026")
+
+RADAR_HISTORY_FILE = "growth_radar_history.json"
+MAX_HISTORY_WEEKS  = 52
+
+# ─── SEC XBRL ─────────────────────────────────────────────────────────────────
+SEC_USER_AGENT  = "The Boring Million tilen.ovnicek98@gmail.com"
+SEC_CIK_URL     = "https://www.sec.gov/files/company_tickers.json"
+SEC_FACTS_URL   = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
+CIK_CACHE_FILE  = "sec_cik_cache.json"
+CIK_CACHE_MAX_AGE = 30 * 24 * 3600  # 30 days
+
+_cik_map: dict        = {}   # ticker (upper) → zero-padded 10-digit CIK string
+_cik_map_loaded: bool = False
 
 # ─── Posts storage ────────────────────────────────────────────────────────────
 def _load_posts() -> list:
@@ -255,6 +272,9 @@ _ECONOMIC_EVENTS: list[dict] = [
 _cal_cache: dict    = {"earnings": [], "dividends": [], "fetched_at": None}
 _cal_fetching: bool = False
 
+_mcap_cache_data: dict = {}   # ticker → raw mcap (int)
+_mcap_building:  bool  = False
+
 # ─── In-memory cache ──────────────────────────────────────────────────────────
 _cache: dict = {
     "stocks":     [],   # list of scored stock summaries
@@ -348,6 +368,13 @@ def _load_cache():
     else:
         print(f"[STARTUP] Cache fresh ({_cache_age_h:.1f}h old) — skipping startup scan")
 
+    # Load SEC CIK map (ticker → CIK, needed for /api/stock/{t}/financials)
+    threading.Thread(target=_load_cik_map, daemon=True, name="sec-cik").start()
+
+    # Load or build market cap cache (used to filter calendar tickers > $50B)
+    if not _load_mcap_cache():
+        threading.Thread(target=_build_mcap_cache_bg, daemon=True, name="mcap-build").start()
+
     # Start daily scheduler thread
     threading.Thread(target=_scheduler_loop, daemon=True, name="scheduler").start()
 
@@ -357,9 +384,19 @@ def _load_cache():
 # ═══════════════════════════════════════════════════════════════════════════════
 
 @app.get("/")
+def serve_landing():
+    return FileResponse("landing.html", media_type="text/html")
+
+
+@app.get("/dashboard")
 def serve_dashboard():
     """Serve the dashboard HTML — works locally and via ngrok/cloud."""
     return FileResponse("dashboard.html", media_type="text/html")
+
+
+@app.get("/logo.png")
+def serve_logo():
+    return FileResponse("ogm-logo-removebg-preview.png", media_type="image/png")
 
 
 @app.get("/health")
@@ -402,20 +439,19 @@ def analyze_stock(ticker: str):
     """On-demand full OGM diagnostic for any ticker (like A5 script). No scan needed."""
     ticker = ticker.upper()
     try:
-        t    = yf.Ticker(ticker)
-        info = t.info
+        info = dp.get_info(ticker)
 
         mcap         = info.get("marketCap")
         rev_growth   = _safe(info.get("revenueGrowth"))
         gross_margin = _safe(info.get("grossMargins"))
-        eps_growth   = _safe(info.get("earningsQuarterlyGrowth") or info.get("earningsGrowth"))
-        peg          = _safe(info.get("pegRatio"))
+        _eps_raw     = info.get("earningsQuarterlyGrowth") or info.get("earningsGrowth")
+        _peg_raw     = info.get("pegRatio")
+        eps_growth   = _safe(_eps_raw)
+        peg          = _safe(_peg_raw)
 
-        data = t.history(start="2014-01-01", interval="1wk", actions=False)
+        data = dp.get_history_weekly(ticker, start="2010-01-01")
         if data is None or data.empty or len(data) < 52:
             raise HTTPException(404, f"Not enough price history for {ticker}")
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.get_level_values(0)
 
         close = data["Close"].dropna()
 
@@ -595,8 +631,10 @@ def analyze_stock(ticker: str):
             "passes_filters": len(filter_issues) == 0,
             "filter_issues":  filter_issues,
             "components": {
-                "eps_pct":    round(eps_pct, 1),   "eps_score":    round(t_eps, 1),
-                "peg_val":    round(peg_val, 2),   "peg_score":    round(t_peg, 1),
+                "eps_pct":    round(_eps_raw * 100, 1) if _eps_raw is not None else None,
+                "eps_score":  round(t_eps, 1),
+                "peg_val":    round(_peg_raw, 2) if _peg_raw is not None and _peg_raw > 0 else None,
+                "peg_score":  round(t_peg, 1),
                 "margin_pct": round(gm_pct, 1),    "margin_score": round(t_mar, 1),
                 "rsi":        round(float(rsi_arr[-1]), 1), "rsi_score": round(float(tocke_rsi[-1]), 1),
                 "ma_dist":    round(dist_now, 1),  "ma_score":     round(float(tocke_ma[-1]), 1),
@@ -624,6 +662,123 @@ def analyze_stock(ticker: str):
         raise
     except Exception as e:
         raise HTTPException(500, str(e))
+
+
+@app.get("/api/stock/{ticker}/financials")
+def get_stock_financials(ticker: str):
+    """Quarterly financial results from SEC XBRL. Estimates placeholder (FMP later)."""
+    import urllib.request as _ur
+    ticker = ticker.upper()
+    if not _cik_map_loaded:
+        raise HTTPException(503, "SEC CIK map not loaded yet — retry in a moment")
+    cik = _cik_map.get(ticker)
+    if not cik:
+        raise HTTPException(404, f"CIK not found for {ticker} — may not be SEC-listed")
+    url = SEC_FACTS_URL.format(cik=cik)
+    try:
+        req = _ur.Request(url, headers={"User-Agent": SEC_USER_AGENT})
+        with _ur.urlopen(req, timeout=30) as r:
+            facts = json.loads(r.read())
+    except Exception as e:
+        raise HTTPException(503, f"SEC fetch error: {e}")
+
+    # ── Income Statement ──────────────────────────────────────
+    revs  = _sec_quarters(facts, _REV_TAGS)
+    epss  = _sec_quarters(facts, _EPS_TAGS)
+    nis   = _sec_quarters(facts, _NI_TAGS)
+    ops   = _sec_quarters(facts, _OI_TAGS)
+    gps   = _sec_quarters(facts, _GP_TAGS)
+    rds   = _sec_quarters(facts, _RD_TAGS)
+    sgas  = _sec_quarters(facts, _SGA_TAGS)
+    # ── Cash Flow ─────────────────────────────────────────────
+    ocfs  = _sec_quarters(facts, _OCF_TAGS)
+    cxs   = _sec_quarters(facts, _CAPEX_TAGS)
+    das   = _sec_quarters(facts, _DA_TAGS)
+    # ── Balance Sheet ─────────────────────────────────────────
+    cashs = _sec_quarters(facts, _CASH_TAGS)
+    dlts  = _sec_quarters(facts, _DEBT_LT_TAGS)
+    dsts  = _sec_quarters(facts, _DEBT_ST_TAGS)
+    eqs   = _sec_quarters(facts, _EQUITY_TAGS)
+    asss  = _sec_quarters(facts, _ASSETS_TAGS)
+    shrs  = _sec_quarters(facts, _SHARES_TAGS)
+
+    def _m(lst): return {v["end"]: v for v in lst}
+    rev_map  = _m(revs);  eps_map = _m(epss); ni_map  = _m(nis)
+    op_map   = _m(ops);   gp_map  = _m(gps);  rd_map  = _m(rds)
+    sga_map  = _m(sgas);  ocf_map = _m(ocfs); cx_map  = _m(cxs)
+    da_map   = _m(das);   cash_map= _m(cashs);dlt_map = _m(dlts)
+    dst_map  = _m(dsts);  eq_map  = _m(eqs);  ass_map = _m(asss)
+    shr_map  = _m(shrs)
+
+    all_dates = sorted(set(rev_map) | set(eps_map) | set(ni_map), reverse=True)[:12]
+
+    quarters = []
+    for d in all_dates:
+        rv  = _nearest_val(rev_map, d)     or {}
+        ev  = _nearest_val(eps_map, d)    or {}
+        nv  = _nearest_val(ni_map, d)     or {}
+        ov  = _nearest_val(op_map, d)     or {}
+        gv  = _nearest_val(gp_map, d)     or {}
+        rdv = _nearest_val(rd_map, d)     or {}
+        sv  = _nearest_val(sga_map, d)    or {}
+        ocv = _nearest_val(ocf_map, d)    or {}
+        cxv = _nearest_val(cx_map, d)     or {}
+        dav = _nearest_val(da_map, d)     or {}
+        # Balance sheet: instant dates often ±1 day from period end
+        chv = _nearest_val(cash_map, d)   or {}
+        dlv = _nearest_val(dlt_map, d)    or {}
+        dsv = _nearest_val(dst_map, d)    or {}
+        eqv = _nearest_val(eq_map, d)     or {}
+        asv = _nearest_val(ass_map, d)    or {}
+        shv = _nearest_val(shr_map, d)    or {}
+
+        fp   = rv.get("fp") or ev.get("fp") or nv.get("fp") or ""
+        form = rv.get("form") or ev.get("form") or nv.get("form") or ""
+
+        ocf   = ocv.get("val")
+        capex_raw = cxv.get("val")
+        capex = abs(capex_raw) if capex_raw is not None else None
+        fcf   = (ocf - capex) if (ocf is not None and capex is not None) else None
+
+        debt_lt = dlv.get("val")
+        debt_st = dsv.get("val")
+        total_debt = ((debt_lt or 0) + (debt_st or 0)) if (debt_lt is not None or debt_st is not None) else None
+        cash   = chv.get("val")
+        net_debt = (total_debt - cash) if (total_debt is not None and cash is not None) else None
+
+        quarters.append({
+            "end_date":      d,
+            "fiscal_period": fp,
+            "form":          form,
+            # Income Statement
+            "revenue":       rv.get("val"),
+            "gross_profit":  gv.get("val"),
+            "op_income":     ov.get("val"),
+            "net_income":    nv.get("val"),
+            "eps":           ev.get("val"),
+            "rd_expense":    rdv.get("val"),
+            "sga_expense":   sv.get("val"),
+            # Cash Flow
+            "op_cash_flow":  ocf,
+            "capex":         capex,
+            "fcf":           fcf,
+            "da":            dav.get("val"),
+            # Balance Sheet
+            "cash":          cash,
+            "debt_lt":       debt_lt,
+            "debt_st":       debt_st,
+            "total_debt":    total_debt,
+            "net_debt":      net_debt,
+            "equity":        eqv.get("val"),
+            "total_assets":  asv.get("val"),
+            "shares":        shv.get("val"),
+            # FMP placeholders
+            "revenue_est":   None,
+            "eps_est":       None,
+            "surprise_pct":  None,
+        })
+
+    return {"ticker": ticker, "cik": cik, "quarters": quarters}
 
 
 @app.get("/api/portfolio/chart")
@@ -657,18 +812,7 @@ def portfolio_chart():
     start_date = txns[0]["date"]
     tkr_set    = list(set([t["ticker"] for t in txns] + ["SPY", "QQQ"]))
 
-    hist: dict = {}
-    for tkr in tkr_set:
-        try:
-            h = yf.Ticker(tkr).history(start=start_date, interval="1wk", auto_adjust=True)
-            if h.empty: continue
-            if isinstance(h.columns, pd.MultiIndex):
-                h.columns = h.columns.get_level_values(0)
-            s = h["Close"].dropna()
-            s.index = pd.to_datetime(s.index).tz_localize(None)
-            hist[tkr] = s
-        except Exception:
-            pass
+    hist: dict = dp.get_history_weekly_batch(tkr_set, start_date)
 
     if "SPY" not in hist:
         raise HTTPException(500, "Cannot download SPY benchmark data")
@@ -716,6 +860,16 @@ def portfolio_chart():
             alloc[tkr] = round(sh * float(hist[tkr].iloc[-1]), 2)
     if float(p.get("cash", 0)) > 0:
         alloc["Gotovina"] = round(float(p["cash"]), 2)
+
+    # Anchor last data point to actual JSON cash + current prices
+    # (prevents cash-simulation drift from inflating the last value)
+    if port_vals:
+        _actual_last = float(p.get("cash", 0))
+        for tkr, lots in positions.items():
+            sh = sum(l["shares"] for l in lots)
+            if sh > 0 and tkr in hist:
+                _actual_last += sh * float(hist[tkr].iloc[-1])
+        port_vals[-1] = round(_actual_last, 2)
 
     return {
         "dates":         dates_str,
@@ -775,6 +929,219 @@ def _fmt_ts(d) -> str | None:
         return s
 
 
+def _load_cik_map():
+    global _cik_map, _cik_map_loaded
+    import urllib.request as _ur
+    p = Path(CIK_CACHE_FILE)
+    if p.exists():
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+            if time.time() - d.get("built_at", 0) < CIK_CACHE_MAX_AGE:
+                _cik_map = d.get("ciks", {})
+                _cik_map_loaded = True
+                print(f"[SEC] CIK map loaded: {len(_cik_map)} tickers")
+                return
+        except Exception:
+            pass
+    try:
+        req = _ur.Request(SEC_CIK_URL, headers={"User-Agent": SEC_USER_AGENT})
+        with _ur.urlopen(req, timeout=30) as r:
+            data = json.loads(r.read())
+        _cik_map = {
+            v["ticker"].upper(): str(v["cik_str"]).zfill(10)
+            for v in data.values()
+            if v.get("ticker") and v.get("cik_str")
+        }
+        _cik_map_loaded = True
+        p.write_text(json.dumps({"built_at": time.time(), "ciks": _cik_map}, ensure_ascii=False), encoding="utf-8")
+        print(f"[SEC] CIK map fetched & saved: {len(_cik_map)} tickers")
+    except Exception as e:
+        print(f"[SEC] CIK map error: {e}")
+
+
+_REV_TAGS = [
+    "Revenues",
+    "Revenue",
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "RevenueFromContractWithCustomerIncludingAssessedTax",
+    "SalesRevenueNet",
+    "SalesRevenueGoodsNet",
+    "SalesRevenueServicesNet",
+    "TotalRevenues",
+    "NetRevenues",
+]
+_EPS_TAGS    = ["EarningsPerShareDiluted", "EarningsPerShareBasic"]
+_NI_TAGS     = ["NetIncomeLoss", "ProfitLoss"]
+_OI_TAGS     = ["OperatingIncomeLoss"]
+_GP_TAGS     = ["GrossProfit"]
+_RD_TAGS     = [
+    "ResearchAndDevelopmentExpense",
+    "ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost",
+]
+_SGA_TAGS    = [
+    "SellingGeneralAndAdministrativeExpense",
+    "GeneralAndAdministrativeExpense",
+]
+_OCF_TAGS    = [
+    "NetCashProvidedByUsedInOperatingActivities",
+    "NetCashProvidedByOperatingActivities",
+]
+_CAPEX_TAGS  = [
+    "PaymentsToAcquirePropertyPlantAndEquipment",
+    "PaymentsForCapitalExpenditures",
+    "CapitalExpenditures",
+    "PurchasesOfPropertyAndEquipment",
+    "PaymentsToAcquireOtherPropertyPlantAndEquipment",
+    "PaymentsForProceedsFromProductiveAssets",
+]
+_DA_TAGS     = [
+    "DepreciationDepletionAndAmortization",
+    "DepreciationAndAmortization",
+    "Depreciation",
+]
+_CASH_TAGS   = [
+    "CashAndCashEquivalentsAtCarryingValue",
+    "CashCashEquivalentsAndShortTermInvestments",
+    "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+]
+_DEBT_LT_TAGS = [
+    "LongTermDebt",
+    "LongTermDebtAndCapitalLeaseObligation",
+    "LongTermNotesPayable",
+]
+_DEBT_ST_TAGS = [
+    "DebtCurrent",
+    "ShortTermBorrowings",
+    "LongTermDebtCurrent",
+]
+_EQUITY_TAGS = [
+    "StockholdersEquity",
+    "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+]
+_ASSETS_TAGS  = ["Assets"]
+_SHARES_TAGS  = [
+    "CommonStockSharesOutstanding",
+    "CommonStockSharesIssued",
+    "WeightedAverageNumberOfSharesOutstandingBasic",
+    "WeightedAverageNumberOfSharesOutstandingDiluted",
+    "WeightedAverageNumberOfDilutedSharesOutstanding",
+]
+
+
+def _nearest_val(m: dict, d: str, window: int = 10):
+    """Return map value for date d, or nearest entry within ±window days."""
+    if d in m:
+        return m[d]
+    from datetime import date as _dt
+    try:
+        target = _dt.fromisoformat(d)
+        best, best_delta = None, window + 1
+        for k, v in m.items():
+            try:
+                delta = abs((_dt.fromisoformat(k) - target).days)
+                if delta < best_delta:
+                    best_delta, best = delta, v
+            except Exception:
+                pass
+        return best
+    except Exception:
+        return None
+
+
+def _sec_quarters(facts: dict, tags: list, n: int = 12) -> list:
+    """Extract last n quarterly actuals for the first matching tag."""
+    us_gaap = facts.get("facts", {}).get("us-gaap", {})
+    for tag in tags:
+        if tag not in us_gaap:
+            continue
+        units = us_gaap[tag].get("units", {})
+        vals = units.get("USD") or units.get("USD/shares") or units.get("pure") or units.get("shares") or []
+        # Keep only quarterly/annual filings
+        quarterly = [v for v in vals if v.get("form") in ("10-Q", "10-K") and v.get("end")]
+        # Deduplicate by end date:
+        # - higher accn wins (most recent amendment)
+        # - within same accn + end: prefer LARGEST start (shortest period = quarterly not YTD)
+        # - within same accn + end + start: prefer LARGEST val (total > segment, e.g. MSFT)
+        seen: dict = {}
+        for v in sorted(quarterly, key=lambda x: (x.get("accn", ""), x.get("start", ""), x.get("val") or 0)):
+            seen[v["end"]] = v
+        result = sorted(seen.values(), key=lambda x: x["end"], reverse=True)[:n]
+        if result:
+            return result
+    return []
+
+
+def _load_mcap_cache() -> bool:
+    global _mcap_cache_data
+    p = Path(MCAP_CACHE_FILE)
+    if not p.exists():
+        return False
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+        age = time.time() - d.get("built_at", 0)
+        if age > MCAP_CACHE_MAX_AGE:
+            print(f"[MCAP] Cache stale ({age/3600:.0f}h) — will rebuild")
+            return False
+        _mcap_cache_data = d.get("mcaps", {})
+        big = sum(1 for v in _mcap_cache_data.values() if v >= CALENDAR_MIN_MCAP)
+        print(f"[MCAP] Loaded {len(_mcap_cache_data)} tickers, {big} with mcap>50B")
+        return True
+    except Exception as e:
+        print(f"[MCAP] Cache load error: {e}")
+        return False
+
+
+def _build_mcap_cache_bg():
+    global _mcap_building, _mcap_cache_data
+    if _mcap_building:
+        return
+    _mcap_building = True
+    print("[MCAP] Building market cap cache from CSV universe…")
+    try:
+        from yahooquery import Ticker as YQTicker
+        all_tickers = dp.load_ticker_universe(CSV_FILE)
+        if not all_tickers:
+            print("[MCAP] No tickers in CSV")
+            return
+        mcaps: dict = {}
+        BATCH = 200
+        total_batches = (len(all_tickers) + BATCH - 1) // BATCH
+        for bi, i in enumerate(range(0, len(all_tickers), BATCH), 1):
+            batch = all_tickers[i:i + BATCH]
+            try:
+                yq = YQTicker(batch, asynchronous=True)
+                sd = yq.summary_detail
+                for tk in batch:
+                    v = sd.get(tk, {})
+                    mc = v.get("marketCap") if isinstance(v, dict) else None
+                    if mc and isinstance(mc, (int, float)) and mc > 0:
+                        mcaps[tk] = int(mc)
+            except Exception as e:
+                print(f"[MCAP] Batch {bi}/{total_batches} error: {e}")
+            if bi % 5 == 0:
+                print(f"[MCAP] Progress: {bi}/{total_batches} batches done")
+        _mcap_cache_data = mcaps
+        big = sum(1 for v in mcaps.values() if v >= CALENDAR_MIN_MCAP)
+        Path(MCAP_CACHE_FILE).write_text(
+            json.dumps({"built_at": time.time(), "mcaps": mcaps}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        print(f"[MCAP] Done: {len(mcaps)} tickers fetched, {big} with mcap>$50B")
+    except Exception as e:
+        print(f"[MCAP] Build error: {e}")
+    finally:
+        _mcap_building = False
+
+
+def _get_calendar_tickers() -> list[str]:
+    """CSV tickers with mcap > $50B; falls back to hardcoded list if cache empty."""
+    if not _mcap_cache_data:
+        return _CALENDAR_TICKERS
+    result = [tk for tk, mc in _mcap_cache_data.items() if mc >= CALENDAR_MIN_MCAP]
+    print(f"[CALENDAR] Using {len(result)} tickers from mcap cache (>{CALENDAR_MIN_MCAP/1e9:.0f}B)")
+    return result if result else _CALENDAR_TICKERS
+
+
 def _fetch_calendar_bg():
     global _cal_fetching
     if _cal_fetching:
@@ -800,8 +1167,9 @@ def _fetch_calendar_bg():
         earnings_list: list[dict] = []
         divs_list:     list[dict] = []
 
-        with ThreadPoolExecutor(max_workers=15) as ex:
-            futures = {ex.submit(fetch_one, t): t for t in _CALENDAR_TICKERS}
+        cal_tickers = _get_calendar_tickers()
+        with ThreadPoolExecutor(max_workers=20) as ex:
+            futures = {ex.submit(fetch_one, t): t for t in cal_tickers}
             for f in as_completed(futures):
                 tkr, cal, name, mcap = f.result()
                 if not cal:
@@ -904,7 +1272,28 @@ async def refresh_calendar(background_tasks: BackgroundTasks):
         raise HTTPException(409, "Fetch že teče")
     _cal_cache["fetched_at"] = None
     background_tasks.add_task(_fetch_calendar_bg)
-    return {"status": "started", "tickers": len(_CALENDAR_TICKERS)}
+    cal_tickers = _get_calendar_tickers()
+    return {"status": "started", "tickers": len(cal_tickers)}
+
+
+@app.post("/api/calendar/rebuild-mcap")
+async def rebuild_mcap_cache(background_tasks: BackgroundTasks):
+    """Force rebuild of mcap cache (refetches market caps for all CSV tickers)."""
+    if _mcap_building:
+        raise HTTPException(409, "Mcap build že teče")
+    background_tasks.add_task(_build_mcap_cache_bg)
+    return {"status": "started", "csv_tickers": len(dp.load_ticker_universe(CSV_FILE))}
+
+
+@app.get("/api/calendar/mcap-status")
+def mcap_cache_status():
+    big = sum(1 for v in _mcap_cache_data.values() if v >= CALENDAR_MIN_MCAP)
+    return {
+        "total_in_cache": len(_mcap_cache_data),
+        "above_50b": big,
+        "building": _mcap_building,
+        "min_mcap_threshold": CALENDAR_MIN_MCAP,
+    }
 
 
 @app.get("/api/scan/status")
@@ -1104,80 +1493,31 @@ def _run_scan(scan_date_str: str | None = None):
 
     print(f"\n[SCAN] Starting {'historical ' + str(scan_date) if scan_date else 'live'} scan...")
 
-    if not os.path.exists(CSV_FILE):
+    tickers = dp.load_ticker_universe(CSV_FILE)
+    if not tickers:
         _cache["scanning"]   = False
-        _cache["scan_error"] = f"CSV not found: {CSV_FILE}"
+        _cache["scan_error"] = f"CSV not found or empty: {CSV_FILE}"
         return
 
-    tickers      = pd.read_csv(CSV_FILE)["Ticker"].dropna().astype(str).str.strip().tolist()
-    leto         = scan_date.year if scan_date else datetime.now().year
-    stocks       = []
-    chart_data   = {}
+    leto       = scan_date.year if scan_date else datetime.now().year
+    stocks     = []
+    chart_data = {}
     _cache["scan_total"] = len(tickers)
     _cache["scan_done"]  = 0
 
-    # ── Phase 1: yahooquery batch fundamentals (50 tickers / request) ──────────
-    from yahooquery import Ticker as YQTicker
+    # ── Phase 1: batch fundamentals (data_provider handles yq/FMP) ─────────────
+    print(f"[SCAN] Phase 1 — fundamentals for {len(tickers)} tickers…")
+    min_rev = MIN_REV_GROWTH if not scan_date else 0
 
-    def _yqv(d, *keys):
-        if not isinstance(d, dict):
-            return None
-        for k in keys:
-            v = d.get(k)
-            if v is not None:
-                try:
-                    if not pd.isna(v):
-                        return v
-                except Exception:
-                    return v
-        return None
+    def _ph1_progress(done, total):
+        _cache["scan_done"] = done
 
-    YQ_BATCH   = 50
-    candidates = []
-
-    print(f"[SCAN] Phase 1 — yahooquery batch fundamentals for {len(tickers)} tickers…")
-    for _pi in range(0, len(tickers), YQ_BATCH):
-        _pbatch = tickers[_pi:_pi + YQ_BATCH]
-        _cache["scan_done"] = _pi + len(_pbatch)
-        try:
-            _yq  = YQTicker(_pbatch, validate=False)
-            _fin = _yq.financial_data
-            _sum = _yq.summary_detail
-            _kst = _yq.key_stats
-            _qt  = _yq.quote_type
-            _ap  = _yq.asset_profile
-            for _tk in _pbatch:
-                _fd = _fin.get(_tk) if isinstance(_fin, dict) else {}
-                _sd = _sum.get(_tk) if isinstance(_sum, dict) else {}
-                _ks = _kst.get(_tk) if isinstance(_kst, dict) else {}
-                _q  = _qt.get(_tk)  if isinstance(_qt,  dict) else {}
-                _a  = _ap.get(_tk)  if isinstance(_ap,  dict) else {}
-                if not isinstance(_fd, dict): _fd = {}
-                if not isinstance(_sd, dict): _sd = {}
-                if not isinstance(_ks, dict): _ks = {}
-                if not isinstance(_q,  dict): _q  = {}
-                if not isinstance(_a,  dict): _a  = {}
-
-                _mc = _yqv(_sd, "marketCap") or _yqv(_ks, "marketCap")
-                if not _mc or _mc < MIN_MARKET_CAP:
-                    continue
-                _rg = _safe(_yqv(_fd, "revenueGrowth"))
-                if not scan_date and _rg < MIN_REV_GROWTH:
-                    continue
-                candidates.append({
-                    "ticker":       _tk,
-                    "mcap":         _mc,
-                    "rev_growth":   _rg,
-                    "gross_margin": _safe(_yqv(_fd, "grossMargins")),
-                    "eps_growth":   _safe(_yqv(_ks, "earningsQuarterlyGrowth") or _yqv(_fd, "earningsGrowth")),
-                    "peg":          _safe(_yqv(_ks, "pegRatio")),
-                    "short_name":   _yqv(_q, "shortName", "longName") or _tk,
-                    "sector":       _yqv(_a, "sector") or "N/A",
-                    "target_price": _safe(_yqv(_fd, "targetMeanPrice")),
-                })
-        except Exception as _pe:
-            print(f"[SCAN] Ph1 batch {_pi//YQ_BATCH}: {_pe}")
-        time.sleep(0.3)
+    candidates = dp.get_scanner_fundamentals(
+        tickers,
+        min_mcap=MIN_MARKET_CAP,
+        min_rev_growth=min_rev,
+        progress_cb=_ph1_progress,
+    )
 
     print(f"[SCAN] Phase 1 → {len(candidates)} candidates; starting Phase 2…")
     _cache["scan_total"] = len(candidates)
@@ -1195,17 +1535,14 @@ def _run_scan(scan_date_str: str | None = None):
         if i % 20 == 0:
             print(f"  [{i}/{len(candidates)}] found={len(stocks)}")
         try:
-            t      = yf.Ticker(ticker)
             dl_end = (scan_date + timedelta(days=8)).strftime("%Y-%m-%d") if scan_date else None
-            data   = t.history(start="2010-01-01", end=dl_end, interval="1wk", actions=False)
+            data   = dp.get_history_weekly(ticker, start="2010-01-01", end=dl_end)
             if data is None or data.empty or len(data) < 52:
                 continue
             if scan_date:
                 data = _slice_to_date(data, scan_date)
             if len(data) < 52:
                 continue
-            if isinstance(data.columns, pd.MultiIndex):
-                data.columns = data.columns.get_level_values(0)
 
             close = data["Close"].dropna()
             if len(close) < 205:
@@ -1352,6 +1689,60 @@ def _run_scan(scan_date_str: str | None = None):
     except Exception as e:
         print(f"[WARN] Cache save failed: {e}")
 
+    # Save weekly backlog snapshot (only for live scans, not historical)
+    if scan_date is None:
+        _save_weekly_snapshot(stocks)
+
+
+def _save_weekly_snapshot(stocks: list):
+    """Append or update this week's Growth Radar snapshot in the history file."""
+    now = datetime.utcnow()
+    iso_week = now.strftime("%G-W%V")   # e.g. "2026-W33"
+    scan_day  = now.strftime("%Y-%m-%d")
+
+    history: list = []
+    if os.path.exists(RADAR_HISTORY_FILE):
+        try:
+            with open(RADAR_HISTORY_FILE, encoding="utf-8") as f:
+                history = json.load(f)
+        except Exception:
+            history = []
+
+    # Remove existing entry for this ISO week (overwrite)
+    history = [w for w in history if w.get("week") != iso_week]
+
+    # Prepend new entry (newest first)
+    history.insert(0, {
+        "week":     iso_week,
+        "date":     scan_day,
+        "saved_at": now.isoformat(timespec="seconds") + "Z",
+        "count":    len(stocks),
+        "stocks":   stocks,
+    })
+
+    # Keep at most MAX_HISTORY_WEEKS
+    history = history[:MAX_HISTORY_WEEKS]
+
+    try:
+        with open(RADAR_HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False)
+        print(f"[HISTORY] Saved {iso_week} ({scan_day}) — {len(stocks)} stocks")
+    except Exception as e:
+        print(f"[WARN] History save failed: {e}")
+
+
+@app.get("/api/scan/history")
+def scan_history():
+    """Return weekly Growth Radar snapshots, newest first."""
+    if not os.path.exists(RADAR_HISTORY_FILE):
+        return {"weeks": []}
+    try:
+        with open(RADAR_HISTORY_FILE, encoding="utf-8") as f:
+            history = json.load(f)
+        return {"weeks": history}
+    except Exception as e:
+        return {"weeks": [], "error": str(e)}
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PORTFOLIO  (/api/portfolio/*)
@@ -1363,7 +1754,8 @@ PORTFOLIO_FILE = "ogm_virtual_portfolio.json"
 class BuyRequest(BaseModel):
     ticker: str
     amount: float
-    date: Optional[str] = None   # YYYY-MM-DD, None = today
+    date: Optional[str] = None          # YYYY-MM-DD, None = today
+    target_price: Optional[float] = None
 
 
 class SellRequest(BaseModel):
@@ -1391,36 +1783,11 @@ def get_portfolio():
     total_invested = 0.0
     total_value    = float(p.get("cash", 0))
 
-    # ── Batch price fetch: yahooquery first, yf.history fallback ─────────────
+    # ── Batch price fetch ─────────────────────────────────────────────────────
     _port_tickers = list(p.get("positions", {}).keys())
     _batch_prices: dict[str, float] = {}
     if _port_tickers:
-        # Primary: yahooquery batch (1 request for all tickers)
-        try:
-            from yahooquery import Ticker as YQTicker
-            _yqb  = YQTicker(_port_tickers, validate=False)
-            _pmap = _yqb.price
-            for _tkr in _port_tickers:
-                _pd = _pmap.get(_tkr)
-                if isinstance(_pd, dict):
-                    _pr = _pd.get("regularMarketPrice") or _pd.get("regularMarketPreviousClose")
-                    if _pr:
-                        _batch_prices[_tkr] = float(_pr)
-        except Exception as _be:
-            print(f"[PORTFOLIO] YQ batch error: {_be}")
-        # Fallback: yf.history for tickers still missing (v8 endpoint, works on Railway)
-        for _tkr in [t for t in _port_tickers if t not in _batch_prices]:
-            try:
-                _h = yf.Ticker(_tkr).history(period="5d", interval="1d", auto_adjust=True)
-                if not _h.empty:
-                    if isinstance(_h.columns, pd.MultiIndex):
-                        _h.columns = _h.columns.get_level_values(0)
-                    _v = float(_h["Close"].dropna().iloc[-1])
-                    if _v:
-                        _batch_prices[_tkr] = _v
-                        print(f"[PORTFOLIO] Fallback price {_tkr}: {_v}")
-            except Exception:
-                pass
+        _batch_prices = dp.get_live_prices_batch(_port_tickers)
         _missing = [t for t in _port_tickers if t not in _batch_prices]
         if _missing:
             print(f"[PORTFOLIO] No price for: {_missing}")
@@ -1440,6 +1807,7 @@ def get_portfolio():
             cost      = sum(l["invested"] for l in lots)
             cur_val   = shares * price
             pnl       = cur_val - cost
+            _tps = [l["target_price"] for l in lots if l.get("target_price")]
             positions[ticker] = {
                 "ticker":        ticker,
                 "name":          lots[0].get("company", ticker),
@@ -1447,6 +1815,7 @@ def get_portfolio():
                 "total_shares":  round(shares, 6),
                 "avg_cost":      round(cost / shares, 4) if shares else 0,
                 "current_price": round(price, 2),
+                "target_price":  round(sum(_tps) / len(_tps), 2) if _tps else None,
                 "total_invested":round(cost, 2),
                 "current_value": round(cur_val, 2),
                 "pnl":           round(pnl, 2),
@@ -1505,9 +1874,8 @@ def get_portfolio():
 def _ogm_at_date(ticker: str, buy_date: str, info: dict | None = None) -> float | None:
     """Compute OGM for ticker using weekly price history up to buy_date."""
     try:
-        t = yf.Ticker(ticker)
         if info is None:
-            info = t.info or {}
+            info = dp.get_info(ticker) or {}
         mcap         = _safe(info.get("marketCap", 0))
         gross_margin = _safe(info.get("grossMargins"))
         eps_growth   = _safe(info.get("earningsQuarterlyGrowth") or info.get("earningsGrowth"))
@@ -1515,12 +1883,10 @@ def _ogm_at_date(ticker: str, buy_date: str, info: dict | None = None) -> float 
 
         from datetime import date as _date, timedelta as _td
         _end = (_date.fromisoformat(buy_date) + _td(days=8)).isoformat()
-        data = t.history(start="2010-01-01", end=_end, interval="1wk", actions=False)
+        data = dp.get_history_weekly(ticker, start="2010-01-01", end=_end)
         if data is None or data.empty:
             return None
         data = _slice_to_date(data, _date.fromisoformat(buy_date))
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.get_level_values(0)
         close = data["Close"].dropna()
         if len(close) < 205:
             return None
@@ -1600,10 +1966,11 @@ def portfolio_buy(req: BuyRequest):
     if not price or price <= 0:
         raise HTTPException(404, f"Could not get price for {ticker}")
 
+    _buy_info = {}
     try:
-        info    = yf.Ticker(ticker).info
-        company = info.get("shortName") or ticker
-        sector  = info.get("sector", "N/A")
+        _buy_info = dp.get_info(ticker)
+        company   = _buy_info.get("shortName") or ticker
+        sector    = _buy_info.get("sector", "N/A")
     except Exception:
         company, sector = ticker, "N/A"
 
@@ -1619,14 +1986,15 @@ def portfolio_buy(req: BuyRequest):
                 break
     if ogm_score is None:
         try:
-            ogm_score = _ogm_at_date(ticker, buy_date, info)
+            ogm_score = _ogm_at_date(ticker, buy_date, _buy_info or None)
         except Exception:
             pass
 
     lot = {"shares": round(req.amount / price, 6), "cost_basis": round(price, 4),
            "invested": round(req.amount, 2), "open_date": buy_date,
            "company": company, "sector": sector,
-           "ogm_score": ogm_score}
+           "ogm_score": ogm_score,
+           "target_price": round(req.target_price, 2) if req.target_price and req.target_price > 0 else None}
     p["positions"].setdefault(ticker, []).append(lot)
     p["cash"] = round(p["cash"] - req.amount, 2)
 
@@ -1709,32 +2077,15 @@ def portfolio_sell(req: SellRequest):
             "proceeds": proceeds, "pnl": pnl, "remaining_cash": p["cash"]}
 
 
-def _live_price(ticker: str):
-    from yahooquery import Ticker as YQTicker
-    # Try yahooquery price module first (lightweight, less rate-limited)
-    try:
-        _yqp = YQTicker(ticker, validate=False).price.get(ticker)
-        if isinstance(_yqp, dict):
-            _p = _yqp.get("regularMarketPrice") or _yqp.get("regularMarketPreviousClose")
-            if _p:
-                return float(_p), _yqp
-    except Exception:
-        pass
-    # Fallback: yfinance chart endpoint (v8, different from quoteSummary)
-    try:
-        _h = yf.download(ticker, period="5d", interval="1d",
-                         auto_adjust=True, progress=False, multi_level_index=False)
-        if not _h.empty:
-            return float(_h["Close"].iloc[-1]), {}
-    except Exception:
-        pass
-    return None, {}
+def _live_price(ticker: str) -> tuple[float | None, dict]:
+    p = dp.get_live_price(ticker)
+    return p, {}
 
 
 def _hist_price(ticker: str, date_str: str):
     try:
         end = (datetime.strptime(date_str, "%Y-%m-%d") + timedelta(days=7)).strftime("%Y-%m-%d")
-        h   = yf.Ticker(ticker).history(start=date_str, end=end, auto_adjust=True)
+        h   = dp.get_history_daily(ticker, start=date_str, end=end)
         if not h.empty:
             return float(h["Close"].iloc[0]), h.index[0].strftime("%Y-%m-%d")
     except Exception:
@@ -1784,8 +2135,7 @@ def _run_watchlist(tickers: list[str], scan_date_str: str | None = None):
     results = []
     for ticker in tickers:
         try:
-            t    = yf.Ticker(ticker)
-            info = t.info
+            info = dp.get_info(ticker)
             mcap         = info.get("marketCap")
             rev_growth   = _safe(info.get("revenueGrowth"))
             gross_margin = _safe(info.get("grossMargins"))
@@ -1793,15 +2143,13 @@ def _run_watchlist(tickers: list[str], scan_date_str: str | None = None):
             peg          = _safe(info.get("pegRatio"))
 
             dl_end = (scan_date + timedelta(days=8)).strftime("%Y-%m-%d") if scan_date else None
-            data   = t.history(start="2014-01-01", end=dl_end, interval="1wk", actions=False)
+            data   = dp.get_history_weekly(ticker, start="2010-01-01", end=dl_end)
             if data is None or data.empty or len(data) < 52:
                 results.append({"ticker": ticker, "error": "Insufficient history"}); continue
             if scan_date:
                 data = _slice_to_date(data, scan_date)
             if len(data) < 52:
                 results.append({"ticker": ticker, "error": "Insufficient history for this date"}); continue
-            if isinstance(data.columns, pd.MultiIndex):
-                data.columns = data.columns.get_level_values(0)
 
             close = data["Close"].dropna()
             is_mega        = bool(mcap and mcap >= MEGA_CAP)
@@ -1943,7 +2291,9 @@ def scan_sell_market(background_tasks: BackgroundTasks):
         return {"message": "Sell scan already running"}
     if not os.path.exists(CSV_FILE):
         raise HTTPException(404, f"CSV not found: {CSV_FILE}")
-    tickers = pd.read_csv(CSV_FILE)["Ticker"].dropna().astype(str).str.strip().tolist()
+    tickers = dp.load_ticker_universe(CSV_FILE)
+    if not tickers:
+        raise HTTPException(404, f"CSV not found: {CSV_FILE}")
     _sell_cache["scan_mode"] = "market"
     background_tasks.add_task(_run_sell, tickers, min_score=70)
     return {"message": f"Market sell scan started for {len(tickers)} tickers"}
@@ -1954,13 +2304,10 @@ def analyze_sell_stock(ticker: str):
     """Single-stock sell-risk deep dive: score breakdown + chart data."""
     ticker = ticker.upper()
     try:
-        t    = yf.Ticker(ticker)
-        info = t.info
-        data = t.history(start="2019-01-01", interval="1wk", actions=False)
+        info = dp.get_info(ticker)
+        data = dp.get_history_weekly(ticker, start="2019-01-01")
         if data is None or data.empty or len(data) < 52:
             raise HTTPException(404, f"Not enough price history for {ticker}")
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.get_level_values(0)
 
         close = pd.to_numeric(data["Close"].squeeze(), errors="coerce").dropna()
         ma10  = close.rolling(10).mean()
@@ -2075,13 +2422,11 @@ def _run_sell(tickers: list[str], min_score: float = 0):
 
     for ticker in tickers:
         try:
-            t     = yf.Ticker(ticker)
-            info  = t.info
-            data  = t.history(period="5y", interval="1wk", actions=False)
+            info      = dp.get_info(ticker)
+            _5y_start = date.today().replace(year=date.today().year - 5).isoformat()
+            data      = dp.get_history_weekly(ticker, start=_5y_start)
             if len(data) < 52:
                 continue
-            if isinstance(data.columns, pd.MultiIndex):
-                data.columns = data.columns.get_level_values(0)
 
             close = pd.to_numeric(data["Close"].squeeze(), errors="coerce").dropna()
             ma10  = close.rolling(10).mean()
@@ -2330,14 +2675,11 @@ def _bottom_score(current: dict, hist: list[dict]) -> dict:
 
 
 def _bottom_analyze_ticker(ticker: str) -> dict:
-    t    = yf.Ticker(ticker)
-    info = t.info
-    data = t.history(period="10y", interval="1wk", actions=False)
+    info       = dp.get_info(ticker)
+    _10y_start = date.today().replace(year=date.today().year - 10).isoformat()
+    data       = dp.get_history_weekly(ticker, start=_10y_start)
     if len(data) < 156:
         raise ValueError("Premalo podatkov (< 3 leta tedenskih podatkov)")
-
-    if isinstance(data.columns, pd.MultiIndex):
-        data.columns = data.columns.get_level_values(0)
 
     close = pd.to_numeric(data["Close"].squeeze(),  errors="coerce").dropna()
     vol   = pd.to_numeric(data["Volume"].squeeze(), errors="coerce").fillna(0)
@@ -2452,12 +2794,10 @@ def _collect_training_data() -> tuple[np.ndarray, np.ndarray, list]:
     pos, neg, stats = [], [], []
     for ticker in _TRAIN_TICKERS:
         try:
-            t    = yf.Ticker(ticker)
-            data = t.history(period="15y", interval="1wk", actions=False)
+            _15y_start = date.today().replace(year=date.today().year - 15).isoformat()
+            data  = dp.get_history_weekly(ticker, start=_15y_start)
             if len(data) < 200:
                 continue
-            if isinstance(data.columns, pd.MultiIndex):
-                data.columns = data.columns.get_level_values(0)
             close = pd.to_numeric(data["Close"].squeeze(),  errors="coerce").dropna()
             vol   = pd.to_numeric(data["Volume"].squeeze(), errors="coerce").fillna(0)
             vol   = vol.reindex(close.index).fillna(0)
@@ -2747,8 +3087,7 @@ def _fetch_one_market(inst: dict) -> dict | None:
     hist = None
     for sym in symbols:
         try:
-            tk = yf.Ticker(sym)
-            h = tk.history(period="32d", interval="1d")
+            h = dp.get_history_daily(sym, period="5d")
             if not h.empty and len(h["Close"].dropna()) >= 2:
                 hist = h
                 break

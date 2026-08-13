@@ -1,5 +1,5 @@
 {
-  "cash": 6182.17,
+  "cash": 0.17,
   "starting_cash": 50000.0,
   "created": "2026-06-25",
   "positions": {
@@ -10,7 +10,8 @@
         "invested": 5000.0,
         "open_date": "2026-06-25",
         "company": "Microsoft Corporation",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 92.2
       },
       {
         "shares": 27.362776,
@@ -18,7 +19,8 @@
         "invested": 10000.0,
         "open_date": "2026-06-25",
         "company": "Microsoft Corporation",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 92.2
       }
     ],
     "MA": [
@@ -28,7 +30,8 @@
         "invested": 5000.0,
         "open_date": "2024-06-21",
         "company": "Mastercard Incorporated",
-        "sector": "Financial Services"
+        "sector": "Financial Services",
+        "ogm_score": 77.8
       },
       {
         "shares": 31.809989,
@@ -36,7 +39,8 @@
         "invested": 15000.0,
         "open_date": "2026-06-03",
         "company": "Mastercard Incorporated",
-        "sector": "Financial Services"
+        "sector": "Financial Services",
+        "ogm_score": 77.8
       }
     ],
     "META": [
@@ -46,7 +50,8 @@
         "invested": 5000.0,
         "open_date": "2025-01-24",
         "company": "Meta Platforms, Inc.",
-        "sector": "Communication Services"
+        "sector": "Communication Services",
+        "ogm_score": 81.8
       },
       {
         "shares": 17.931752,
@@ -54,7 +59,8 @@
         "invested": 10000.0,
         "open_date": "2026-06-25",
         "company": "Meta Platforms, Inc.",
-        "sector": "Communication Services"
+        "sector": "Communication Services",
+        "ogm_score": 81.8
       }
     ],
     "NVDA": [
@@ -64,7 +70,8 @@
         "invested": 5000.0,
         "open_date": "2025-01-24",
         "company": "NVIDIA Corporation",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 65.3
       },
       {
         "shares": 51.382181,
@@ -72,7 +79,8 @@
         "invested": 10000.0,
         "open_date": "2026-06-25",
         "company": "NVIDIA Corporation",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 65.3
       }
     ],
     "MU": [
@@ -82,7 +90,8 @@
         "invested": 822.51,
         "open_date": "2025-02-05",
         "company": "Micron Technology, Inc.",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 88.8
       }
     ],
     "B": [
@@ -92,7 +101,8 @@
         "invested": 5000.0,
         "open_date": "2024-03-20",
         "company": "Barrick Mining Corporation",
-        "sector": "Basic Materials"
+        "sector": "Basic Materials",
+        "ogm_score": 82.9
       }
     ],
     "AMZN": [
@@ -102,7 +112,8 @@
         "invested": 5000.0,
         "open_date": "2024-07-31",
         "company": "Amazon.com, Inc.",
-        "sector": "Consumer Cyclical"
+        "sector": "Consumer Cyclical",
+        "ogm_score": 72.8
       }
     ],
     "PLTR": [
@@ -112,7 +123,8 @@
         "invested": 15000.0,
         "open_date": "2026-06-25",
         "company": "Palantir Technologies Inc.",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 65.3
       }
     ],
     "SPGI": [
@@ -122,7 +134,8 @@
         "invested": 15000.0,
         "open_date": "2026-06-25",
         "company": "S&P Global Inc.",
-        "sector": "Financial Services"
+        "sector": "Financial Services",
+        "ogm_score": 82.4
       }
     ],
     "ORCL": [
@@ -132,7 +145,8 @@
         "invested": 10000.0,
         "open_date": "2026-06-25",
         "company": "Oracle Corporation",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 94.7
       }
     ],
     "ICE": [
@@ -142,7 +156,8 @@
         "invested": 7500.0,
         "open_date": "2026-06-25",
         "company": "Intercontinental Exchange Inc.",
-        "sector": "Financial Services"
+        "sector": "Financial Services",
+        "ogm_score": 81.2
       }
     ],
     "NFLX": [
@@ -152,7 +167,8 @@
         "invested": 10000.0,
         "open_date": "2026-06-25",
         "company": "Netflix, Inc.",
-        "sector": "Communication Services"
+        "sector": "Communication Services",
+        "ogm_score": 66.8
       }
     ],
     "MELI": [
@@ -162,7 +178,8 @@
         "invested": 10000.0,
         "open_date": "2026-05-11",
         "company": "MercadoLibre, Inc.",
-        "sector": "Consumer Cyclical"
+        "sector": "Consumer Cyclical",
+        "ogm_score": 65.5
       }
     ],
     "SAP": [
@@ -172,7 +189,19 @@
         "invested": 10000.0,
         "open_date": "2026-05-11",
         "company": "SAP  SE",
-        "sector": "Technology"
+        "sector": "Technology",
+        "ogm_score": 72.4
+      }
+    ],
+    "ADSK": [
+      {
+        "shares": 28.312343,
+        "cost_basis": 218.35,
+        "invested": 6182.0,
+        "open_date": "2026-07-17",
+        "company": "Autodesk, Inc.",
+        "sector": "Technology",
+        "ogm_score": 93.6
       }
     ]
   },
@@ -185,7 +214,8 @@
       "buy_price": 191.0455,
       "sell_price": 440.83,
       "invested": 5000.0,
-      "proceeds": 11537.3
+      "proceeds": 11537.3,
+      "ogm_score": 74.3
     },
     {
       "ticker": "AMD",
@@ -195,7 +225,8 @@
       "buy_price": 117.35,
       "sell_price": 519.74,
       "invested": 5000.0,
-      "proceeds": 22144.87
+      "proceeds": 22144.87,
+      "ogm_score": 87.8
     },
     {
       "ticker": "MU",
@@ -205,7 +236,8 @@
       "buy_price": 109.1504,
       "sell_price": 1048.51,
       "invested": 5000.0,
-      "proceeds": 48030.5
+      "proceeds": 48030.5,
+      "ogm_score": 73.8
     },
     {
       "ticker": "MU",
@@ -215,7 +247,8 @@
       "buy_price": 93.2551,
       "sell_price": 1048.51,
       "invested": 4999.93,
-      "proceeds": 56216.5
+      "proceeds": 56216.5,
+      "ogm_score": 88.8
     }
   ]
 }

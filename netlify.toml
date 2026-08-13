@@ -2,12 +2,21 @@
   publish = "."
   command = ""
 
+# Root → landing page (200 = rewrite, not redirect — URL stays theboringmillion.com)
 [[redirects]]
   from = "/"
-  to = "/dashboard.html"
+  to = "/landing.html"
   status = 200
 
+# /dashboard → back to home (backend is not public)
 [[redirects]]
-  from = "/*"
-  to = "/dashboard.html"
-  status = 200
+  from = "/dashboard"
+  to = "/"
+  status = 302
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
