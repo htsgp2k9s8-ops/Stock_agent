@@ -861,15 +861,32 @@ def portfolio_chart():
     if float(p.get("cash", 0)) > 0:
         alloc["Gotovina"] = round(float(p["cash"]), 2)
 
-    # Anchor last data point to actual JSON cash + current prices
-    # (prevents cash-simulation drift from inflating the last value)
-    if port_vals:
-        _actual_last = float(p.get("cash", 0))
-        for tkr, lots in positions.items():
-            sh = sum(l["shares"] for l in lots)
-            if sh > 0 and tkr in hist:
-                _actual_last += sh * float(hist[tkr].iloc[-1])
-        port_vals[-1] = round(_actual_last, 2)
+    # Compute live portfolio value for today (live prices > weekly bar close)
+    today_str = date.today().isoformat()
+    all_pos_tkrs = list(positions.keys())
+    try:
+        live_px = dp.get_live_prices_batch(all_pos_tkrs) if all_pos_tkrs else {}
+    except Exception:
+        live_px = {}
+
+    _live_val = float(p.get("cash", 0))
+    for tkr, lots in positions.items():
+        sh = sum(l["shares"] for l in lots)
+        if sh <= 0:
+            continue
+        px = live_px.get(tkr) or (float(hist[tkr].iloc[-1]) if tkr in hist else None)
+        if px:
+            _live_val += sh * float(px)
+    _live_val = round(_live_val, 2)
+
+    # Ensure today is the last data point so period calculations are relative to NOW
+    if dates_str and dates_str[-1] < today_str:
+        dates_str.append(today_str)
+        port_vals.append(_live_val)
+        spy_vals.append(spy_vals[-1])   # carry forward (no intraday benchmark)
+        qqq_vals.append(qqq_vals[-1])
+    elif port_vals:
+        port_vals[-1] = _live_val       # update last point with live prices
 
     return {
         "dates":         dates_str,

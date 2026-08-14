@@ -1982,7 +1982,7 @@ function renderPerfTable(d){
   if(!el||!d.dates||!d.dates.length)return;
   const dates=d.dates,port=d.portfolio,spy=d.spy,qqq=d.qqq;
   const lastIdx=dates.length-1;
-  const nowD=new Date(dates[lastIdx]);
+  const nowD=new Date();  // today — backend appends today as last point with live prices
   function findIdx(daysAgo){
     const ts=new Date(nowD-daysAgo*86400000).toISOString().split('T')[0];
     let b=0;for(let i=0;i<dates.length;i++){if(dates[i]<=ts)b=i;else break;}return b;
