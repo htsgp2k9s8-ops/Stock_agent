@@ -842,6 +842,17 @@ def portfolio_chart():
                 val += sh * float(s[mask].iloc[-1])
         port_vals.append(round(val, 2))
 
+    # Correct simulation cash discrepancy — unrecorded transactions cause
+    # simulated cash to diverge from actual JSON cash, inflating historical values.
+    # Apply the difference to all data points from the last known transaction onwards.
+    _actual_cash = float(p.get("cash", 0))
+    _cash_corr   = _actual_cash - cash          # negative when simulation overstates cash
+    _last_txn_dt = txns[-1]["date"] if txns else None
+    if _last_txn_dt and abs(_cash_corr) > 50:
+        for _i, _ds in enumerate(dates_str):
+            if _ds >= _last_txn_dt:
+                port_vals[_i] = round(port_vals[_i] + _cash_corr, 2)
+
     # Benchmarks normalised to starting_cash
     spy_s    = float(hist["SPY"].iloc[0])
     spy_vals = [round(starting_cash * float(v) / spy_s, 2)
