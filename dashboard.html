@@ -1289,6 +1289,7 @@ function scanTab(el, paneId){
   document.querySelectorAll('#sec-scanner .tab-pane').forEach(p=>p.classList.toggle('active',p.id===paneId));
 }
 async function loadScanner(){
+  scanTab(document.getElementById('scan-tab-live'),'scan-tp-live');
   await pollScanStatus();
   loadSchedule();
   try{const r=await fetch(API+'/api/results');if(!r.ok)throw 0;const d=await r.json();renderScanTable(d.stocks||[]);}
