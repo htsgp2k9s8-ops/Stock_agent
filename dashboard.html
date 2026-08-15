@@ -76,7 +76,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .post-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 9px;border-radius:20px;background:rgba(96,165,250,.12);color:var(--a2);border:1px solid rgba(96,165,250,.2)}
 .post-meta{font-size:11px;color:var(--muted)}
 .post-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.4}
-.post-body{font-size:13px;color:var(--muted);line-height:1.7}
+.post-body{font-size:13px;color:#e0e0e0;line-height:1.85;max-width:680px}
 .post-preview{font-size:13px;color:var(--muted);line-height:1.7;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .post-readmore{display:flex;justify-content:flex-end;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
 .feed-modal-wrap{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);overflow-y:auto;padding:32px 20px}
@@ -116,7 +116,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .fin-ratio-val{font-size:16px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
 .post-body h2{font-size:16px;font-weight:700;color:var(--text);margin:14px 0 5px;line-height:1.3}
 .post-body h3{font-size:14px;font-weight:700;color:var(--a2);margin:10px 0 4px;line-height:1.3}
-.post-body p{margin:5px 0}
+.post-body p{margin:10px 0}
 .post-body ul,.post-body ol{padding-left:20px;margin:6px 0}
 .post-body li{margin:3px 0}
 .post-body hr{border:none;border-top:1px solid var(--border);margin:14px 0}
@@ -1004,7 +1004,7 @@ function setMsg(id,html,col){const el=document.getElementById(id);if(!el)return;
 
 /* ── navigation ──────────────────────────────────────────────────────────── */
 const NAV_T={scanner:'Growth Radar',stock:'Single Stock',portfolio:'Boring Million Portfolio',watchlist:'Watchlist',sell:'Sell Radar',sectors:'Sectors',calendar:'Calendar',bottom:'Correction Finder'};
-const NAV_L={scanner:loadScanner,stock:()=>{},feed:loadFeed,admin:()=>loadAdminPosts(''),myportfolio:()=>{},portfolio:loadPortfolio,watchlist:loadWatchlist,sell:loadSell,sectors:loadSectors,calendar:loadCalendar};
+const NAV_L={scanner:loadScanner,stock:()=>{},feed:loadFeed,admin:()=>loadAdminPosts(''),myportfolio:()=>{},portfolio:loadPortfolio,watchlist:loadWatchlist,sell:loadSell,bottom:loadBottomOnNav,sectors:loadSectors,calendar:loadCalendar};
 const NAV_GROUP={feed:"feed",admin:"feed",scanner:"analysis",bottom:"analysis",sell:"analysis",stock:"analysis",portfolio:"portfolio",myportfolio:"portfolio",watchlist:"portfolio",sectors:"overview",calendar:"overview","cal-earnings":"overview","cal-economic":"overview","cal-dividends":"overview"};
 function navTo(id){
   const calSubs=["cal-earnings","cal-economic","cal-dividends"];
@@ -1189,10 +1189,21 @@ function closeFeedModal(){
   document.body.style.overflow='';
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeFeedModal();closeFinModal();}});
+function autoParas(raw){
+  // Convert plain-text paragraphs (separated by blank lines) to <p> tags.
+  // Lines that are already HTML tags are left as-is.
+  return raw.split(/\n{2,}/).map(block=>{
+    block=block.trim();
+    if(!block)return'';
+    if(/^<[a-z]/i.test(block))return block; // already HTML
+    return'<p>'+block.replace(/\n/g,'<br>')+'</p>';
+  }).filter(Boolean).join('\n');
+}
+
 async function adminPost(){
   const pw=document.getElementById('adm-pw').value;
   const title=document.getElementById('adm-title').value.trim();
-  const content=document.getElementById('adm-content').value.trim();
+  const content=autoParas(document.getElementById('adm-content').value.trim());
   const category=document.getElementById('adm-cat').value;
   const author=document.getElementById('adm-author').value.trim()||'OGM Team';
   const section=document.getElementById('adm-sec').value;
@@ -2751,6 +2762,19 @@ function _calDividendsTable(evs){
 
 /* ── BOTTOM FINDER ───────────────────────────────────────────────────────── */
 function bottomScoreColor(s){return s>=75?'#4ade80':s>=50?'#fbbf24':s>=30?'#fb923c':'#64748b';}
+
+async function loadBottomOnNav(){
+  try{
+    const d=await(await fetch(API+'/api/bottom/scan')).json();
+    if(d.scanning){
+      if(!_bottomPoll)_bottomPoll=setInterval(pollBottomScan,5000);
+    }else if(d.results&&d.results.length){
+      const ts=d.updated_at?new Date(d.updated_at).toLocaleString('sl-SI'):'';
+      showMsg('bottom-scan-msg',`<span style="color:var(--green)">&#x2713;</span> Zadnji scan: ${ts} — ${d.results.length} delnic`,'ag');
+      renderBottomScanTable(d.results);
+    }
+  }catch{}
+}
 
 async function triggerBottomScan(){
   const btn=document.getElementById('btn-bottom-scan');

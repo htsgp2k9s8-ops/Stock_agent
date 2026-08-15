@@ -435,7 +435,7 @@ body{font-family:'Nunito','Segoe UI',sans-serif;background:var(--bg);color:var(-
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" stroke="var(--a2)" stroke-width="1.5"/><circle cx="11" cy="11" r="6.5" stroke="var(--a2)" stroke-width="1.2" stroke-dasharray="2 2"/><circle cx="11" cy="11" r="10" stroke="var(--a2)" stroke-width="1" opacity=".35" stroke-dasharray="2 3"/></svg>
         </div>
         <div class="an-title">Growth Radar — Kako skeniramo trg</div>
-        <p class="an-desc">Vsak dan screener pregleda <strong>4.200+ delnic</strong> z NYSE. Za vsako izračunamo OGM oceno na podlagi 8 fundamental in tehničnih faktorjev. Rezultat: rangirana lista z najboljšimi priložnostmi dneva — brez šuma, samo signal.</p>
+        <p class="an-desc">Vsak dan screener pregleda <strong>4.200+ delnic</strong> z NYSE. Za vsako izračunamo OGM oceno na podlagi 5 fundamental in tehničnih faktorjev. Rezultat: rangirana lista z najboljšimi priložnostmi dneva — brez šuma, samo signal.</p>
         <div class="an-tags"><span class="an-tag">4200+ delnic</span><span class="an-tag">NYSE</span><span class="an-tag">Dnevno</span></div>
       </div>
 
@@ -444,9 +444,9 @@ body{font-family:'Nunito','Segoe UI',sans-serif;background:var(--bg);color:var(-
         <div class="an-icon ani-gold">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="13" width="4" height="7" rx="1" fill="var(--gold2)" opacity=".4"/><rect x="9" y="8" width="4" height="12" rx="1" fill="var(--gold2)" opacity=".7"/><rect x="16" y="4" width="4" height="16" rx="1" fill="var(--gold2)"/></svg>
         </div>
-        <div class="an-title">OGM Score — 8 komponent v eni oceni</div>
-        <p class="an-desc">OGM (Organic Growth Metric) združi <strong>rast prihodkov, EPS, profitabilnost, FCF, cenovni momentum, RSI, odmik od MA in insider aktivnost</strong>. Vsak faktor je utežen na podlagi historičnega prediktivnega pomena. Rezultat je ocena 0–100.</p>
-        <div class="an-tags"><span class="an-tag">Fundamental</span><span class="an-tag">Tehničen</span><span class="an-tag">Insider signali</span></div>
+        <div class="an-title">OGM Score — 5 komponent v eni oceni</div>
+        <p class="an-desc">OGM (Organic Growth Metric) združi <strong>EPS rast, PEG razmerje, profitabilnost, cenovni momentum in RSI</strong>. Vsak faktor je utežen na podlagi historičnega prediktivnega pomena. Rezultat je ocena 0–100.</p>
+        <div class="an-tags"><span class="an-tag">Fundamental</span><span class="an-tag">Tehničen</span><span class="an-tag">0–100</span></div>
       </div>
 
       <div class="an-card" data-tool="correction-finder" onclick="selectTool('correction-finder')">
@@ -465,8 +465,8 @@ body{font-family:'Nunito','Segoe UI',sans-serif;background:var(--bg);color:var(-
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v4M11 15v4M3 11h4M15 11h4" stroke="var(--purple)" stroke-width="1.6" stroke-linecap="round"/><circle cx="11" cy="11" r="4" stroke="var(--purple)" stroke-width="1.5"/></svg>
         </div>
         <div class="an-title">Sell Signal — Kdaj je trend šel predaleč</div>
-        <p class="an-desc">Naš <strong>Sell Radar</strong> analizira RSI prenapetost, divergenco cene od prihodkov in insider prodajne signale. Ko delnica doseže ekstremno vrednotenje ob slabljenju momentuma, sistem generira opozorilo — preden trg reagira.</p>
-        <div class="an-tags"><span class="an-tag">RSI ekstremi</span><span class="an-tag">Insider prodaja</span><span class="an-tag">Divergenca</span></div>
+        <p class="an-desc">Naš <strong>Sell Radar</strong> analizira RSI prenapetost, divergenco cene od prihodkov in slabljenje momentuma. Ko delnica doseže ekstremno vrednotenje ob slabljenju trenda, sistem generira opozorilo — preden trg reagira.</p>
+        <div class="an-tags"><span class="an-tag">RSI ekstremi</span><span class="an-tag">Momentum</span><span class="an-tag">Divergenca</span></div>
       </div>
 
     </div>
@@ -513,11 +513,9 @@ body{font-family:'Nunito','Segoe UI',sans-serif;background:var(--bg);color:var(-
             <div class="ogm-bar-row"><span class="ogm-bar-lbl">Rast prihodkov (YoY)</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:90%;background:var(--green)"></div></div><span class="ogm-bar-val" style="color:var(--green)">18.4%</span></div>
             <div class="ogm-bar-row"><span class="ogm-bar-lbl">EPS rast</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:82%;background:var(--green)"></div></div><span class="ogm-bar-val" style="color:var(--green)">+22.1%</span></div>
             <div class="ogm-bar-row"><span class="ogm-bar-lbl">Profitabilnost</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:78%;background:var(--a2)"></div></div><span class="ogm-bar-val" style="color:var(--a2)">28.4%</span></div>
-            <div class="ogm-bar-row"><span class="ogm-bar-lbl">FCF rast</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:72%;background:var(--a2)"></div></div><span class="ogm-bar-val" style="color:var(--a2)">+14.2%</span></div>
             <div class="ogm-bar-row"><span class="ogm-bar-lbl">Cenovni momentum</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:95%;background:var(--green)"></div></div><span class="ogm-bar-val" style="color:var(--green)">Visok</span></div>
             <div class="ogm-bar-row"><span class="ogm-bar-lbl">RSI (teden)</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:58%;background:var(--a2)"></div></div><span class="ogm-bar-val" style="color:var(--a2)">52.4</span></div>
             <div class="ogm-bar-row"><span class="ogm-bar-lbl">Odmik od 200w MA</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:88%;background:var(--green)"></div></div><span class="ogm-bar-val" style="color:var(--green)">+1.7%</span></div>
-            <div class="ogm-bar-row"><span class="ogm-bar-lbl">Insider aktivnost</span><div class="ogm-bar-track"><div class="ogm-bar-fill" style="width:40%;background:var(--muted)"></div></div><span class="ogm-bar-val" style="color:var(--muted)">—</span></div>
           </div>
         </div>
         <div class="anp-lock">&#128274; Analiza vsake delnice dostopna s prijavo &nbsp;&middot;&nbsp; <a href="https://dashboard.theboringmillion.com" >Odpri platformo &rarr;</a></div>
@@ -715,7 +713,7 @@ body{font-family:'Nunito','Segoe UI',sans-serif;background:var(--bg);color:var(-
     <div class="rv">
       <div class="lsec-eye">Lastniški model</div>
       <h2 class="lsec-h">OGM ocena —<br>en številčni povzetek</h2>
-      <p class="lsec-sub" style="margin-bottom:20px">OGM (Organic Growth Metric) v eno oceno združi 8 fundamental in tehničnih dejavnikov. Delnice z OGM&nbsp;&gt;&nbsp;70 so historično presegale indeks S&amp;P 500.</p>
+      <p class="lsec-sub" style="margin-bottom:20px">OGM (Organic Growth Metric) v eno oceno združi 5 fundamental in tehničnih dejavnikov. Delnice z OGM&nbsp;&gt;&nbsp;70 so historično presegale indeks S&amp;P 500.</p>
       <p class="lsec-sub" style="font-size:13.5px">Model dnevno posodobi ocene za celoten universe — brez subjektivnih presoj, samo podatki.</p>
     </div>
     <div class="ogm-demo rv" id="ogm-demo">
@@ -724,7 +722,6 @@ body{font-family:'Nunito','Segoe UI',sans-serif;background:var(--bg);color:var(-
       <div class="ogm-row"><div class="ogm-row-lbl">Profitabilnost</div><div class="ogm-track"><div class="ogm-fill" style="background:var(--gold)" data-w="60"></div></div><div class="ogm-pts">+15</div></div>
       <div class="ogm-row"><div class="ogm-row-lbl">Cenovni momentum</div><div class="ogm-track"><div class="ogm-fill" style="background:var(--gold)" data-w="48"></div></div><div class="ogm-pts">+12</div></div>
       <div class="ogm-row"><div class="ogm-row-lbl">Relativna moč</div><div class="ogm-track"><div class="ogm-fill" style="background:var(--green)" data-w="80"></div></div><div class="ogm-pts">+20</div></div>
-      <div class="ogm-row"><div class="ogm-row-lbl">Insider aktivnost</div><div class="ogm-track"><div class="ogm-fill" style="background:var(--green)" data-w="40"></div></div><div class="ogm-pts">+10</div></div>
       <div class="ogm-total">
         <div class="ogm-total-meta"><div class="ogm-total-tk">NVDA</div><div class="ogm-total-lbl">OGM skupaj</div></div>
         <div class="ogm-total-val">97</div>
