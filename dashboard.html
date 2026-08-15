@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>The Boring Million</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,35 +16,35 @@
 <style>
 :root{--bg:#060d1a;--card:#0b1526;--card2:#0e1d32;--border:rgba(255,255,255,.07);--text:#e2e8f0;--muted:#64748b;--accent:#3b82f6;--a2:#60a5fa;--green:#4ade80;--red:#f87171;--yellow:#fbbf24;--orange:#fb923c;--purple:#a78bfa}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;overflow-x:hidden}
-#ui-root{transform:scale(0.9);transform-origin:top left;width:111.12vw;min-height:111.12vh}
-.topnav{position:sticky;top:0;z-index:100;display:flex;align-items:center;background:var(--card);border-bottom:1px solid var(--border);padding:0 28px;height:72px;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:12px;overflow-x:hidden}
+#ui-root{width:100%;min-height:100vh}
+.topnav{position:sticky;top:0;z-index:100;display:flex;align-items:center;background:var(--card);border-bottom:1px solid var(--border);padding:0 22px;height:62px;}
 .tn-logo{display:flex;align-items:center;gap:12px;padding-right:28px;border-right:1px solid var(--border);margin-right:16px;flex-shrink:0}
-.tn-logo .sb-logo-ring{width:78px;height:78px;flex-shrink:0}
+.tn-logo .sb-logo-ring{width:66px;height:66px;flex-shrink:0}
 .tn-logo .sb-logo-ring img{width:100%;height:100%;object-fit:contain;display:block}
 .tn-logo .sb-logo-text{display:flex;flex-direction:column;gap:2px;align-items:center}
-.tn-logo .sb-logo-text h1{font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;color:var(--a2);letter-spacing:.1px;line-height:1;margin:0;white-space:nowrap}
+.tn-logo .sb-logo-text h1{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--a2);letter-spacing:.1px;line-height:1;margin:0;white-space:nowrap}
 .tn-logo .sb-logo-text .tag{font-family:'Nunito',sans-serif;font-size:10.5px;color:var(--muted);letter-spacing:.3px;font-weight:500;line-height:1;white-space:nowrap;text-align:center}
 .tn-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
 .tn-login-btn{display:flex;align-items:center;gap:6px;padding:7px 16px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);border-radius:8px;color:var(--a2);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap}
 .tn-login-btn:hover{background:rgba(59,130,246,.22);border-color:rgba(59,130,246,.5)}
 .tn-links{display:flex;align-items:center;gap:2px;flex:1}
 .tn-item{position:relative}
-.tn-link{display:flex;align-items:center;gap:5px;padding:7px 16px;cursor:pointer;color:var(--text);font-size:16px;font-weight:800;font-family:'Nunito',sans-serif;border-radius:7px;transition:background .15s,color .15s;white-space:nowrap;user-select:none}
+.tn-link{display:flex;align-items:center;gap:5px;padding:6px 13px;cursor:pointer;color:var(--text);font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;border-radius:7px;transition:background .15s,color .15s;white-space:nowrap;user-select:none}
 .tn-link:hover,.tn-link.active{color:var(--text);background:rgba(255,255,255,.06)}
 .tn-home{font-size:18px;padding:7px 10px;color:var(--muted)}
 .tn-link.active{color:var(--a2)}
 .tn-has-dd:hover .tn-dd{display:block}
 .tn-dd{display:none;position:absolute;top:100%;left:0;background:var(--card);border:1px solid var(--border);border-radius:10px;min-width:260px;padding:10px 8px 8px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:300}
-.tn-dd-item{padding:10px 16px;cursor:pointer;border-radius:8px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--muted);white-space:nowrap;transition:background .1s,color .1s}
+.tn-dd-item{padding:8px 14px;cursor:pointer;border-radius:8px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--muted);white-space:nowrap;transition:background .1s,color .1s}
 .tn-dd-item:hover,.tn-dd-item.active{background:rgba(255,255,255,.07);color:var(--text)}
 .tn-dd-item.active{color:var(--a2)}
 .tn-dd-sep{height:1px;background:var(--border);margin:4px 6px}
 .tn-dd-label{padding:4px 12px 2px;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);opacity:.6}
-.cal-tabs{display:flex;gap:8px;padding:16px 24px 0;border-bottom:1px solid var(--border)}
-.cal-tab-btn{padding:8px 16px;border:none;background:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s}
-.cal-tab-btn:hover{color:var(--text)}
-.cal-tab-btn.active{color:var(--a2);border-bottom-color:var(--a2)}
+.cal-tabs{display:flex;gap:4px;margin-bottom:20px}
+.cal-tab-btn{padding:5px 14px;font-size:12px;font-weight:700;font-family:'Nunito','Segoe UI',sans-serif;color:var(--muted);cursor:pointer;border-radius:8px;border:1px solid rgba(255,255,255,.12);white-space:nowrap;transition:all .15s;background:none;letter-spacing:.2px}
+.cal-tab-btn:hover{color:var(--text);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2)}
+.cal-tab-btn.active{color:var(--a2);background:rgba(59,130,246,.10);border-color:rgba(59,130,246,.35)}
 .cal-tab-pane{display:none}
 .cal-tab-pane.active{display:block}
 .feed-page-layout{display:flex;gap:0;min-height:calc(100vh - 58px)}
@@ -87,7 +90,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .fin-metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0 14px}
 .fin-metric-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
 .fin-metric-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-.fin-metric-val{font-size:22px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;margin-bottom:10px;line-height:1.1}
+.fin-metric-val{font-size:20px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;margin-bottom:8px;line-height:1.1}
 .fin-metric-chg{font-size:11px;display:flex;flex-direction:column;gap:4px}
 .fin-chg-row{display:flex;justify-content:space-between;color:var(--muted)}
 .fin-sub-box{display:flex;gap:20px;flex-wrap:wrap;padding:13px 18px;background:var(--card2);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;align-items:center}
@@ -106,11 +109,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .fin-bs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
 .fin-bs-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
 .fin-bs-label{font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
-.fin-bs-val{font-size:16px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.fin-bs-val{font-size:14px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
 .fin-ratio-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .fin-ratio-card{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;text-align:center}
 .fin-ratio-label{font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
-.fin-ratio-val{font-size:18px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.fin-ratio-val{font-size:16px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
 .post-body h2{font-size:16px;font-weight:700;color:var(--text);margin:14px 0 5px;line-height:1.3}
 .post-body h3{font-size:14px;font-weight:700;color:var(--a2);margin:10px 0 4px;line-height:1.3}
 .post-body p{margin:5px 0}
@@ -150,15 +153,15 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .api-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0}
 .dot.ok{background:var(--green)}.dot.err{background:var(--red)}
-.content{padding:16px 0 0;flex:1}
+.content{padding:0;flex:1}
 /* sections */
-.sec{display:none}.sec.active{display:block}
+.sec{display:none}.sec.active{display:block;padding-top:16px}
 /* cards */
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:11px;margin-bottom:18px}
-.sc{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
-.sc-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.sc-val{font-size:20px;font-weight:800;line-height:1.15}
+.sc{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.sc-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.sc-val{font-size:18px;font-weight:800;line-height:1.15}
 .sc-sub{font-size:10.5px;color:var(--muted);margin-top:3px}
 /* buttons */
 .btn{padding:7px 14px;border-radius:7px;border:1.5px solid var(--accent);background:rgba(59,130,246,.1);color:var(--a2);font-weight:700;font-size:11px;cursor:pointer;transition:all .13s;font-family:inherit}
@@ -169,6 +172,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 /* inputs */
 .inp{background:var(--card2);border:1.5px solid rgba(255,255,255,.1);color:var(--text);padding:7px 11px;border-radius:7px;font-size:12px;font-family:inherit}
 .inp:focus{outline:none;border-color:var(--accent)}
+.inp:-webkit-autofill,.inp:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px var(--card2) inset;-webkit-text-fill-color:var(--text)}
 textarea.inp{resize:vertical;min-height:68px}
 /* tables */
 .tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin-bottom:18px}
@@ -177,7 +181,7 @@ thead th{background:var(--card2);padding:8px 11px;text-align:left;color:var(--mu
 tbody tr{border-bottom:1px solid rgba(255,255,255,.03);transition:background .1s}
 tbody tr:last-child{border-bottom:none}
 tbody tr:hover{background:rgba(59,130,246,.06);cursor:pointer}
-tbody td{padding:7px 11px;vertical-align:middle}
+tbody td{padding:6px 10px;vertical-align:middle}
 .rn{color:var(--muted);font-size:10.5px;width:30px}
 .tt{font-weight:700;color:var(--a2);font-size:12.5px}
 .mt{color:var(--muted);font-size:11px}
@@ -224,23 +228,23 @@ tbody td{padding:7px 11px;vertical-align:middle}
 /* tabs (single stock) */
 .tab-bar{display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;scrollbar-width:none}
 .tab-bar::-webkit-scrollbar{display:none}
-.tab-btn{padding:6px 16px;font-size:13px;font-weight:700;font-family:'Nunito','Segoe UI',sans-serif;color:var(--muted);cursor:pointer;border-radius:8px;border:1px solid transparent;white-space:nowrap;transition:all .15s;background:none;letter-spacing:.2px}
-.tab-btn:hover{color:var(--text);background:rgba(255,255,255,.05)}
-.tab-btn.active{color:var(--a2);background:rgba(59,130,246,.10);border-color:rgba(59,130,246,.18)}
+.tab-btn{padding:5px 14px;font-size:12px;font-weight:700;font-family:'Nunito','Segoe UI',sans-serif;color:var(--muted);cursor:pointer;border-radius:8px;border:1px solid rgba(255,255,255,.12);white-space:nowrap;transition:all .15s;background:none;letter-spacing:.2px}
+.tab-btn:hover{color:var(--text);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2)}
+.tab-btn.active{color:var(--a2);background:rgba(59,130,246,.10);border-color:rgba(59,130,246,.35)}
 .tab-pane{display:none}.tab-pane.active{display:block}
 /* stock header */
-.s-hdr{background:linear-gradient(135deg,#0c1628 0%,#112244 60%,#1d4ed8 100%);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px 24px;margin-bottom:16px}
+.s-hdr{background:linear-gradient(135deg,#0c1628 0%,#112244 60%,#1d4ed8 100%);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 20px;margin-bottom:14px}
 .s-hdr-row{display:flex;align-items:flex-start;justify-content:space-between}
-.s-hdr h2{font-size:20px;font-weight:800;color:#fff;margin-bottom:2px}
+.s-hdr h2{font-size:18px;font-weight:800;color:#fff;margin-bottom:2px}
 .s-hdr .sub{font-size:10.5px;color:#93c5fd;margin-bottom:8px}
 .s-hdr-badges{display:flex;gap:7px;flex-wrap:wrap}
-.s-ogm-big{font-size:40px;font-weight:900;line-height:1;text-align:right}
+.s-ogm-big{font-size:36px;font-weight:900;line-height:1;text-align:right}
 .s-ogm-lbl{font-size:10px;color:#93c5fd;text-align:right;margin-top:2px}
 /* kpi bar */
 .kpi-bar{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px}
 .kpi-cell{background:var(--card2);padding:9px 10px;text-align:center}
 .kpi-lbl{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.kpi-val{font-size:14px;font-weight:800}
+.kpi-val{font-size:13px;font-weight:800}
 /* score rows */
 .sr{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)}
 .sr:last-child{border-bottom:none}
@@ -267,7 +271,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
 .cal-nav-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 18px;cursor:pointer;font-size:16px;font-weight:700;line-height:1;transition:all .13s}
 .cal-nav-btn:hover{border-color:var(--a2);color:var(--a2)}
 #cal-week-label{font-size:15px;font-weight:800;color:var(--text)}
-.btn-cal-today{font-size:11px!important;padding:8px 16px!important;margin-left:auto}
+.btn-cal-today{font-size:11px!important;padding:8px 16px!important}
 .cal-week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:20px}
 .cal-day-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px 10px;cursor:pointer;transition:all .13s;min-height:74px}
 .cal-day-box:hover{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.06)}
@@ -443,7 +447,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
 
   <!-- ═══ SINGLE STOCK ═══════════════════════════════════════════════════════ -->
   <div class="sec" id="sec-stock">
-    <div class="toolbar" style="padding:28px 32px 0">
+    <div class="toolbar" style="padding:0 0 14px 16px">
       <input class="inp" id="s-search" placeholder="Ticker — e.g. AAPL, SAP.DE, NVDA" style="width:260px;text-transform:uppercase" onkeydown="if(event.key==='Enter')doAnalyze()">
       <button class="btn" id="btn-analyze" onclick="doAnalyze()">&#x1F50D; Analyze</button>
       <span id="s-inline-msg" style="font-size:11px;color:var(--muted)"></span>
@@ -522,7 +526,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
 
   <!-- ═══ PORTFOLIO ══════════════════════════════════════════════════════════ -->
   <div class="sec" id="sec-portfolio">
-    <div class="stat-grid" id="port-stats" style="margin-top:18px"></div>
+    <div class="stat-grid" id="port-stats"></div>
     <!-- performance table + buy / sell -->
     <div class="col2" style="margin-bottom:8px">
       <div class="card" style="overflow-x:auto;min-width:0">
@@ -577,15 +581,15 @@ tbody td{padding:7px 11px;vertical-align:middle}
   <!-- ═══ WATCHLIST ══════════════════════════════════════════════════════════ -->
   <div class="sec" id="sec-watchlist">
     <div class="card" style="margin-bottom:14px">
-      <div style="font-weight:700;font-size:12.5px;margin-bottom:9px">&#x2795; Add Ticker to Watchlist</div>
-      <div class="form-row">
-        <div class="fcol" style="flex:1"><span class="flbl">Ticker</span><input class="inp" id="wl-add-inp" placeholder="AAPL" style="text-transform:uppercase;width:150px" onkeydown="if(event.key==='Enter')wlAdd()"></div>
-        <div class="fcol" style="justify-content:flex-end"><button class="btn" onclick="wlAdd()">&#x2795; Add</button></div>
+      <div style="font-weight:700;font-size:12.5px;margin-bottom:9px">+ Add Ticker to Watchlist</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input class="inp" id="wl-add-inp" placeholder="AAPL" style="text-transform:uppercase;width:150px" onkeydown="if(event.key==='Enter')wlAdd()" autocomplete="off">
+        <button class="btn" onclick="wlAdd()">+ Add</button>
       </div>
     </div>
     <div id="wl-msg"></div>
     <div class="tw" id="wl-tbl-wrap" style="display:none"><table>
-      <thead><tr><th>#</th><th>Ticker</th><th>Company</th><th>Sector</th><th>Cap</th><th>Rev Gr.</th><th>MA Dist</th><th>Price</th><th>OGM</th><th>Status</th><th>EPS sc.</th><th>PEG sc.</th><th>Margin sc.</th><th></th></tr></thead>
+      <thead><tr><th>#</th><th>Ticker</th><th>Company</th><th>Sector</th><th>Cap</th><th>Rev Gr.</th><th>MA Dist</th><th>Price</th><th>Target</th><th>YTD</th><th>3Y</th><th>OGM</th><th>Status</th><th></th></tr></thead>
       <tbody id="wl-tbody"></tbody>
     </table></div>
   </div>
@@ -601,7 +605,7 @@ tbody td{padding:7px 11px;vertical-align:middle}
     <div class="tab-pane active" id="sell-tp-radar">
       <div class="col2" style="margin-bottom:14px">
         <div class="card">
-          <div style="font-weight:700;font-size:12.5px;margin-bottom:9px">&#x1F30D; Pregled trga (CSV)</div>
+          <div style="font-weight:700;font-size:12.5px;margin-bottom:9px">Pregled trga</div>
           <button class="btn btn-r" id="btn-sell-market" onclick="triggerSellMarket()">&#x25B6; Scan Market</button>
           <div id="sell-market-progress" style="font-size:10.5px;color:var(--muted);margin-top:7px;min-height:14px"></div>
         </div>
@@ -665,18 +669,18 @@ tbody td{padding:7px 11px;vertical-align:middle}
   <!-- ═══ CALENDAR ════════════════════════════════════════════════════════════ -->
   <div class="sec" id="sec-calendar">
   <div class="cal-tabs">
-    <button class="cal-tab-btn active" id="cal-tab-earnings"  onclick="switchCalTab('earnings')">&#x1F4C8; Earnings</button>
-    <button class="cal-tab-btn"        id="cal-tab-economic"  onclick="switchCalTab('economic')">&#x1F3E6; Economic</button>
-    <button class="cal-tab-btn"        id="cal-tab-dividends" onclick="switchCalTab('dividends')">&#x1F4B0; Dividends</button>
+    <button class="cal-tab-btn active" id="cal-tab-earnings"  onclick="switchCalTab('earnings')">Earnings</button>
+    <button class="cal-tab-btn"        id="cal-tab-economic"  onclick="switchCalTab('economic')">Economic</button>
+    <button class="cal-tab-btn"        id="cal-tab-dividends" onclick="switchCalTab('dividends')">Dividends</button>
   </div>
   <!-- Navigation bar -->
-  <div class="cal-nav-bar">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:6px 0">
     <button class="cal-nav-btn" onclick="calNav(-1)">&#x2039;</button>
-    <span id="cal-week-label">—</span>
+    <span id="cal-week-label" style="font-size:15px;font-weight:800;color:var(--text)">—</span>
     <button class="cal-nav-btn" onclick="calNav(1)">&#x203A;</button>
-    <button class="btn btn-cal-today" onclick="calGoToday()">Danes</button>
+    <button class="btn" style="font-size:11px;padding:8px 16px" onclick="calGoToday()">Danes</button>
     <button class="btn" style="font-size:11px;padding:8px 16px" onclick="calRefresh()">&#x21BA; Refresh</button>
-    <span id="cal-status" style="font-size:10.5px;color:var(--muted)"></span>
+    <span id="cal-status" style="font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
   </div>
 
   <!-- Weekly mini-calendar -->
@@ -952,8 +956,8 @@ function _mlCheckAuth(){
   }
 }
 
-// Auto-detect API origin: works on localhost, ngrok, and any cloud host
-const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.endsWith('.ngrok-free.app') || location.hostname.endsWith('.ngrok-free.dev'))
+// Auto-detect API origin: works on localhost, ngrok, and Cloudflare Tunnel
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.endsWith('.ngrok-free.app') || location.hostname.endsWith('.ngrok-free.dev') || location.hostname === 'dashboard.theboringmillion.com')
   ? `${location.protocol}//${location.hostname}`
   : 'https://web-production-6cf3f9.up.railway.app';
 let _scanPoll=null,_wlPoll=null,_sellPoll=null,_bottomPoll=null;
@@ -2158,8 +2162,10 @@ function wlRender(){
       <td class="mt">${s.sektor||'—'}</td><td class="mt">${s.mcap||'—'}</td>
       <td class="${pCls(s.rev_growth)}">${s.rev_growth!=null?fmtd(s.rev_growth,1)+' %':'—'}</td>
       <td>${distCell(s.dist_ma,s.ma_type,s.dist_ma200)}</td><td>$${fmtd(s.cena)}</td>
+      <td class="mt">${s.target_price>0?'$'+fmtd(s.target_price):'—'}</td>
+      <td class="${pCls(s.donos_ytd)}">${s.donos_ytd!=null?(s.donos_ytd>=0?'+':'')+fmtd(s.donos_ytd,1)+' %':'—'}</td>
+      <td class="${pCls(s.donos_3y)}">${s.donos_3y!=null?(s.donos_3y>=0?'+':'')+fmtd(s.donos_3y,1)+' %':'—'}</td>
       <td>${ogmBar(s.ogm||0)}</td><td>${sBadge(s.status)}</td>
-      <td class="mt">${fmtd(c.eps_score,1)}</td><td class="mt">${fmtd(c.peg_score,1)}</td><td class="mt">${fmtd(c.margin_score,1)}</td>
       <td onclick="event.stopPropagation()">${del}</td>
     </tr>`;
   }).join('');
